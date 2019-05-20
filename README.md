@@ -1,68 +1,32 @@
+# Recession Indicator
+
+## What it does
+The app will calculate and display the likelihood of a US Economic recession 12-months into the future.  
+
+## Background
+
+### Research
+Various financial and economic models exist that attempt to predict US recessions, some better than others. I'll stick to the Treasury's term spread (aka yield curve), which has been well researched and explained in a paper by the New York Fed.
+
+### Side Note
+This is part of a much bigger app I have in mind but I'm going to solve this problem in small pieces and this app, Recession Indicator, is part of the puzzle.  
+
+## Motivation
+Financial markets are highly sensitive to economic data and an economic recession always plays a major role in the performance of these markets.
+
+Prior knowledge of such a major event could help market participants prepare accordingly.
+
+In spite of relative astonishing accuracy, many investors (both retail and professional) seem to either not know about this model or chose to ignore it.
+
+In my view, the problem is not marketing (as many news outlets religiously report on this metric) but instead presentation of data and ease of access.    
+
+## Game Plan
+* Economic data is taken using the Federal Reserve's API.
+* The probability is calculated using the same formula used by the New York Fed. However, it is then modified by a factor of safety.
+* Instead of giving the mathematical result of the modified probability, I'm going to split the results into ranges and assign more user-friendly labels.
+
+### Limitations
+* I don't know yet. We'll see what kind of data we get from the Fed's API and how customizable the Data-visualization libraries are.
+
+## Installation, Available Scripts, and other React related stuff
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
