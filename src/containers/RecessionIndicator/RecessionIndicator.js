@@ -22,26 +22,39 @@ class RecessionIndicator extends Component {
     axios.all([
       axios.get(tenYearYield),
       axios.get(threeMonthYield),
-      axios.get(nberUSrecess),
-      axios.get(willshire5000),
-      axios.get(vix)
       ])
         .then(axios.spread( (tenYrYldResponse, threeMthYldResponse,
           nberResponse, willshireResponse, vixResponse ) => {
             this.setState({
             tenYearInt: tenYrYldResponse.data.observations,
             threeMonthInt: threeMthYldResponse.data.observations,
-            nberRecession: nberResponse.data.observations,
-            willshireState: willshireResponse.data.observations,
-            vixState: vixResponse.data.observations,
             });
-          console.log(this.state.tenYearInt);
-          console.log(this.state.threeMonthInt);
-          console.log(this.state.nberRecession);
-          console.log(this.state.willshireState);
-          console.log(this.state.vixState);
+          console.log(this.state.tenYearInt, "ten");
+          console.log(this.state.threeMonthInt, "three");
           }
         ));
+
+      axios.get(nberUSrecess).then(nberResponse => {
+        this.setState({
+        nberRecession: nberResponse.data.observations
+        });
+        console.log(this.state.nberRecession, "nber");
+      });
+
+      axios.get(willshire5000).then(willshireResponse => {
+        this.setState({
+        willshireState: willshireResponse.data.observations
+        });
+        console.log(this.state.willshireState, "willshire");
+      });
+
+      axios.get(vix).then(vixResponse => {
+        this.setState({
+        vixState: vixResponse.data.observations
+        });
+        console.log(this.state.vixState, "vix");
+      });
+
 }
 
 
