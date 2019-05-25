@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import recessionIndicatorStyles from "./RecessionIndicator.module.css";
 import axios from "axios";
 
+import {filteredResponse} from "../../shared/helperFunctions/helperFunctions";
+
 import {tenYearYield} from "../../data/fedReserveAPI";
 import {threeMonthYield} from "../../data/fedReserveAPI";
 import {nberUSrecess} from "../../data/fedReserveAPI";
@@ -19,25 +21,11 @@ class RecessionIndicator extends Component {
   }
 
   componentDidMount () {
-
-    //helper function to filter only Date and Value
-    const filteredResponse = (toBeFiltered) => {
-      const mapFilter = toBeFiltered.map((eachObject) => {
-          const date = eachObject.date;
-          const value = eachObject.value;
-          const filteredObject = {date, value};
-          return filteredObject;
-      });
-    return mapFilter;
-    }
-
     axios.all([
       axios.get(tenYearYield),
       axios.get(threeMonthYield),
       ])
         .then(axios.spread( (tenYrYldResponse, threeMthYldResponse ) => {
-          //const filtered10yr = filteredResponse(tenYrYldResponse.data.observations);
-          //const filtered3mo = filteredResponse(threeMthYldResponse.data.observations);
 
             this.setState({
             tenYearInt: filteredResponse(tenYrYldResponse.data.observations),
