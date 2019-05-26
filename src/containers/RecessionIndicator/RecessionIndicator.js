@@ -2,12 +2,17 @@ import React, { Component } from "react";
 import recessionIndicatorStyles from "./RecessionIndicator.module.css";
 import axios from "axios";
 
+//******************** BootstrapTable **********************************
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import BootstrapTable from 'react-bootstrap-table-next';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit';
 
+//*********************** helperFunctions ******************************
 import {filteredResponse} from "../../shared/helperFunctions/helperFunctions";
 
+//************************ data ****************************************
 import {tenYearYield} from "../../data/fedReserveAPI";
 import {threeMonthYield} from "../../data/fedReserveAPI";
 import {nberUSrecess} from "../../data/fedReserveAPI";
@@ -32,8 +37,8 @@ class RecessionIndicator extends Component {
         .then(axios.spread( (tenYrYldResponse, threeMthYldResponse ) => {
 
             this.setState({
-            tenYearInt: filteredResponse(tenYrYldResponse.data.observations),
-            threeMonthInt: filteredResponse(threeMthYldResponse.data.observations),
+            tenYearInt: filteredResponse(tenYrYldResponse.data.observations, "10-yr-yields"),
+            threeMonthInt: filteredResponse(threeMthYldResponse.data.observations, "3-month-yields"),
             });
 
           console.log(this.state.tenYearInt, "ten");
@@ -43,21 +48,21 @@ class RecessionIndicator extends Component {
 
       axios.get(nberUSrecess).then(nberResponse => {
         this.setState({
-          nberRecession: filteredResponse(nberResponse.data.observations)
+          nberRecession: filteredResponse(nberResponse.data.observations, "US-recession")
         });
         console.log(this.state.nberRecession, "nber");
       });
 
       axios.get(willshire5000).then(willshireResponse => {
         this.setState({
-          willshireState: filteredResponse(willshireResponse.data.observations)
+          willshireState: filteredResponse(willshireResponse.data.observations, "Whillshire-5000")
         });
         console.log(this.state.willshireState, "willshire");
       });
 
       axios.get(vix).then(vixResponse => {
         this.setState({
-          vixState: filteredResponse(vixResponse.data.observations)
+          vixState: filteredResponse(vixResponse.data.observations, "Vix")
         });
         console.log(this.state.vixState, "vix");
       });
@@ -67,24 +72,29 @@ class RecessionIndicator extends Component {
   render() {
     const columns = [{
       dataField: 'date',
-      text: 'Date'
+      text: 'Date',
+      sort: true
     }, {
       dataField: 'value',
       text: 'Yield'
     }];
 
+    const defaultSorted = [{
+    dataField: 'date',
+    order: 'desc'
+    }];
 
     return (
     <div>
       <p>Hello </p>
+
       <BootstrapTable
-        key="1"
-        keyField='ten-yr-yields'
+        bootstrap4
+        keyField='id'
         data={ this.state.tenYearInt }
         columns={ columns }
-        bootstrap4 = { true }
-        bordered = {true}
-
+        defaultSorted= { defaultSorted }
+        pagination={ paginationFactory() }
         />
 
     </div>
