@@ -70,6 +70,7 @@ class RecessionIndicator extends Component {
 }
 
   render() {
+    const { ToggleList } = ColumnToggle;
     const columns = [{
       dataField: 'date',
       text: 'Date',
@@ -88,6 +89,28 @@ class RecessionIndicator extends Component {
     <div>
       <p>Hello </p>
 
+        <ToolkitProvider
+          keyField="id"
+          data={ this.state.tenYearInt }
+          columns={ columns }
+          columnToggle
+        >
+          {
+            props => (
+              <div>
+                <ToggleList { ...props.columnToggleProps } />
+                <hr />
+                <BootstrapTable
+                  { ...props.baseProps }
+                  defaultSorted= { defaultSorted }
+                  pagination={ paginationFactory() }
+                />
+              </div>
+            )
+          }
+        </ToolkitProvider>
+
+  {/*
       <BootstrapTable
         bootstrap4
         keyField='id'
@@ -96,7 +119,7 @@ class RecessionIndicator extends Component {
         defaultSorted= { defaultSorted }
         pagination={ paginationFactory() }
         />
-
+*/}
     </div>
   )
 
