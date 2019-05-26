@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import recessionIndicatorStyles from "./RecessionIndicator.module.css";
 import axios from "axios";
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import BootstrapTable from 'react-bootstrap-table-next';
+
 import {filteredResponse} from "../../shared/helperFunctions/helperFunctions";
 
 import {tenYearYield} from "../../data/fedReserveAPI";
@@ -61,12 +65,27 @@ class RecessionIndicator extends Component {
 }
 
   render() {
-
+    const columns = [{
+      dataField: 'date',
+      text: 'Date'
+    }, {
+      dataField: 'value',
+      text: 'Yield'
+    }];
 
 
     return (
     <div>
       <p>Hello </p>
+      <BootstrapTable
+        key="1"
+        keyField='ten-yr-yields'
+        data={ this.state.tenYearInt }
+        columns={ columns }
+        bootstrap4 = { true }
+        bordered = {true}
+
+        />
 
     </div>
   )
