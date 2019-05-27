@@ -8,6 +8,7 @@
     "bootstrap3": "^3.3.5",
     "decimal.js": "^10.2.0",
     "mathjs": "^5.10.3",
+    "normal-distribution": "0.0.7",
     "numbers": "^0.7.0",
     "react": "^16.8.6",
     "react-bootstrap-table-next": "^3.1.3",
