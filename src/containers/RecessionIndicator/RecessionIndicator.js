@@ -135,7 +135,8 @@ class RecessionIndicator extends Component {
     },
     {
       dataField: 'spread',
-      text: 'Yield Spread, 10-yr & 3-mo (Bond Equiv.)'
+      text: 'Yield Spread, 10-yr & 3-mo (Bond Equiv.)',
+      hidden: true
     }
   ];
 
