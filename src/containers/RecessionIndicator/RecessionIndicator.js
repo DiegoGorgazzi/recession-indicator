@@ -9,6 +9,11 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit';
 
+/**************************MATH related Stuff****************************/
+import * as math from 'mathjs';
+import * as numbers from 'numbers';
+
+
 //*********************** helperFunctions ******************************
 import {filteredResponse, mergedResponse} from "../../shared/helperFunctions/helperFunctions";
 
@@ -71,9 +76,33 @@ class RecessionIndicator extends Component {
 
   render() {
 
-    const tenThreeMerged = mergedResponse(this.state.tenYearInt, this.state.threeMonthInt, "merged");
+    /**********************math calcs ********************/
+    math.config({
+      number: 'BigNumber',
+      precision: 20
+    })
+
+    //Merged Data to display in table
+    const tenThreeMerged =
+    mergedResponse(this.state.tenYearInt, this.state.threeMonthInt, "merged");
     console.log(tenThreeMerged, "merged");
 
+    //Mutate merged array to include bondEqBasis
+    tenThreeMerged.forEach( (eachObject) => {
+      //Convert 90 day bill to Bond equivalent Basis, add new property to object:
+      eachObject.bondEqBasis =
+        math.format(math.eval(365*(eachObject.valueAdd)/(360-91*(eachObject.valueAdd)/100)));
+    });
+
+    //Mutate merged array to include spread between 10-yr and 3-mo
+    tenThreeMerged.forEach( (eachObject) => {
+      //Calculate the spread between 10-yr bond and 90-day bondEqBasis
+      eachObject.spread = math.format(math.subtract(eachObject.value, eachObject.bondEqBasis), 4);
+    });
+
+
+
+    /******************react-bootstrap-table2***************/
     const { ToggleList } = ColumnToggle;
     const columns = [{
       dataField: 'date',
@@ -86,6 +115,10 @@ class RecessionIndicator extends Component {
     {
       dataField: 'valueAdd',
       text: '3-month avg yield, %'
+    },
+    {
+      dataField: 'spread',
+      text: 'Yield Spread, 10-yr & 3-mo (Bond Equiv.)'
     }
   ];
 
@@ -94,6 +127,7 @@ class RecessionIndicator extends Component {
     order: 'desc'
     }];
 
+    /************************ RETURN *************************************/
     return (
     <div>
       <p>Hello </p>
