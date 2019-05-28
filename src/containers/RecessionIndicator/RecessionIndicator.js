@@ -116,9 +116,7 @@ class RecessionIndicator extends Component {
       eachObject.recProbAdj = math.format(math.multiply(recStdNormDist.cdf(x), factorOfSafety), 4);
     });
 
-    //let test  = recStdNormDist.cdf(x);
 
-    //console.log(test, "Test");
 
 
     /******************react-bootstrap-table2***************/
@@ -174,7 +172,7 @@ class RecessionIndicator extends Component {
       }, {
       text: '3 years', value: 36
       }, {
-      text: '6 years', value: 36
+      text: '6 years', value: 72
       }, {
       text: 'All', value: tenThreeMerged.length
     }] // A numeric array is also available. the purpose of above example is custom the text
