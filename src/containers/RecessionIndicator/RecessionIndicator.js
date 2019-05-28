@@ -101,7 +101,24 @@ class RecessionIndicator extends Component {
       eachObject.spread = math.format(math.subtract(eachObject.value, eachObject.bondEqBasis), 4);
     });
 
-  
+    /************** Find Probability of Recession ********************/
+    const factorOfSafety = 2;
+    const alpha = -0.53331; //constant "fit" from data
+    const beta =  -0.63304; //constant "fit" from data
+    const recStdNormDist = new NormalDistribution;
+
+    //Mutate merged array to include recession Probability
+    tenThreeMerged.forEach( (eachObject) => {
+      const x =  math.format(math.add(alpha, math.multiply(beta, eachObject.spread)));
+      //Calculate probability using Cumulative Distribution Function
+      eachObject.recProb = math.format(recStdNormDist.cdf(x), 4);
+      //Adjust probability using factor of safety
+      eachObject.recProbAdj = math.format(math.multiply(recStdNormDist.cdf(x), factorOfSafety), 4);
+    });
+
+    //let test  = recStdNormDist.cdf(x);
+
+    //console.log(test, "Test");
 
 
     /******************react-bootstrap-table2***************/
