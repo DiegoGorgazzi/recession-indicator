@@ -12,7 +12,7 @@ import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit';
 /**************************MATH related Stuff****************************/
 import * as math from 'mathjs';
 import * as numbers from 'numbers';
-
+import NormalDistribution from "normal-distribution";
 
 //*********************** helperFunctions ******************************
 import {filteredResponse, mergedResponse} from "../../shared/helperFunctions/helperFunctions";
@@ -76,13 +76,14 @@ class RecessionIndicator extends Component {
 
   render() {
 
-    /**********************math calcs ********************/
+    /*************************** Math Calcs ***************************/
     math.config({
       number: 'BigNumber',
       precision: 20
     })
 
-    //Merged Data to display in table
+    /************** Find Spread ********************/
+    //Merged Data to display in table (and for ease of calcs)
     const tenThreeMerged =
     mergedResponse(this.state.tenYearInt, this.state.threeMonthInt, "merged");
     console.log(tenThreeMerged, "merged");
@@ -100,6 +101,7 @@ class RecessionIndicator extends Component {
       eachObject.spread = math.format(math.subtract(eachObject.value, eachObject.bondEqBasis), 4);
     });
 
+  
 
 
     /******************react-bootstrap-table2***************/
@@ -127,6 +129,41 @@ class RecessionIndicator extends Component {
     order: 'desc'
     }];
 
+    const customTotal = (from, to, size) => (
+      <span className="react-bootstrap-table-pagination-total">
+        Showing { from } to { to } of { size } Results
+      </span>
+    );
+
+    const options = {
+    paginationSize: 6,
+    pageStartIndex: 1,
+    // alwaysShowAllBtns: true, // Always show next and previous button
+    // withFirstAndLast: false, // Hide the going to First and Last page button
+    // hideSizePerPage: true, // Hide the sizePerPage dropdown always
+    // hidePageListOnlyOnePage: true, // Hide the pagination list when only one page
+    firstPageText: 'First',
+    prePageText: 'Back',
+    nextPageText: 'Next',
+    lastPageText: 'Last',
+    nextPageTitle: 'First page',
+    prePageTitle: 'Pre page',
+    firstPageTitle: 'Next page',
+    lastPageTitle: 'Last page',
+    showTotal: true,
+    paginationTotalRenderer: customTotal,
+    sizePerPageList: [{
+      text: '18 moths', value: 18
+      }, {
+      text: '3 years', value: 36
+      }, {
+      text: '6 years', value: 36
+      }, {
+      text: 'All', value: tenThreeMerged.length
+    }] // A numeric array is also available. the purpose of above example is custom the text
+    };
+
+
     /************************ RETURN *************************************/
     return (
     <div>
@@ -146,7 +183,7 @@ class RecessionIndicator extends Component {
                 <BootstrapTable
                   { ...props.baseProps }
                   defaultSorted= { defaultSorted }
-                  pagination={ paginationFactory() }
+                  pagination={ paginationFactory(options) }
                 />
               </div>
             )
