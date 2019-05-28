@@ -55,21 +55,21 @@ class RecessionIndicator extends Component {
         this.setState({
           nberRecession: filteredResponse(nberResponse.data.observations, "US-recession")
         });
-        console.log(this.state.nberRecession, "nber");
+        //console.log(this.state.nberRecession, "nber");
       });
 
       axios.get(willshire5000).then(willshireResponse => {
         this.setState({
           willshireState: filteredResponse(willshireResponse.data.observations, "Whillshire-5000")
         });
-        console.log(this.state.willshireState, "willshire");
+        //console.log(this.state.willshireState, "willshire");
       });
 
       axios.get(vix).then(vixResponse => {
         this.setState({
           vixState: filteredResponse(vixResponse.data.observations, "Vix")
         });
-        console.log(this.state.vixState, "vix");
+        //console.log(this.state.vixState, "vix");
       });
 
 }
@@ -86,7 +86,7 @@ class RecessionIndicator extends Component {
     //Merged Data to display in table (and for ease of calcs)
     const tenThreeMerged =
     mergedResponse(this.state.tenYearInt, this.state.threeMonthInt, "merged");
-    console.log(tenThreeMerged, "merged");
+    //console.log(tenThreeMerged, "merged");
 
     //Mutate merged array to include bondEqBasis
     tenThreeMerged.forEach( (eachObject) => {
@@ -116,10 +116,41 @@ class RecessionIndicator extends Component {
       eachObject.recProbAdj = math.format(math.multiply(recStdNormDist.cdf(x), factorOfSafety), 4);
     });
 
+    //Add data objects with probability 12-months into the future
+    //copy the last 12 months of data
+    let newArr = tenThreeMerged.slice(tenThreeMerged.length-12, tenThreeMerged.length);
+
+    //make a deep clone of the last 12 months of data
+    let deepClone = newArr.map( (eachObject, index) => {
+         eachObject = {...newArr[index]};
+         return eachObject;
+    });
+
+    //change the dates of the cloned array to be 12-months into the future
+    let futureDatesArr = deepClone.map( (eachObject, index ) => {
+        let newDate = eachObject.date.split("-");
+        newDate[0] = Number(newDate[0])+1;
+        let dateToString = newDate[0].toString();
+        newDate[0]= dateToString;
+        let joined = newDate.join("-");
+        eachObject.date = joined;
+
+        let id = "futureDatesArr"+index;
+        let date =  eachObject.date;
+        let value = "N/A";
+        let valueAdd = "N/A";
+        let spread = "N/A";
+        let newObject = {id, date, value, valueAdd, spread};
+        return newObject;
+        }
+    );
+
+    //push the 12 months into the future dates into the merged array
+    tenThreeMerged.push(...futureDatesArr);
+    console.log(tenThreeMerged, "tenThreeMerged");
 
 
-
-    /******************react-bootstrap-table2***************/
+    /*********************react-bootstrap-table2*********************/
     const { ToggleList } = ColumnToggle;
     const columns = [{
       dataField: 'date',
