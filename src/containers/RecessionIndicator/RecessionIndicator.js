@@ -186,7 +186,8 @@ class RecessionIndicator extends Component {
     {
       dataField: 'recProbAdj',
       text: 'Recession probability, Adjusted)',
-      hidden: false
+      hidden: false,
+      sort: true
     },
   ];
 
