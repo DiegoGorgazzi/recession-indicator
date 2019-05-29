@@ -102,19 +102,6 @@ class RecessionIndicator extends Component {
     });
 
     /************** Find Probability of Recession ********************/
-    const factorOfSafety = 2;
-    const alpha = -0.53331; //constant "fit" from data
-    const beta =  -0.63304; //constant "fit" from data
-    const recStdNormDist = new NormalDistribution;
-
-    //Mutate merged array to include recession Probability
-    tenThreeMerged.forEach( (eachObject) => {
-      const x =  math.format(math.add(alpha, math.multiply(beta, eachObject.spread)));
-      //Calculate probability using Cumulative Distribution Function
-      eachObject.recProb = math.format(recStdNormDist.cdf(x), 4);
-      //Adjust probability using factor of safety
-      eachObject.recProbAdj = math.format(math.multiply(recStdNormDist.cdf(x), factorOfSafety), 4);
-    });
 
     //Add data objects with probability 12-months into the future
     //copy the last 12 months of data
@@ -150,6 +137,31 @@ class RecessionIndicator extends Component {
     console.log(tenThreeMerged, "tenThreeMerged");
 
 
+    /*** Actual calculation of probability ****/
+    const factorOfSafety = 2;
+    const alpha = -0.53331; //constant "fit" from data
+    const beta =  -0.63304; //constant "fit" from data
+    const recStdNormDist = new NormalDistribution;
+
+    //Mutate merged array to include recession Probability
+    tenThreeMerged.forEach( (eachObject, index) => {
+      if(index > 12){
+      const x =  math.format(
+                  math.add(alpha, math.multiply(
+                    beta, tenThreeMerged[index-12].spread)));
+      //Calculate probability using Cumulative Distribution Function
+      eachObject.recProb = math.format(recStdNormDist.cdf(x), 4);
+      //Adjust probability using factor of safety
+      eachObject.recProbAdj = math.format(
+        math.multiply(recStdNormDist.cdf(x), factorOfSafety), 4);
+      }
+      else {
+        eachObject.recProb = "N/A";
+        eachObject.recProbAdj = "N/A";
+      }
+    });
+
+
     /*********************react-bootstrap-table2*********************/
     const { ToggleList } = ColumnToggle;
     const columns = [{
@@ -168,7 +180,12 @@ class RecessionIndicator extends Component {
       dataField: 'spread',
       text: 'Yield Spread, 10-yr & 3-mo (Bond Equiv.)',
       hidden: true
-    }
+    },
+    {
+      dataField: 'recProbAdj',
+      text: 'Recession probability, Adjusted)',
+      hidden: false
+    },
   ];
 
     const defaultSorted = [{
