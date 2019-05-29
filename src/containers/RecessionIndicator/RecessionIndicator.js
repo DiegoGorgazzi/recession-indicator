@@ -141,11 +141,11 @@ class RecessionIndicator extends Component {
     const factorOfSafety = 2;
     const alpha = -0.53331; //constant "fit" from data
     const beta =  -0.63304; //constant "fit" from data
-    const recStdNormDist = new NormalDistribution;
+    const recStdNormDist = new NormalDistribution();
 
     //Mutate merged array to include recession Probability
     tenThreeMerged.forEach( (eachObject, index) => {
-      if(index > 12){
+      if(index > 12 & eachObject.value !== 0){
       const x =  math.format(
                   math.add(alpha, math.multiply(
                     beta, tenThreeMerged[index-12].spread)));
@@ -158,6 +158,8 @@ class RecessionIndicator extends Component {
       else {
         eachObject.recProb = "N/A";
         eachObject.recProbAdj = "N/A";
+        eachObject.value = "N/A";
+        eachObject.spread = "0";
       }
     });
 
