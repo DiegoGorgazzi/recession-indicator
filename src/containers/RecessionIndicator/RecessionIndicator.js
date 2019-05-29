@@ -8,9 +8,7 @@ import Table from '../../components/Table/Table';
 //******************** BootstrapTable **********************************
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory from 'react-bootstrap-table2-paginator';
-import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit';
+
 
 /**************************MATH related Stuff****************************/
 import * as math from 'mathjs';
