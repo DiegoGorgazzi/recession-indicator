@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import recessionIndicatorStyles from "./RecessionIndicator.module.css";
 import axios from "axios";
 
+/*********************** components **********************************/
+import Table from '../../components/Table/Table';
+
 //******************** BootstrapTable **********************************
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
@@ -82,7 +85,7 @@ class RecessionIndicator extends Component {
       precision: 20
     })
 
-    /************** Find Spread ********************/
+    /******************* Find Spread ********************/
     //Merged Data to display in table (and for ease of calcs)
     const tenThreeMerged =
     mergedResponse(this.state.tenYearInt, this.state.threeMonthInt, "merged");
@@ -101,7 +104,7 @@ class RecessionIndicator extends Component {
       eachObject.spread = math.format(math.subtract(eachObject.value, eachObject.bondEqBasis), 4);
     });
 
-    /************** Find Probability of Recession ********************/
+    /************Find Probability of Recession *************/
 
     //Add data objects with probability 12-months into the future
     //copy the last 12 months of data
@@ -137,7 +140,7 @@ class RecessionIndicator extends Component {
     console.log(tenThreeMerged, "tenThreeMerged");
 
 
-    /*** Actual calculation of probability ****/
+    /****** Actual calculation of probability ********/
     const factorOfSafety = 2;
     const alpha = -0.53331; //constant "fit" from data
     const beta =  -0.63304; //constant "fit" from data
@@ -163,101 +166,22 @@ class RecessionIndicator extends Component {
       }
     });
 
-    //Assign Description to Recession Probability values
-    /*
-      if  0 < value < 0.25 = Highly Unlikely (colored Green)
-      if  0.25 < value < 0.5  Unlikely (Colored Yellow)
-      if  0.50 < value < 0.7  likely (Colored Rose)
-      if  value > 0.7  very likely (Colored Red)
-      else "N/A"
-    */
 
     tenThreeMerged.forEach( (eachObject)=>{
       if(eachObject.recProbAdj >= 0 && eachObject.recProbAdj < 0.25) {
-        eachObject.recDescription = "Highly Unlikely";
-      } else if (eachObject.recProbAdj >= 0.25 && eachObject.recProbAdj < 0.50 ) {
-          eachObject.recDescription = "Unlikely";
+        eachObject.recDescription = "Very Low";
+      } else if (eachObject.recProbAdj >= 0.25 && eachObject.recProbAdj < 0.45 ) {
+          eachObject.recDescription = "Low";
+      } else if (eachObject.recProbAdj >= 0.45 && eachObject.recProbAdj < 0.5 ) {
+          eachObject.recDescription = "Medium";
       } else if (eachObject.recProbAdj >= 0.5 && eachObject.recProbAdj < 0.7 ) {
-        eachObject.recDescription = "Likely";
+        eachObject.recDescription = "High";
       } else if (eachObject.recProbAdj >= 0.7 ) {
-        eachObject.recDescription = "Very likely";
+        eachObject.recDescription = "Very High";
       } else {
         eachObject.recDescription = "N/A";
       }
     });
-
-
-
-    /*********************react-bootstrap-table2*********************/
-    const { ToggleList } = ColumnToggle;
-    const columns = [{
-      dataField: 'date',
-      text: 'Date',
-      sort: true
-    }, {
-      dataField: 'value',
-      text: '10-yr avg yield, %'
-    },
-    {
-      dataField: 'valueAdd',
-      text: '3-month avg yield, %'
-    },
-    {
-      dataField: 'spread',
-      text: 'Yield Spread, 10-yr & 3-mo (Bond Equiv.)',
-      hidden: true
-    },
-    {
-      dataField: 'recProbAdj',
-      text: 'Recession probability, Adjusted)',
-      hidden: false,
-      sort: true
-    },
-    {
-      dataField: 'recDescription',
-      text: 'Recession likelihood',
-      hidden: false,
-    }
-  ];
-
-    const defaultSorted = [{
-    dataField: 'date',
-    order: 'desc'
-    }];
-
-    const customTotal = (from, to, size) => (
-      <span className="react-bootstrap-table-pagination-total">
-        Showing { from } to { to } of { size } Results
-      </span>
-    );
-
-    const options = {
-    paginationSize: 6,
-    pageStartIndex: 1,
-    // alwaysShowAllBtns: true, // Always show next and previous button
-    // withFirstAndLast: false, // Hide the going to First and Last page button
-    // hideSizePerPage: true, // Hide the sizePerPage dropdown always
-    // hidePageListOnlyOnePage: true, // Hide the pagination list when only one page
-    firstPageText: 'First',
-    prePageText: 'Back',
-    nextPageText: 'Next',
-    lastPageText: 'Last',
-    nextPageTitle: 'First page',
-    prePageTitle: 'Pre page',
-    firstPageTitle: 'Next page',
-    lastPageTitle: 'Last page',
-    showTotal: true,
-    paginationTotalRenderer: customTotal,
-    sizePerPageList: [{
-      text: '18 moths', value: 18
-      }, {
-      text: '3 years', value: 36
-      }, {
-      text: '6 years', value: 72
-      }, {
-      text: 'All', value: tenThreeMerged.length
-    }] // A numeric array is also available. the purpose of above example is custom the text
-    };
 
 
     /************************ RETURN *************************************/
@@ -265,26 +189,7 @@ class RecessionIndicator extends Component {
     <div>
       <p>Hello </p>
 
-        <ToolkitProvider
-          keyField="id"
-          data={ tenThreeMerged }
-          columns={ columns }
-          columnToggle
-        >
-          {
-            props => (
-              <div>
-                <ToggleList { ...props.columnToggleProps } />
-                <hr />
-                <BootstrapTable
-                  { ...props.baseProps }
-                  defaultSorted= { defaultSorted }
-                  pagination={ paginationFactory(options) }
-                />
-              </div>
-            )
-          }
-        </ToolkitProvider>
+        <Table data={tenThreeMerged}/>
 
     </div>
   )
