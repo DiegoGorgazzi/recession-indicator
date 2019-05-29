@@ -163,6 +163,30 @@ class RecessionIndicator extends Component {
       }
     });
 
+    //Assign Description to Recession Probability values
+    /*
+      if  0 < value < 0.25 = Highly Unlikely (colored Green)
+      if  0.25 < value < 0.5  Unlikely (Colored Yellow)
+      if  0.50 < value < 0.7  likely (Colored Rose)
+      if  value > 0.7  very likely (Colored Red)
+      else "N/A"
+    */
+
+    tenThreeMerged.forEach( (eachObject)=>{
+      if(eachObject.recProbAdj >= 0 && eachObject.recProbAdj < 0.25) {
+        eachObject.recDescription = "Highly Unlikely";
+      } else if (eachObject.recProbAdj >= 0.25 && eachObject.recProbAdj < 0.50 ) {
+          eachObject.recDescription = "Unlikely";
+      } else if (eachObject.recProbAdj >= 0.5 && eachObject.recProbAdj < 0.7 ) {
+        eachObject.recDescription = "Likely";
+      } else if (eachObject.recProbAdj >= 0.7 ) {
+        eachObject.recDescription = "Very likely";
+      } else {
+        eachObject.recDescription = "N/A";
+      }
+    });
+
+
 
     /*********************react-bootstrap-table2*********************/
     const { ToggleList } = ColumnToggle;
@@ -189,6 +213,11 @@ class RecessionIndicator extends Component {
       hidden: false,
       sort: true
     },
+    {
+      dataField: 'recDescription',
+      text: 'Recession likelihood',
+      hidden: false,
+    }
   ];
 
     const defaultSorted = [{
