@@ -56,3 +56,14 @@ export const mergedResponse = (mainToBeMerged, additionalArr, name) => {
     };
 
 /************************************************************************/
+//Helper function to create a deep clone of an array with the signature:
+  // [{...}, {...}]
+  export const deepJSONArrayClone = (arrayToBeCloned) => {
+      return arrayToBeCloned.map( (eachObject, index) => {
+        eachObject = {...arrayToBeCloned[index]};
+        return eachObject;
+      })
+   };
+
+
+/************************************************************************/

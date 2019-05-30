@@ -15,7 +15,7 @@ import * as numbers from 'numbers';
 import NormalDistribution from "normal-distribution";
 
 //*********************** helperFunctions ******************************
-import {filteredResponse, mergedResponse} from "../../shared/helperFunctions/helperFunctions";
+import {filteredResponse, mergedResponse, deepJSONArrayClone} from "../../shared/helperFunctions/helperFunctions";
 
 //************************ data ****************************************
 import {tenYearYield} from "../../data/fedReserveAPI";
@@ -103,6 +103,8 @@ class RecessionIndicator extends Component {
 
     /***** Add the Actual (historical) Recession Values to the tenThreeMerged ******/
     //slice the portion of the Recession Values that match the length of the tenThreeMerged Array
+    const nberResponseTrimmed = this.state.nberRecession.slice(this.state.nberRecession.length-tenThreeMerged.length, this.state.nberRecession.length);
+    console.log(nberResponseTrimmed, "nberResponseTrimmed");
 
 
     /************Find Probability of Recession *************/
@@ -112,13 +114,10 @@ class RecessionIndicator extends Component {
     const last12MonthtenThreeMerged = tenThreeMerged.slice(tenThreeMerged.length-12, tenThreeMerged.length);
 
     //make a deep clone of the last 12 months of data
-    const deepClone = last12MonthtenThreeMerged.map( (eachObject, index) => {
-         eachObject = {...last12MonthtenThreeMerged[index]};
-         return eachObject;
-    });
+    const deepCloneLast12mo = deepJSONArrayClone(last12MonthtenThreeMerged);
 
     //change the dates of the cloned array to be 12-months into the future
-    const futureDatesArr = deepClone.map( (eachObject, index ) => {
+    const futureDatesArr = deepCloneLast12mo.map( (eachObject, index ) => {
         let newDate = eachObject.date.split("-");
         newDate[0] = Number(newDate[0])+1;
         let dateToString = newDate[0].toString();
