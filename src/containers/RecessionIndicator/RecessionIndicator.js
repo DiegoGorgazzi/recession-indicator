@@ -111,6 +111,11 @@ class RecessionIndicator extends Component {
     tenThreeMerged.forEach( (eachObject, index) => {
         const nberValue =  nberResponseTrimmed[index].value;
         eachObject.nberValue = nberValue;
+        if(eachObject.nberValue === "1") {
+          eachObject.nberDescr = "YES";
+        } else {
+          eachObject.nberDescr = "--";
+        }
   });
 
 
