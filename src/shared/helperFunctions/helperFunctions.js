@@ -35,7 +35,7 @@ export const mergedResponse = (mainToBeMerged, additionalArr, name) => {
             let value;
             //the shorter data set needs to start index count only
             //when the dates of both data sets match.
-            //So while the length of the longer array is longer
+            //So while the Index of the longer array is greater
             //than the length of the shorter array, the value will be zero.
               if(index < (additionalArr.length - mainToBeMerged.length) ) {
                 value = 0;

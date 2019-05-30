@@ -9,7 +9,6 @@ import Table from '../../components/Table/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
-
 /**************************MATH related Stuff****************************/
 import * as math from 'mathjs';
 import * as numbers from 'numbers';
@@ -56,7 +55,7 @@ class RecessionIndicator extends Component {
         this.setState({
           nberRecession: filteredResponse(nberResponse.data.observations, "US-recession")
         });
-        //console.log(this.state.nberRecession, "nber");
+        console.log(this.state.nberRecession, "nber");
       });
 
       axios.get(willshire5000).then(willshireResponse => {
@@ -102,20 +101,24 @@ class RecessionIndicator extends Component {
       eachObject.spread = math.format(math.subtract(eachObject.value, eachObject.bondEqBasis), 4);
     });
 
+    /***** Add the Actual (historical) Recession Values to the tenThreeMerged ******/
+    //slice the portion of the Recession Values that match the length of the tenThreeMerged Array
+
+
     /************Find Probability of Recession *************/
 
     //Add data objects with probability 12-months into the future
     //copy the last 12 months of data
-    let newArr = tenThreeMerged.slice(tenThreeMerged.length-12, tenThreeMerged.length);
+    const last12MonthtenThreeMerged = tenThreeMerged.slice(tenThreeMerged.length-12, tenThreeMerged.length);
 
     //make a deep clone of the last 12 months of data
-    let deepClone = newArr.map( (eachObject, index) => {
-         eachObject = {...newArr[index]};
+    const deepClone = last12MonthtenThreeMerged.map( (eachObject, index) => {
+         eachObject = {...last12MonthtenThreeMerged[index]};
          return eachObject;
     });
 
     //change the dates of the cloned array to be 12-months into the future
-    let futureDatesArr = deepClone.map( (eachObject, index ) => {
+    const futureDatesArr = deepClone.map( (eachObject, index ) => {
         let newDate = eachObject.date.split("-");
         newDate[0] = Number(newDate[0])+1;
         let dateToString = newDate[0].toString();
@@ -180,6 +183,8 @@ class RecessionIndicator extends Component {
         eachObject.recDescription = "N/A";
       }
     });
+
+
 
 
     /************************ RETURN *************************************/
