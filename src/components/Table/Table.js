@@ -35,7 +35,13 @@ const columns = [{
   dataField: 'recDescription',
   text: 'Recession likelihood',
   hidden: false,
+},
+{
+  dataField: 'nberDescr',
+  text: 'Actual Recession (NBER)',
+  hidden: false,
 }
+
 ];
 
 const defaultSorted = [{
