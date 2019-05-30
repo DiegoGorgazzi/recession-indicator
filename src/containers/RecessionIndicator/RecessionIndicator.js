@@ -88,18 +88,17 @@ class RecessionIndicator extends Component {
     mergedResponse(this.state.tenYearInt, this.state.threeMonthInt, "merged");
     //console.log(tenThreeMerged, "merged");
 
-    //Mutate merged array to include bondEqBasis
+    //Mutate merged array to include bondEqBasis and spread between 10-yr and 3-month yields
     tenThreeMerged.forEach( (eachObject) => {
       //Convert 90 day bill to Bond equivalent Basis, add new property to object:
       eachObject.bondEqBasis =
         math.format(math.eval(365*(eachObject.valueAdd)/(360-91*(eachObject.valueAdd)/100)));
+      //Calculate the spread between 10-yr bond and 90-day bondEqBasis
+      eachObject.spread = math.format(
+        math.subtract(
+          eachObject.value, eachObject.bondEqBasis), 4);
     });
 
-    //Mutate merged array to include spread between 10-yr and 3-mo
-    tenThreeMerged.forEach( (eachObject) => {
-      //Calculate the spread between 10-yr bond and 90-day bondEqBasis
-      eachObject.spread = math.format(math.subtract(eachObject.value, eachObject.bondEqBasis), 4);
-    });
 
     /***** Add the Actual (historical) Recession Values to the tenThreeMerged ******/
     //slice the portion of the Recession Values that match the length of the tenThreeMerged Array
