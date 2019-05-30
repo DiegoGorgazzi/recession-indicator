@@ -38,39 +38,30 @@ class RecessionIndicator extends Component {
     axios.all([
       axios.get(tenYearYield),
       axios.get(threeMonthYield),
+      axios.get(nberUSrecess),
+      axios.get(willshire5000),
+      axios.get(vix)
       ])
-        .then(axios.spread( (tenYrYldResponse, threeMthYldResponse ) => {
+        .then(axios.spread(
+          (tenYrYldResponse,
+            threeMthYldResponse,
+            nberResponse, willshireResponse, vixResponse ) => {
 
             this.setState({
             tenYearInt: filteredResponse(tenYrYldResponse.data.observations, "10-yr-yields"),
             threeMonthInt: filteredResponse(threeMthYldResponse.data.observations, "3-month-yields"),
+            nberRecession: filteredResponse(nberResponse.data.observations, "US-recession"),
+            willshireState: filteredResponse(willshireResponse.data.observations, "Whillshire-5000"),
+            vixState: filteredResponse(vixResponse.data.observations, "Vix")
             });
 
           console.log(this.state.tenYearInt, "ten");
           console.log(this.state.threeMonthInt, "three");
+          console.log(this.state.nberRecession, "nber");
+          //console.log(this.state.willshireState, "willshire");
+          //console.log(this.state.vixState, "vix");
           }
         ));
-
-      axios.get(nberUSrecess).then(nberResponse => {
-        this.setState({
-          nberRecession: filteredResponse(nberResponse.data.observations, "US-recession")
-        });
-        console.log(this.state.nberRecession, "nber");
-      });
-
-      axios.get(willshire5000).then(willshireResponse => {
-        this.setState({
-          willshireState: filteredResponse(willshireResponse.data.observations, "Whillshire-5000")
-        });
-        //console.log(this.state.willshireState, "willshire");
-      });
-
-      axios.get(vix).then(vixResponse => {
-        this.setState({
-          vixState: filteredResponse(vixResponse.data.observations, "Vix")
-        });
-        //console.log(this.state.vixState, "vix");
-      });
 
 }
 
