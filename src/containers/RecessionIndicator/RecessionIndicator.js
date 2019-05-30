@@ -103,8 +103,15 @@ class RecessionIndicator extends Component {
 
     /***** Add the Actual (historical) Recession Values to the tenThreeMerged ******/
     //slice the portion of the Recession Values that match the length of the tenThreeMerged Array
-    const nberResponseTrimmed = this.state.nberRecession.slice(this.state.nberRecession.length-tenThreeMerged.length, this.state.nberRecession.length);
-    console.log(nberResponseTrimmed, "nberResponseTrimmed");
+        const nberResponseTrimmed =
+          this.state.nberRecession.slice(
+            this.state.nberRecession.length-tenThreeMerged.length);
+
+    //Add nberValue to tenThreeMerged
+    tenThreeMerged.forEach( (eachObject, index) => {
+        const nberValue =  nberResponseTrimmed[index].value;
+        eachObject.nberValue = nberValue;
+  });
 
 
     /************Find Probability of Recession *************/
