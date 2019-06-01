@@ -31,7 +31,8 @@ class RecessionIndicator extends Component {
     threeMonthInt: [],
     nberRecession: [],
     willshireState: [],
-    vixState:[]
+    vixState:[],
+    tenThreeMerged:[]
   }
 
   componentDidMount () {
@@ -68,17 +69,17 @@ class RecessionIndicator extends Component {
           }
         ));
 
-  }
+      }
 
-
-  render() {
-
+  calcs() {
     //*************************** Math Calcs ***************************
     math.config({
       number: 'BigNumber',
       precision: 20
     })
 
+
+    //--------------------- 1 --------------------
     //******************* Find Spread ********************
     //Merged Data to display in table (and for ease of calcs)
     const tenThreeMerged =
@@ -97,6 +98,7 @@ class RecessionIndicator extends Component {
     });
 
 
+    //------------------------ 2 -----------------------------
     //***** Add the Actual (historical) Recession Values to the tenThreeMerged ******
     //slice the portion of the Recession Values that match the length of the tenThreeMerged Array
         const nberResponseTrimmed =
@@ -112,9 +114,10 @@ class RecessionIndicator extends Component {
         } else {
           eachObject.nberDescr = "--";
         }
-  });
+    });
 
 
+    //--------------- 3 -------------------------------------------
     //************Find Probability of Recession *************
 
     //Add data objects with probability 12-months into the future
@@ -148,6 +151,7 @@ class RecessionIndicator extends Component {
     console.log(tenThreeMerged, "tenThreeMerged");
 
 
+    //----------------- 4 --------------------------
     //****** Actual calculation of probability ********
 
     const factorOfSafety = 2;
@@ -192,15 +196,16 @@ class RecessionIndicator extends Component {
       }
     });
 
+    return tenThreeMerged
+  }
 
 
-
-    /************************ RETURN *************************************/
+  render() {
     return (
     <div>
       <p>Hello </p>
 
-        <Table data={tenThreeMerged}/>
+        <Table data={this.calcs()}/>
 
     </div>
   )
