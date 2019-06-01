@@ -48,11 +48,16 @@ class RecessionIndicator extends Component {
             nberResponse, willshireResponse, vixResponse ) => {
 
             this.setState({
-            tenYearInt: filteredResponse(tenYrYldResponse.data.observations, "10-yr-yields"),
-            threeMonthInt: filteredResponse(threeMthYldResponse.data.observations, "3-month-yields"),
-            nberRecession: filteredResponse(nberResponse.data.observations, "US-recession"),
-            willshireState: filteredResponse(willshireResponse.data.observations, "Whillshire-5000"),
-            vixState: filteredResponse(vixResponse.data.observations, "Vix")
+            tenYearInt:
+              filteredResponse(tenYrYldResponse.data.observations, "10-yr-yields"),
+            threeMonthInt:
+              filteredResponse(threeMthYldResponse.data.observations, "3-month-yields"),
+            nberRecession:
+              filteredResponse(nberResponse.data.observations, "US-recession"),
+            willshireState:
+              filteredResponse(willshireResponse.data.observations, "Whillshire-5000"),
+            vixState:
+              filteredResponse(vixResponse.data.observations, "Vix")
             });
 
           console.log(this.state.tenYearInt, "ten");
@@ -63,17 +68,18 @@ class RecessionIndicator extends Component {
           }
         ));
 
-}
+  }
+
 
   render() {
 
-    /*************************** Math Calcs ***************************/
+    //*************************** Math Calcs ***************************
     math.config({
       number: 'BigNumber',
       precision: 20
     })
 
-    /******************* Find Spread ********************/
+    //******************* Find Spread ********************
     //Merged Data to display in table (and for ease of calcs)
     const tenThreeMerged =
     mergedResponse(this.state.tenYearInt, this.state.threeMonthInt, "merged");
@@ -91,7 +97,7 @@ class RecessionIndicator extends Component {
     });
 
 
-    /***** Add the Actual (historical) Recession Values to the tenThreeMerged ******/
+    //***** Add the Actual (historical) Recession Values to the tenThreeMerged ******
     //slice the portion of the Recession Values that match the length of the tenThreeMerged Array
         const nberResponseTrimmed =
           this.state.nberRecession.slice(
@@ -109,7 +115,7 @@ class RecessionIndicator extends Component {
   });
 
 
-    /************Find Probability of Recession *************/
+    //************Find Probability of Recession *************
 
     //Add data objects with probability 12-months into the future
     //copy the last 12 months of data
@@ -142,7 +148,8 @@ class RecessionIndicator extends Component {
     console.log(tenThreeMerged, "tenThreeMerged");
 
 
-    /****** Actual calculation of probability ********/
+    //****** Actual calculation of probability ********
+
     const factorOfSafety = 2;
     const alpha = -0.53331; //constant "fit" from data
     const beta =  -0.63304; //constant "fit" from data
