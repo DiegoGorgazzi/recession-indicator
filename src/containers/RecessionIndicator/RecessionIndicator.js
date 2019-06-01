@@ -78,8 +78,6 @@ class RecessionIndicator extends Component {
       precision: 20
     })
 
-
-    //--------------------- 1 --------------------
     //******************* Find Spread ********************
     //Merged Data to display in table (and for ease of calcs)
     const tenThreeMerged =
@@ -98,7 +96,6 @@ class RecessionIndicator extends Component {
     });
 
 
-    //------------------------ 2 -----------------------------
     //***** Add the Actual (historical) Recession Values to the tenThreeMerged ******
     //slice the portion of the Recession Values that match the length of the tenThreeMerged Array
         const nberResponseTrimmed =
@@ -117,9 +114,7 @@ class RecessionIndicator extends Component {
     });
 
 
-    //--------------- 3 -------------------------------------------
     //************Find Probability of Recession *************
-
     //Add data objects with probability 12-months into the future
     //copy the last 12 months of data
     const last12MonthtenThreeMerged = tenThreeMerged.slice(tenThreeMerged.length-12, tenThreeMerged.length);
@@ -151,9 +146,7 @@ class RecessionIndicator extends Component {
     console.log(tenThreeMerged, "tenThreeMerged");
 
 
-    //----------------- 4 --------------------------
-    //****** Actual calculation of probability ********
-
+    //*********** Actual calculation of probability ********
     const factorOfSafety = 2;
     const alpha = -0.53331; //constant "fit" from data
     const beta =  -0.63304; //constant "fit" from data
@@ -179,7 +172,7 @@ class RecessionIndicator extends Component {
       }
     });
 
-
+    //Add description of what Probabilities results mean
     tenThreeMerged.forEach( (eachObject)=>{
       if(eachObject.recProbAdj >= 0 && eachObject.recProbAdj < 0.25) {
         eachObject.recDescription = "Very Low";
