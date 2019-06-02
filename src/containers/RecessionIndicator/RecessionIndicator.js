@@ -6,6 +6,11 @@ import axios from "axios";
 import Table from '../../components/Table/Table';
 import {calcs} from "../../logic/logic";
 
+//************************* react-vis *******************************
+import {XYPlot, LineSeries, VerticalGridLines, HorizontalGridLines,
+  XAxis, YAxis, VerticalBarSeries } from 'react-vis';
+import 'react-vis/dist/style.css';
+
 //******************** BootstrapTable **********************************
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
@@ -67,12 +72,62 @@ class RecessionIndicator extends Component {
 
       }
 
+      componentDidUpdate(previousProps, previousState, snapshot) {
+        if(previousState.tenThreeMerged.length === 0) {
+          this.setState({
+            tenThreeMerged: calcs(this.state.tenYearInt, this.state.threeMonthInt, this.state.nberRecession )
+          });
+        }
+
+      }
+
   render() {
+
+    const data1 = [
+      {x: 0, y: 8},
+      {x: 1, y: 5},
+      {x: 2, y: 4},
+      {x: 3, y: 9},
+      {x: 4, y: 1},
+      {x: 5, y: 7},
+      {x: 6, y: 6},
+      {x: 7, y: 3},
+      {x: 8, y: 2},
+      {x: 9, y: 0}
+    ];
+
+    const data2 = [
+      {x: 0, y: 10},
+      {x: 1, y: 5},
+      {x: 2, y: 7},
+      {x: 3, y: 11},
+      {x: 4, y: 3},
+      {x: 5, y: 4},
+      {x: 6, y: 5},
+      {x: 7, y: 6},
+      {x: 8, y: 2},
+      {x: 9, y: 1}
+    ];
+
     return (
     <div>
       <p>Hello </p>
 
-        <Table data={calcs(this.state.tenYearInt, this.state.threeMonthInt, this.state.nberRecession )}/>
+      <div>
+        <XYPlot height={350} width={600}
+          colorType="linear"
+          colorDomain={[0, 1]}
+          colorRange={["white", "black"]}>
+          <VerticalGridLines />
+          <HorizontalGridLines />
+          <XAxis />
+          <YAxis />
+          <VerticalBarSeries data={data2} color="#ff9999" stroke="#f70"/>
+          <LineSeries data={data1} color={0.75}/>
+       </XYPlot>
+     </div>
+
+        <Table data={this.state.tenThreeMerged}/>
 
     </div>
     )
