@@ -73,28 +73,35 @@ class RecessionIndicator extends Component {
       }
 
       componentDidUpdate(previousProps, previousState, snapshot) {
-        if(previousState.tenThreeMerged.length === 0) {
+        if(previousState.tenThreeMerged.length === 0 || previousState.tenThreeMerged.length === 1 ) {
           this.setState({
-            tenThreeMerged: calcs(this.state.tenYearInt, this.state.threeMonthInt, this.state.nberRecession )
+            tenThreeMerged: calcs(this.state.tenYearInt, this.state.threeMonthInt, this.state.nberRecession, "mergedTenThree" )
           });
         }
 
       }
 
   render() {
-
-    const data1 = [
-      {x: 0, y: 8},
-      {x: 1, y: 5},
-      {x: 2, y: 4},
-      {x: 3, y: 9},
-      {x: 4, y: 1},
-      {x: 5, y: 7},
-      {x: 6, y: 6},
-      {x: 7, y: 3},
-      {x: 8, y: 2},
-      {x: 9, y: 0}
+    const rawData = [
+      {a: "1934-01-01", y: 8},
+      {a: "1934-02-01", y: 5},
+      {a: "1934-03-01", y: 4},
+      {a: "1934-04-01", y: 9},
+      {a: "1934-05-01", y: 1},
+      {a: "1934-06-01", y: 7},
+      {a: "1934-07-01", y: 6},
+      {a: "1934-08-01", y: 3},
+      {a: "1934-09-01", y: 2},
+      {a: "1934-10-01", y: 0}
     ];
+
+    const data1 = rawData.map( (eachObject)=> {
+      eachObject.a = new Date(eachObject.a);
+      console.log(eachObject, "eachObject");
+      return eachObject;
+    });
+
+    console.log(data1, "data1");
 
     const data2 = [
       {x: 0, y: 10},
@@ -109,12 +116,14 @@ class RecessionIndicator extends Component {
       {x: 9, y: 1}
     ];
 
+    console.log(this.state.tenThreeMerged, "render")
     return (
     <div>
       <p>Hello </p>
 
       <div>
-        <XYPlot height={350} width={600}
+        <XYPlot height={350} width={600} getX= {d => d.a}
+          xType="time"
           colorType="linear"
           colorDomain={[0, 1]}
           colorRange={["white", "black"]}>
@@ -122,7 +131,7 @@ class RecessionIndicator extends Component {
           <HorizontalGridLines />
           <XAxis />
           <YAxis />
-          <VerticalBarSeries data={data2} color="#ff9999" stroke="#f70"/>
+          {/*<VerticalBarSeries data={data2} color="#ff9999" stroke="#f70"/>*/}
           <LineSeries data={data1} color={0.75}/>
        </XYPlot>
      </div>

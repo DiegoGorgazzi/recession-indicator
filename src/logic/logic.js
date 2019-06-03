@@ -13,7 +13,7 @@ import {mergedResponse, deepJSONArrayClone} from "../shared/helperFunctions/help
       // a) 3-mo equivalent Bond yield
       // b) Spread between 10-yr and 3-month bond equiv
       // c) Probability of recession
-export const calcs = (mergeState1, mergeState2, nberState ) => {
+export const calcs = (mergeState1, mergeState2, nberState, name ) => {
 
   math.config({
     number: 'BigNumber',
@@ -23,7 +23,7 @@ export const calcs = (mergeState1, mergeState2, nberState ) => {
   //******************* Find Spread ********************
   //Merged Data to display in table (and for ease of calcs)
   const mergedStates =
-  mergedResponse(mergeState1, mergeState2, "merged");
+  mergedResponse(mergeState1, mergeState2, name);
   //console.log(mergedStates, "merged");
 
   //Mutate merged array to include bondEqBasis and spread between 10-yr and 3-month yields
@@ -130,7 +130,12 @@ export const calcs = (mergeState1, mergeState2, nberState ) => {
     }
   });
 
+
+
+
   console.log(mergedStates, "mergedStates")
+
+
 
   return mergedStates
 }
