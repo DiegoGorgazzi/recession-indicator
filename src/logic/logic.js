@@ -1,9 +1,12 @@
 /**************************MATH related Stuff****************************/
 import * as math from 'mathjs';
 import NormalDistribution from "normal-distribution";
+
 //*********************** helperFunctions ******************************
 import {mergedResponse, deepJSONArrayClone} from "../shared/helperFunctions/helperFunctions";
 
+//************************ d3js *************************************
+import * as d3 from "d3-time-format";
 
 //Purpose of this function is to:
 // 1) copy the data of two data sets and merged them into one
@@ -130,7 +133,21 @@ export const calcs = (mergeState1, mergeState2, nberState, name ) => {
     }
   });
 
+  //Change the Date to a recognizeable d3 dates
+  //THIS MUST BE PLACED at the Bottom of this function because there are methods
+  //above that mess with the dates already (for futures dates )
+  mergedStates.forEach( (eachObject) => {
+    //Parse the date string into a Date object
+    eachObject.date = new Date(eachObject.date);
+    //Change the format of the date to Month and Year
+    let formatMonthVis = d3.timeFormat("%b-%Y");
+    eachObject.dateVis =  formatMonthVis(eachObject.date);
+    //Change the format to numerical month and year to allow for sorting
+    //in tables
+    let formatMonthTbl = d3.timeFormat("%Y-%m")
+    eachObject.dateTbl = formatMonthTbl(eachObject.date);
 
+  });
 
 
   console.log(mergedStates, "mergedStates")

@@ -11,7 +11,7 @@ export const filteredResponse = (toBeFiltered, name) => {
 }
 
 
-/******************************************************************/
+//******************************************************************
 //helper function to merge two sets of data.
 //We need to merge data because react-bootstrap-table requires each column
 //to be part of the same data set. It will also be easier to
@@ -55,7 +55,7 @@ export const mergedResponse = (mainToBeMerged, additionalArr, name) => {
       }
     };
 
-/************************************************************************/
+//************************************************************************
 //Helper function to create a deep clone of an array with the signature:
   // [{...}, {...}]
   export const deepJSONArrayClone = (arrayToBeCloned) => {
@@ -66,4 +66,5 @@ export const mergedResponse = (mainToBeMerged, additionalArr, name) => {
    };
 
 
-/************************************************************************/
+//************************************************************************
+//

@@ -9,8 +9,8 @@ import ToolkitProvider, { ColumnToggle } from 'react-bootstrap-table2-toolkit';
 
 const { ToggleList } = ColumnToggle;
 const columns = [{
-  dataField: 'date',
-  text: 'Date',
+  dataField: 'dateTbl',
+  text: 'Date, yr-mm',
   sort: true
 }, {
   dataField: 'value',
@@ -27,7 +27,7 @@ const columns = [{
 },
 {
   dataField: 'recProbAdj',
-  text: 'Recession probability, Adjusted)',
+  text: 'Recession probability, Adjusted',
   hidden: false,
   sort: true
 },
@@ -45,7 +45,7 @@ const columns = [{
 ];
 
 const defaultSorted = [{
-dataField: 'date',
+dataField: 'dateTbl',
 order: 'desc'
 }];
 
