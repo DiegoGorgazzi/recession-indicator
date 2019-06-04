@@ -196,7 +196,7 @@ export const reactVisMergedState = (mergedStatesArray) => {
       };
       if(eachObject.nberValue !=="1") {
           eachObject.nberValue = 0;
-        }
+        } else {eachObject.nberValue = 5.1;}
 
       return eachObject;
   });

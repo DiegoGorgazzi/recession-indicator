@@ -60,7 +60,7 @@ export const mergedResponse = (mainToBeMerged, additionalArr, name) => {
   // [{...}, {...}]
   export const deepJSONArrayClone = (arrayToBeCloned) => {
       return arrayToBeCloned.map( (eachObject, index) => {
-        eachObject = {...arrayToBeCloned[index]};
+        eachObject = {...eachObject};
         return eachObject;
       })
    };
