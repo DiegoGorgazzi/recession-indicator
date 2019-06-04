@@ -25,7 +25,7 @@ import {filteredResponse} from "../../shared/helperFunctions/helperFunctions";
 import {tenYearYield} from "../../data/fedReserveAPI";
 import {threeMonthYield} from "../../data/fedReserveAPI";
 import {nberUSrecess} from "../../data/fedReserveAPI";
-import {willshire5000} from "../../data/fedReserveAPI";
+import {wilshire5000} from "../../data/fedReserveAPI";
 import {vix} from "../../data/fedReserveAPI";
 
 class RecessionIndicator extends Component {
