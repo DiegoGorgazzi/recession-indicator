@@ -204,3 +204,16 @@ export const reactVisMergedState = (mergedStatesArray) => {
   console.log(visObject, "visObject");
   return visObject;
 };
+
+//********************************************************************
+//Function to create x and y objects, which are friendly to d3 / react-vis
+export const xAndYObjects = (array, xPropFromArray="", yPropFromArray="") => {
+        const xyMap = array.map( (eachObject) => {
+        const x = eachObject[xPropFromArray];
+        const y = eachObject[yPropFromArray];
+        const newArray = {x, y}
+        return newArray
+      });
+      console.log(xyMap, "xAndYObjects");
+      return xyMap;
+};

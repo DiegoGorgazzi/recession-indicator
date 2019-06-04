@@ -4,7 +4,7 @@ import axios from "axios";
 
 //*********************** components **********************************
 import Table from '../../components/Table/Table';
-import {calcs} from "../../logic/logic";
+import {calcs, reactVisMergedState, xAndYObjects} from "../../logic/logic";
 
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
@@ -85,6 +85,9 @@ class RecessionIndicator extends Component {
       }
 
   render() {
+
+
+
     const rawData = [
       {a: "1934-01", y: 8},
       {a: "1934-02", y: 5},
@@ -127,8 +130,6 @@ class RecessionIndicator extends Component {
 
 
 
-    console.log(data1, "data1");
-
     const data2 = [
       {x: 0, y: -10},
       {x: 1, y: -5},
@@ -148,7 +149,7 @@ class RecessionIndicator extends Component {
       <p>Hello </p>
 
       <div>
-        <XYPlot height={350} width={600} getX= {d => d.a}
+        <XYPlot height={350} width={600}
           margin={{bottom:60}}
           xType="time"
           colorType="linear"
@@ -160,7 +161,9 @@ class RecessionIndicator extends Component {
           <XAxis tickLabelAngle={-45} tickPadding={5}/>
           <YAxis />
           {/*<VerticalBarSeries data={data2} color="#ff9999" stroke="#f70"/>*/}
-          <LineSeries data={data1} color={0.75}/>
+          <LineSeries
+            data = {xAndYObjects(reactVisMergedState(this.state.tenThreeMerged), "date", "recDescription")}
+            color={0.75}/>
        </XYPlot>
      </div>
      <div>
