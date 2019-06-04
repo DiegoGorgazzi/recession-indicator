@@ -149,5 +149,58 @@ export const calcs = (mergeState1, mergeState2, nberState, name ) => {
   console.log(mergedStates, "mergedStates")
 
 
-  return mergedStates
-}
+  return mergedStates;
+};
+
+
+//********************************************************************
+//Function to turn all props with strings into numbers to use with d3 / react-vis
+export const reactVisMergedState = (mergedStatesArray) => {
+  //create deep clone of mergeStatesArray and modify content to make all
+  //values readable by d3js (so, either date or number format)
+  //WARNING: the date property inside each object in the mergedStatesArray is
+  //itself an object and deepJSONArrayClone does NOT make a deep clone of an
+  //object nested inside another object, itself nested in an Array.
+  //So, if you're planning to change the date property, you have to
+  //make a deepclone of that too.
+  const visObject = deepJSONArrayClone(mergedStatesArray).map ((eachObject) => {
+      eachObject.id = eachObject.id + "VIS";
+      delete eachObject.dateTbl;
+      delete eachObject.recProb;
+      delete eachObject.recProbAdj;
+      delete eachObject.bondEqBasis;
+      delete eachObject.nberDescr;
+      switch (eachObject.recDescription) {
+          case "N/A": eachObject.recDescription = 0
+            break;
+          case "Very High": eachObject.recDescription = 5
+              break;
+          case "High": eachObject.recDescription = 4
+              break;
+          case "Medium": eachObject.recDescription = 3
+              break;
+          case "Low": eachObject.recDescription = 2
+              break;
+          case "Very Low": eachObject.recDescription = 1
+              break;
+          default: eachObject.recDescription = 0
+        };
+      if(eachObject.value === "N/A") {
+        eachObject.value = 0;
+      };
+      if(eachObject.spread === "N/A") {
+        eachObject.spread = 0;
+      };
+      if(eachObject.valueAdd === "N/A") {
+        eachObject.valueAdd = 0;
+      };
+      if(eachObject.nberValue !=="1") {
+          eachObject.nberDescr = 0;
+        }
+
+      return eachObject;
+  });
+
+  console.log(visObject, "visObject");
+  return visObject;
+};
