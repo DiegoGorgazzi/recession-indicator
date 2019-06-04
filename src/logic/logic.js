@@ -139,9 +139,6 @@ export const calcs = (mergeState1, mergeState2, nberState, name ) => {
   mergedStates.forEach( (eachObject) => {
     //Parse the date string into a Date object
     eachObject.date = new Date(eachObject.date);
-    //Change the format of the date to Month and Year
-    let formatMonthVis = d3.timeFormat("%b-%Y");
-    eachObject.dateVis =  formatMonthVis(eachObject.date);
     //Change the format to numerical month and year to allow for sorting
     //in tables
     let formatMonthTbl = d3.timeFormat("%Y-%m")
@@ -149,9 +146,7 @@ export const calcs = (mergeState1, mergeState2, nberState, name ) => {
 
   });
 
-
   console.log(mergedStates, "mergedStates")
-
 
 
   return mergedStates

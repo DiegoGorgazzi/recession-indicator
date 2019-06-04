@@ -6,6 +6,9 @@ import axios from "axios";
 import Table from '../../components/Table/Table';
 import {calcs} from "../../logic/logic";
 
+//************************ d3js *************************************
+import * as d3 from "d3-time-format";
+
 //************************* react-vis *******************************
 import {XYPlot, LineSeries, VerticalGridLines, HorizontalGridLines,
   XAxis, YAxis, VerticalBarSeries } from 'react-vis';
@@ -31,7 +34,7 @@ class RecessionIndicator extends Component {
     tenYearInt: [],
     threeMonthInt: [],
     nberRecession: [],
-    willshireState: [],
+    wilshireState: [],
     vixState:[],
     tenThreeMerged:[]
   }
@@ -41,13 +44,13 @@ class RecessionIndicator extends Component {
       axios.get(tenYearYield),
       axios.get(threeMonthYield),
       axios.get(nberUSrecess),
-      axios.get(willshire5000),
+      axios.get(wilshire5000),
       axios.get(vix)
       ])
         .then(axios.spread(
           (tenYrYldResponse,
             threeMthYldResponse,
-            nberResponse, willshireResponse, vixResponse ) => {
+            nberResponse, wilshireResponse, vixResponse ) => {
 
             this.setState({
             tenYearInt:
@@ -56,8 +59,8 @@ class RecessionIndicator extends Component {
               filteredResponse(threeMthYldResponse.data.observations, "3-month-yields"),
             nberRecession:
               filteredResponse(nberResponse.data.observations, "US-recession"),
-            willshireState:
-              filteredResponse(willshireResponse.data.observations, "Whillshire-5000"),
+            wilshireState:
+              filteredResponse(wilshireResponse.data.observations, "Whilshire-5000"),
             vixState:
               filteredResponse(vixResponse.data.observations, "Vix")
             });
@@ -65,7 +68,7 @@ class RecessionIndicator extends Component {
           console.log(this.state.tenYearInt, "ten");
           console.log(this.state.threeMonthInt, "three");
           console.log(this.state.nberRecession, "nber");
-          //console.log(this.state.willshireState, "willshire");
+          //console.log(this.state.wilshireState, "wilshire");
           //console.log(this.state.vixState, "vix");
           }
         ));
@@ -83,37 +86,60 @@ class RecessionIndicator extends Component {
 
   render() {
     const rawData = [
-      {a: "1934-01-01", y: 8},
-      {a: "1934-02-01", y: 5},
-      {a: "1934-03-01", y: 4},
-      {a: "1934-04-01", y: 9},
-      {a: "1934-05-01", y: 1},
-      {a: "1934-06-01", y: 7},
-      {a: "1934-07-01", y: 6},
-      {a: "1934-08-01", y: 3},
-      {a: "1934-09-01", y: 2},
-      {a: "1934-10-01", y: 0}
+      {a: "1934-01", y: 8},
+      {a: "1934-02", y: 5},
+      {a: "1934-03", y: 4},
+      {a: "1934-04", y: 9},
+      {a: "1934-05", y: 1},
+      {a: "1934-06", y: 7},
+      {a: "1934-07", y: 6},
+      {a: "1934-08", y: 3},
+      {a: "1934-09", y: 2},
+      {a: "1934-10", y: 0},
+      {a: "1934-11", y: 0},
+      {a: "1934-12", y: 2},
+      {a: "1935-01", y: 8},
+      {a: "1935-02", y: 5},
+      {a: "1935-03", y: 4},
+      {a: "1935-04", y: 9},
+      {a: "1935-05", y: 1},
+      {a: "1935-06", y: 7},
+      {a: "1935-07", y: 6},
+      {a: "1935-08", y: 3},
+      {a: "1935-09", y: 2},
+      {a: "1935-10", y: 0},
+      {a: "1935-11", y: 0},
+      {a: "1935-12", y: 2},
+      {a: "1936-01", y: 8},
+      {a: "1936-02", y: 5},
     ];
 
+
+    let formatIMonth = d3.timeFormat("%Y-%b");
+    let makeDate = d3.timeParse("%Y-%m")
     const data1 = rawData.map( (eachObject)=> {
-      eachObject.a = new Date(eachObject.a);
-      console.log(eachObject, "eachObject");
+      //eachObject.a = new Date(eachObject.a);
+      eachObject.a = makeDate(eachObject.a);
+      eachObject.c = formatIMonth(eachObject.a);
+      //console.log(eachObject, "eachObject");
       return eachObject;
     });
+
+
 
     console.log(data1, "data1");
 
     const data2 = [
-      {x: 0, y: 10},
-      {x: 1, y: 5},
-      {x: 2, y: 7},
-      {x: 3, y: 11},
-      {x: 4, y: 3},
-      {x: 5, y: 4},
-      {x: 6, y: 5},
-      {x: 7, y: 6},
-      {x: 8, y: 2},
-      {x: 9, y: 1}
+      {x: 0, y: -10},
+      {x: 1, y: -5},
+      {x: 2, y: -7},
+      {x: 3, y: -11},
+      {x: 4, y: -3},
+      {x: 5, y: -4},
+      {x: 6, y: -5},
+      {x: 7, y: -6},
+      {x: 8, y: -2},
+      {x: 9, y: -1}
     ];
 
     console.log(this.state.tenThreeMerged, "render")
@@ -123,21 +149,23 @@ class RecessionIndicator extends Component {
 
       <div>
         <XYPlot height={350} width={600} getX= {d => d.a}
+          margin={{bottom:60}}
           xType="time"
           colorType="linear"
           colorDomain={[0, 1]}
           colorRange={["white", "black"]}>
           <VerticalGridLines />
           <HorizontalGridLines />
-          <XAxis />
+          {/*<XAxis tickFormat={d3.timeFormat("%Y-%b")} tickLabelAngle={-45} />*/}
+          <XAxis tickLabelAngle={-45} tickPadding={5}/>
           <YAxis />
           {/*<VerticalBarSeries data={data2} color="#ff9999" stroke="#f70"/>*/}
           <LineSeries data={data1} color={0.75}/>
        </XYPlot>
      </div>
-
+     <div>
         <Table data={this.state.tenThreeMerged}/>
-
+    </div>
     </div>
     )
 
