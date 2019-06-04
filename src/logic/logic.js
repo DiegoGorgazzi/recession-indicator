@@ -195,7 +195,7 @@ export const reactVisMergedState = (mergedStatesArray) => {
         eachObject.valueAdd = 0;
       };
       if(eachObject.nberValue !=="1") {
-          eachObject.nberDescr = 0;
+          eachObject.nberValue = 0;
         }
 
       return eachObject;
