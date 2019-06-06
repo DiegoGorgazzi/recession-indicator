@@ -139,6 +139,8 @@ export const calcs = (mergeState1, mergeState2, nberState, name ) => {
   mergedStates.forEach( (eachObject) => {
     //Parse the date string into a Date object
     eachObject.date = new Date(eachObject.date);
+    //FOR DEBUGGING....
+    eachObject.dateGetTime = eachObject.date.getTime();
     //Change the format to numerical month and year to allow for sorting
     //in tables
     let formatMonthTbl = d3.timeFormat("%Y-%m")
@@ -158,11 +160,6 @@ export const calcs = (mergeState1, mergeState2, nberState, name ) => {
 export const reactVisMergedState = (mergedStatesArray) => {
   //create deep clone of mergeStatesArray and modify content to make all
   //values readable by d3js (so, either date or number format)
-  //WARNING: the date property inside each object in the mergedStatesArray is
-  //itself an object and deepJSONArrayClone does NOT make a deep clone of an
-  //object nested inside another object, itself nested in an Array.
-  //So, if you're planning to change the date property, you have to
-  //make a deepclone of that too.
   const visObject = deepJSONArrayClone(mergedStatesArray).map ((eachObject) => {
       eachObject.id = eachObject.id + "VIS";
       delete eachObject.dateTbl;
@@ -207,13 +204,44 @@ export const reactVisMergedState = (mergedStatesArray) => {
 
 //********************************************************************
 //Function to create x and y objects, which are friendly to d3 / react-vis
-export const xAndYObjects = (array, xPropFromArray="", yPropFromArray="") => {
-        const xyMap = array.map( (eachObject) => {
-        const x = eachObject[xPropFromArray];
-        const y = eachObject[yPropFromArray];
-        const newArray = {x, y}
-        return newArray
-      });
-      console.log(xyMap, "xAndYObjects");
-      return xyMap;
+//NOTE that since we're using defaults, userStartDate and userEndDate are optional parameters
+export const xAndYobjects = (array, xPropFromArray, yPropFromArray, userStartDate="", userEndDate="" ) => {
+    //turn string dates into Date objects
+    let datedUserStartDate = new Date([userStartDate]);
+    let datedUserEndDate = new Date([userEndDate]);
+
+    //Find index in main array where
+    let startIndex = array.findIndex( (object) => object[xPropFromArray].getTime() == datedUserStartDate.getTime() );
+    let endIndex = array.findIndex( (object) => object[xPropFromArray].getTime() == datedUserEndDate.getTime() );
+
+    //If startIndex not in array, set to beginning of time
+    if(startIndex == -1) {
+        startIndex = 0;
+    }
+
+    //If endIndex not in array, set to end of time
+    if(endIndex == -1) {
+        let newIndex = array.length-1;
+        endIndex = newIndex;
+    }
+
+    //If the user puts the endDate as a date SOONER than
+    //the Start date, then we need to sort and assign the
+    //smaller index to startIndex and the other Index to endIndex
+    let sortedIndex = [startIndex, endIndex].sort((a, b) => a - b);
+    startIndex = sortedIndex[0];
+    endIndex = sortedIndex[1];
+
+    //slice originalArray according to indexes found.
+    const dateRange = array.slice(startIndex, endIndex+1);
+
+    //Assign d3 react-vis variable friendly x and y coordinates
+            const xyMap = dateRange.map( (eachObject) => {
+                 const x = eachObject[xPropFromArray];
+                 const y = eachObject[yPropFromArray];
+                 const newArray = {x, y};
+                 return newArray;
+            });
+          console.log(xyMap, "xAndYObjects");
+          return xyMap;
 };
