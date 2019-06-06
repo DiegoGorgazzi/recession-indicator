@@ -4,6 +4,7 @@ import axios from "axios";
 
 //*********************** components **********************************
 import Table from '../../components/Table/Table';
+import TimeRangeController from "../../components/TimeRangeController/TimeRangeController";
 import {calcs, reactVisMergedState, xAndYobjects} from "../../logic/logic";
 
 //************************ d3js *************************************
@@ -84,13 +85,18 @@ class RecessionIndicator extends Component {
 
       }
 
+      handleTimeRangeClick = (event) => {
+        console.log(event.target.id)
+      }
+
+
   render() {
 
     //************************** VISUALIZATION STUF ******************************
    //VERY IMPORTANT: YOU MUST USE YYYY-MM-DD as your input (just like the JSON API)
    //otherwise, when you run new Date() on it, you might get the wrong answer when doing
    // the getDate() method to compare dates.
-   const startDate = "1995-06-01";
+   const startDate = "1990-06-01";
    const endDate =  "2020-06-01";
 
     const dataRecDescr = xAndYobjects(
@@ -106,7 +112,8 @@ class RecessionIndicator extends Component {
     return (
     <div>
       <p>Hello </p>
-
+      <TimeRangeController
+        clickTimeRange={this.handleTimeRangeClick}/>
       <div>
         <XYPlot height={350} width={600}
           margin={{bottom:60}}
