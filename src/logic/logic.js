@@ -157,7 +157,7 @@ export const calcs = (mergeState1, mergeState2, nberState, name ) => {
 
 //********************************************************************
 //Function to turn all props with strings into numbers to use with d3 / react-vis
-export const reactVisMergedState = (mergedStatesArray) => {
+export const numberfyMergedState = (mergedStatesArray) => {
   //create deep clone of mergeStatesArray and modify content to make all
   //values readable by d3js (so, either date or number format)
   const visObject = deepJSONArrayClone(mergedStatesArray).map ((eachObject) => {
@@ -245,3 +245,39 @@ export const xAndYobjects = (array, xPropFromArray, yPropFromArray, userStartDat
           console.log(xyMap, "xAndYObjects");
           return xyMap;
 };
+
+// ********************************************************************
+//
+/*
+**then, in the logic file:
+someFunction(dateRangeId) {
+  if (dateRangeId = "10yrRange") {
+    todaysDate = new Date();
+    newDateStartYear = todaysDate.getFullYear - 10
+    newDateStartMonth = todaysDate.getMonth()
+    newDateStartDay = todaysDate.getDay()
+
+    //Actually, instead of this paragraph below, maybe I should pass
+      reactVisMergedState function as an parameter and then modify the start/end date
+      from the user selection to be rounded to the nearest date available in the array
+
+    then I need to figure out
+    if the day is not available in the array (so this
+    will be done in the xAndYobjects function) then I need to
+    round to the nearest available date (although
+    at first I won't have this problem because I will
+    have only monthly data... but eventually I'll
+    have daily charts too)
+
+    newStartDate = new Date(Join the three portions of the date YYYY-MM-DD)
+        //don't forget to start with year, then month
+
+  Then set the end date to todaysDate BUT
+    don't worry about checking within the xAndYobjects whether the date
+    is in the array because by default it will show the last available...
+    although maybe I should checck it because I want to let
+    the user enter custom dates..
+  }
+
+}
+*/

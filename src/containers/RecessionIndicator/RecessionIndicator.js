@@ -5,7 +5,7 @@ import axios from "axios";
 //*********************** components **********************************
 import Table from '../../components/Table/Table';
 import TimeRangeController from "../../components/TimeRangeController/TimeRangeController";
-import {calcs, reactVisMergedState, xAndYobjects} from "../../logic/logic";
+import {calcs, numberfyMergedState, xAndYobjects} from "../../logic/logic";
 
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
@@ -36,8 +36,10 @@ class RecessionIndicator extends Component {
     threeMonthInt: [],
     nberRecession: [],
     wilshireState: [],
-    vixState:[],
-    tenThreeMerged:[]
+    vixState: [],
+    tenThreeMerged: [],
+    dateRangeStart: "",
+    dateRangeEnd: ""
   }
 
   componentDidMount () {
@@ -87,6 +89,14 @@ class RecessionIndicator extends Component {
 
       handleTimeRangeClick = (event) => {
         console.log(event.target.id)
+        /*
+          for example:
+            this.setState({
+              someFunction(event.target.id)
+            });
+
+
+        */
       }
 
 
@@ -96,15 +106,15 @@ class RecessionIndicator extends Component {
    //VERY IMPORTANT: YOU MUST USE YYYY-MM-DD as your input (just like the JSON API)
    //otherwise, when you run new Date() on it, you might get the wrong answer when doing
    // the getDate() method to compare dates.
-   const startDate = "1990-06-01";
-   const endDate =  "2020-06-01";
+   const startDate = "1990-06-01";//the string needs to be replaced for this.state.dateRangeStart
+   const endDate =  "2020-06-01"; //the string needs to be replaced for this.state.dateRangeEnd
 
     const dataRecDescr = xAndYobjects(
-      reactVisMergedState(
+      numberfyMergedState(
         this.state.tenThreeMerged), "date", "recDescription", startDate, endDate);
 
     const dataNberValue = xAndYobjects(
-                  reactVisMergedState(
+                  numberfyMergedState(
                     this.state.tenThreeMerged), "date", "nberValue", startDate, endDate);
 
 
