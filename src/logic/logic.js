@@ -293,45 +293,25 @@ export const setStartEndDate = (dateRangeId, index) => {
     switch (dateRangeId) {
       case "2yrRange":
         return dateYearsAgoAndYearAhead(2)[index];
-
-        break;
-      //default:
-      //newDateStartYear = ""
-      //newDateStartMonth = ""
-      //newDateStartDay = ""
+          break;
+      case "5yrRange":
+        return dateYearsAgoAndYearAhead(5)[index];
+          break;
+      case "10yrRange":
+        return dateYearsAgoAndYearAhead(10)[index];
+          break;
+      case "20yrRange":
+        return dateYearsAgoAndYearAhead(20)[index];
+          break;
+      case "30yrRange":
+        return dateYearsAgoAndYearAhead(30)[index];
+          break;
+      case "50yrRange":
+        return dateYearsAgoAndYearAhead(50)[index];
+          break;
+      case "allyrRange":
+        return dateYearsAgoAndYearAhead(300)[index];
+          break;
       }
 
 };
-/*
-**then, in the logic file:
-someFunction(dateRangeId) {
-  if (dateRangeId = "10yrRange") {
-    todaysDate = new Date();
-    newDateStartYear = todaysDate.getFullYear - 10
-    newDateStartMonth = todaysDate.getMonth()
-    newDateStartDay = todaysDate.getDay()
-
-    //Actually, instead of this paragraph below, maybe I should pass
-      reactVisMergedState function as an parameter and then modify the start/end date
-      from the user selection to be rounded to the nearest date available in the array
-
-    then I need to figure out
-    if the day is not available in the array (so this
-    will be done in the xAndYobjects function) then I need to
-    round to the nearest available date (although
-    at first I won't have this problem because I will
-    have only monthly data... but eventually I'll
-    have daily charts too)
-
-    newStartDate = new Date(Join the three portions of the date YYYY-MM-DD)
-        //don't forget to start with year, then month
-
-  Then set the end date to todaysDate BUT
-    don't worry about checking within the xAndYobjects whether the date
-    is in the array because by default it will show the last available...
-    although maybe I should checck it because I want to let
-    the user enter custom dates..
-  }
-
-}
-*/

@@ -38,7 +38,8 @@ class RecessionIndicator extends Component {
     wilshireState: [],
     vixState: [],
     tenThreeMerged: [],
-    dateRangeStart: "",
+    //VERY IMPORTANT: YOU MUST USE YYYY-MM-DD as your input (just like the JSON API)
+    dateRangeStart: "2000-01-01",
     dateRangeEnd: ""
   }
 
@@ -104,12 +105,6 @@ class RecessionIndicator extends Component {
   render() {
 
     //************************** VISUALIZATION STUF ******************************
-   //VERY IMPORTANT: YOU MUST USE YYYY-MM-DD as your input (just like the JSON API)
-   //otherwise, when you run new Date() on it, you might get the wrong answer when doing
-   // the getDate() method to compare dates.
-   const startDate = "1946-06-15";//the string needs to be replaced for this.state.dateRangeStart
-   const endDate =  "1965-06-11"; //the string needs to be replaced for this.state.dateRangeEnd
-
    // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
     //--is going to have to be part of state.
     const dataRecDescr = xAndYobjects(
