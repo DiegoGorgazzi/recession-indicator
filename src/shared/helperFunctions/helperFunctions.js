@@ -57,7 +57,7 @@ export const mergedResponse = (mainToBeMerged, additionalArr, name) => {
 
 //************************************************************************
 //Helper function to create a deep clone of an array with the signature:
-  // [{...}, {...}]
+  // [{...}, {...}, etc, etc]
   export const deepJSONArrayClone = (arrayToBeCloned) => {
       return arrayToBeCloned.map( (eachObject, index) => {
         eachObject = {...eachObject};
@@ -67,4 +67,33 @@ export const mergedResponse = (mainToBeMerged, additionalArr, name) => {
 
 
 //************************************************************************
-//
+//Helper function to return a date "X" number of years in the past
+//And one year in the future.
+export const dateYearsAgoAndYearAhead = (howManyYearsInThePast) => {
+  const todaysDate = new Date();
+  const todaysDateYear = todaysDate.getFullYear();
+  //Reminder: getMonth returns a number 0-11
+  const todaysDateMonth = todaysDate.getMonth();
+  const todaysDateDay = todaysDate.getDate();
+  let newDateStartYear, newDateStartMonth, newDateStartDay,
+    newStartDateStr, newStartDateObj, newStartDate, newEndDateObj,
+    dateRangeObj, newDateEndYear, newDateEndDay, newEndDateStr,
+    newDateEndMonth;
+
+    newDateStartYear = todaysDateYear - howManyYearsInThePast;
+    newDateStartMonth = todaysDateMonth + 1;
+    newDateStartDay = todaysDateDay;
+    newStartDateStr = `${newDateStartYear}-${newDateStartMonth}-${newDateStartDay}`;
+    newStartDateObj = new Date(newStartDateStr);
+
+
+    newDateEndYear = todaysDateYear + 1;
+    newDateEndMonth = todaysDateMonth + 1;
+    newDateEndDay = todaysDateDay;
+    newEndDateStr = `${newDateEndYear}-${newDateEndMonth}-${newDateEndDay}`;
+    newEndDateObj = new Date(newEndDateStr);
+
+    dateRangeObj = [newStartDateObj, newEndDateObj];
+    return dateRangeObj;
+
+};

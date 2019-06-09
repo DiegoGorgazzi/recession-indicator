@@ -91,15 +91,13 @@ class RecessionIndicator extends Component {
         console.log(event.target.id, "event.target.id");
         setStartEndDate(event.target.id);
 
-
-        /*
-          for example:
             this.setState({
-              someFunction(array, event.target.id)
+              dateRangeStart: setStartEndDate(event.target.id, 0),
+              dateRangeEnd: setStartEndDate(event.target.id, 1),
             });
 
 
-        */
+
       }
 
 
@@ -116,13 +114,14 @@ class RecessionIndicator extends Component {
     //--is going to have to be part of state.
     const dataRecDescr = xAndYobjects(
       numberfyMergedState(
-        this.state.tenThreeMerged), "date", "recDescription", startDate, endDate);
+        this.state.tenThreeMerged), "date", "recDescription", this.state.dateRangeStart, this.state.dateRangeEnd);
 
     const dataNberValue = xAndYobjects(
                   numberfyMergedState(
-                    this.state.tenThreeMerged), "date", "nberValue", startDate, endDate);
+                    this.state.tenThreeMerged), "date", "nberValue", this.state.dateRangeStart, this.state.dateRangeEnd);
 
-
+        console.log(this.state.dateRangeStart, "this.state.dateRangeStart")
+        console.log(this.state.dateRangeEnd, "this.state.dateRangeEnd")
       //************************ RETURN ************************************
     return (
     <div>

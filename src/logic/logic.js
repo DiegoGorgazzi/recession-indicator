@@ -3,7 +3,7 @@ import * as math from 'mathjs';
 import NormalDistribution from "normal-distribution";
 
 //*********************** helperFunctions ******************************
-import {mergedResponse, deepJSONArrayClone} from "../shared/helperFunctions/helperFunctions";
+import {mergedResponse, deepJSONArrayClone, dateYearsAgoAndYearAhead} from "../shared/helperFunctions/helperFunctions";
 
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
@@ -206,6 +206,16 @@ export const numberfyMergedState = (mergedStatesArray) => {
 //Function to create x and y objects, which are friendly to d3 / react-vis
 //NOTE that since we're using defaults, userStartDate and userEndDate are optional parameters
 export const xAndYobjects = (array, xPropFromArray, yPropFromArray, userStartDate = "1600-01-01", userEndDate = "2100-01-01" ) => {
+  //Since the state is set initially to "", then it defaults as
+  // "" instead of the default value provided, hence, two following
+  // if statements below
+    if(userStartDate == "") {
+      userStartDate = "1600-01-01";
+    };
+    if(userEndDate == "") {
+      userEndDate = "2100-01-01";
+    };
+
     //turn string dates into Date objects
     let datedUserStartDates = new Date([userStartDate]);
     let datedUserEndDates = new Date([userEndDate]);
@@ -219,6 +229,7 @@ export const xAndYobjects = (array, xPropFromArray, yPropFromArray, userStartDat
        datedUserStartDate = datedUserStartDates;
        datedUserEndDate = datedUserEndDates;
    }
+
 
     //Find index in main array where
     let startIndex = array.findIndex( (object) => object[xPropFromArray].getTime() == datedUserStartDate.getTime() );
@@ -250,14 +261,12 @@ export const xAndYobjects = (array, xPropFromArray, yPropFromArray, userStartDat
             }  else if
                 (array[array.length-1].date.getTime() < datedUserEndDate.getTime())  {
                 endIndex = array.length-1;
-                 console.log(endIndex, "End Index, why ?????");
             }
 
 
             return endIndex;
             });
 
-        console.log(endIndex, "endIndex here");
 
     }
 
@@ -277,32 +286,19 @@ export const xAndYobjects = (array, xPropFromArray, yPropFromArray, userStartDat
 
 // ********************************************************************
 //Function to let the user toggle date ranges
-export const setStartEndDate = (dateRangeId) => {
-    const todaysDate = new Date();
-    const todaysDateYear = todaysDate.getFullYear();
-    //Reminder: getMonth returns a number 0-11
-    const todaysDateMonth = todaysDate.getMonth();
-    const todaysDateDay = todaysDate.getDate();
-    let newDateStartYear, newDateStartMonth, newDateStartDay,
-      newStartDateStr, newStartDateObj, newStartDate;
-
+//use index = 0 for dateRangeStart
+//use index = 1 for dateRangeEnd
+export const setStartEndDate = (dateRangeId, index) => {
 
     switch (dateRangeId) {
       case "2yrRange":
-        newDateStartYear = todaysDateYear - 2;
-        newDateStartMonth = todaysDateMonth + 1;
-        newDateStartDay = todaysDateDay;
-        newStartDateStr = `${newDateStartYear}-${newDateStartMonth}-${newDateStartDay}`;
-        console.log(newStartDateStr, "newStartDate");
-        newStartDateObj = new Date(newStartDateStr);
-        console.log(newStartDateObj, "newStartDateObj");
-
+        return dateYearsAgoAndYearAhead(2)[index];
 
         break;
-      default:
-      newDateStartYear = ""
-      newDateStartMonth = ""
-      newDateStartDay = ""
+      //default:
+      //newDateStartYear = ""
+      //newDateStartMonth = ""
+      //newDateStartDay = ""
       }
 
 };
