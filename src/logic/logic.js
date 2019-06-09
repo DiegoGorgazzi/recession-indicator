@@ -205,32 +205,61 @@ export const numberfyMergedState = (mergedStatesArray) => {
 //********************************************************************
 //Function to create x and y objects, which are friendly to d3 / react-vis
 //NOTE that since we're using defaults, userStartDate and userEndDate are optional parameters
-export const xAndYobjects = (array, xPropFromArray, yPropFromArray, userStartDate="", userEndDate="" ) => {
+export const xAndYobjects = (array, xPropFromArray, yPropFromArray, userStartDate = "1600-01-01", userEndDate = "2100-01-01" ) => {
     //turn string dates into Date objects
-    let datedUserStartDate = new Date([userStartDate]);
-    let datedUserEndDate = new Date([userEndDate]);
+    let datedUserStartDates = new Date([userStartDate]);
+    let datedUserEndDates = new Date([userEndDate]);
+    let datedUserStartDate, datedUserEndDate;
+
+    //check right order of dates inputed, and re-order if necessary
+   if(datedUserStartDates > datedUserEndDates) {
+       datedUserStartDate = datedUserEndDates;
+       datedUserEndDate = datedUserStartDates;
+   } else {
+       datedUserStartDate = datedUserStartDates;
+       datedUserEndDate = datedUserEndDates;
+   }
 
     //Find index in main array where
     let startIndex = array.findIndex( (object) => object[xPropFromArray].getTime() == datedUserStartDate.getTime() );
     let endIndex = array.findIndex( (object) => object[xPropFromArray].getTime() == datedUserEndDate.getTime() );
 
-    //If startIndex not in array, set to beginning of time
+    //If startIndex not in array, set it to the closest earlier date
+      //available, else set it to the beginning of time
+      //this ASSUMES the array starts with the oldest date
     if(startIndex == -1) {
-        startIndex = 0;
-    }
+      array.map( (object, index)=> {
+        if (array[0].date.getTime() > datedUserStartDate.getTime()) {
+                 startIndex = 0;
+        } else if(object.date.getTime() > datedUserStartDate.getTime()
+            && array[index-1].date.getTime() < datedUserStartDate.getTime()) {
+                  startIndex = index-1;
+        }
+             return startIndex;
+        });
+     }
 
     //If endIndex not in array, set to end of time
     if(endIndex == -1) {
-        let newIndex = array.length-1;
-        endIndex = newIndex;
-    }
+        array.map( (object, index)=> {
 
-    //If the user puts the endDate as a date SOONER than
-    //the Start date, then we need to sort and assign the
-    //smaller index to startIndex and the other Index to endIndex
-    let sortedIndex = [startIndex, endIndex].sort((a, b) => a - b);
-    startIndex = sortedIndex[0];
-    endIndex = sortedIndex[1];
+
+            if(object.date.getTime() > datedUserEndDate.getTime()
+            && array[index-1].date.getTime() < datedUserEndDate.getTime()){
+                endIndex = index;
+            }  else if
+                (array[array.length-1].date.getTime() < datedUserEndDate.getTime())  {
+                endIndex = array.length-1;
+                 console.log(endIndex, "End Index, why ?????");
+            }
+
+
+            return endIndex;
+            });
+
+        console.log(endIndex, "endIndex here");
+
+    }
 
     //slice originalArray according to indexes found.
     const dateRange = array.slice(startIndex, endIndex+1);
@@ -247,7 +276,36 @@ export const xAndYobjects = (array, xPropFromArray, yPropFromArray, userStartDat
 };
 
 // ********************************************************************
-//
+//Function to let the user toggle date ranges
+export const setStartEndDate = (dateRangeId) => {
+    const todaysDate = new Date();
+    const todaysDateYear = todaysDate.getFullYear();
+    //Reminder: getMonth returns a number 0-11
+    const todaysDateMonth = todaysDate.getMonth();
+    const todaysDateDay = todaysDate.getDate();
+    let newDateStartYear, newDateStartMonth, newDateStartDay,
+      newStartDateStr, newStartDateObj, newStartDate;
+
+
+    switch (dateRangeId) {
+      case "2yrRange":
+        newDateStartYear = todaysDateYear - 2;
+        newDateStartMonth = todaysDateMonth + 1;
+        newDateStartDay = todaysDateDay;
+        newStartDateStr = `${newDateStartYear}-${newDateStartMonth}-${newDateStartDay}`;
+        console.log(newStartDateStr, "newStartDate");
+        newStartDateObj = new Date(newStartDateStr);
+        console.log(newStartDateObj, "newStartDateObj");
+
+
+        break;
+      default:
+      newDateStartYear = ""
+      newDateStartMonth = ""
+      newDateStartDay = ""
+      }
+
+};
 /*
 **then, in the logic file:
 someFunction(dateRangeId) {

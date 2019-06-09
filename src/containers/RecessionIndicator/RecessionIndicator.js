@@ -5,7 +5,7 @@ import axios from "axios";
 //*********************** components **********************************
 import Table from '../../components/Table/Table';
 import TimeRangeController from "../../components/TimeRangeController/TimeRangeController";
-import {calcs, numberfyMergedState, xAndYobjects} from "../../logic/logic";
+import {calcs, numberfyMergedState, xAndYobjects, setStartEndDate} from "../../logic/logic";
 
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
@@ -88,11 +88,14 @@ class RecessionIndicator extends Component {
       }
 
       handleTimeRangeClick = (event) => {
-        console.log(event.target.id)
+        console.log(event.target.id, "event.target.id");
+        setStartEndDate(event.target.id);
+
+
         /*
           for example:
             this.setState({
-              someFunction(event.target.id)
+              someFunction(array, event.target.id)
             });
 
 
@@ -106,9 +109,11 @@ class RecessionIndicator extends Component {
    //VERY IMPORTANT: YOU MUST USE YYYY-MM-DD as your input (just like the JSON API)
    //otherwise, when you run new Date() on it, you might get the wrong answer when doing
    // the getDate() method to compare dates.
-   const startDate = "1990-06-01";//the string needs to be replaced for this.state.dateRangeStart
-   const endDate =  "2020-06-01"; //the string needs to be replaced for this.state.dateRangeEnd
+   const startDate = "1946-06-15";//the string needs to be replaced for this.state.dateRangeStart
+   const endDate =  "1965-06-11"; //the string needs to be replaced for this.state.dateRangeEnd
 
+   // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
+    //--is going to have to be part of state.
     const dataRecDescr = xAndYobjects(
       numberfyMergedState(
         this.state.tenThreeMerged), "date", "recDescription", startDate, endDate);
