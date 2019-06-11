@@ -293,25 +293,18 @@ export const setStartEndDate = (dateRangeId, index) => {
     switch (dateRangeId) {
       case "2yrRange":
         return dateYearsAgoAndYearAhead(2)[index];
-          break;
       case "5yrRange":
         return dateYearsAgoAndYearAhead(5)[index];
-          break;
       case "10yrRange":
-        return dateYearsAgoAndYearAhead(10)[index];
-          break;
+         return dateYearsAgoAndYearAhead(10)[index];
       case "20yrRange":
         return dateYearsAgoAndYearAhead(20)[index];
-          break;
       case "30yrRange":
-        return dateYearsAgoAndYearAhead(30)[index];
-          break;
+         return dateYearsAgoAndYearAhead(30)[index];
       case "50yrRange":
-        return dateYearsAgoAndYearAhead(50)[index];
-          break;
+         return dateYearsAgoAndYearAhead(50)[index];
       case "allyrRange":
-        return dateYearsAgoAndYearAhead(300)[index];
-          break;
+         return dateYearsAgoAndYearAhead(300)[index];
       }
 
 };
