@@ -1,7 +1,7 @@
 # Recession Indicator
 
 ## What it does
-The app will calculate and display the likelihood of a US Economic recession 12-months into the future.  
+The app will calculate and display the likelihood of a US Economic recession 12 months into the future.  
 
 ## Background
 
