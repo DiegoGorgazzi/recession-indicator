@@ -40,7 +40,9 @@ class RecessionIndicator extends Component {
     tenThreeMerged: [],
     //VERY IMPORTANT: YOU MUST USE YYYY-MM-DD as your input (just like the JSON API)
     dateRangeStart: "2000-01-01",
-    dateRangeEnd: ""
+    dateRangeEnd: "",
+    userStartDate: "",
+    userEndDate: ""
   }
 
   componentDidMount () {
@@ -90,19 +92,45 @@ class RecessionIndicator extends Component {
 
       handleTimeRangeClick = (event) => {
         console.log(event.target.id, "event.target.id");
-        setStartEndDate(event.target.id);
+        //setStartEndDate(event.target.id);
 
             this.setState({
               dateRangeStart: setStartEndDate(event.target.id, 0),
               dateRangeEnd: setStartEndDate(event.target.id, 1),
             });
 
+      }
 
+      handleUserDateInput = (event) => {
+        console.log(event.target.value, "event.targed.value")
+        console.log(event.target.name, "event.target.name");
+        
+        if(event.target.name === "userStartDate") {
+          this.setState ({
+            userStartDate: event.target.value		
+          });
+        };
 
+        if(event.target.name === "userEndDate") {
+          this.setState ({
+            userEndDate: event.target.value		
+          });
+        };
+        /*
+        this.setState ({
+          userStartDate: event.target.value,
+          userEndDate: event.target.value			
+        });
+        */
       }
 
 
   render() {
+    console.log(this.state.userStartDate, "this.state.userStartDate");
+    console.log(this.state.userEndDate, "this.state.userEndDate");
+    //Regex code for date
+  //^(((0?[1-9]|1[012])/(0?[1-9]|1\d|2[0-8])|(0?[13456789]|1[012])/(29|30)|(0?[13578]|1[02])/31)/((19|18)|[2-9]\d)\d{2}|0?2/29/(((19|18)|[2-9]\d)(0[48]|[2468][048]|[13579][26])|(([2468][048]|[3579][26])00)))$
+
 
     //************************** VISUALIZATION STUF ******************************
    // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
@@ -122,7 +150,11 @@ class RecessionIndicator extends Component {
     <div>
       <p>Hello </p>
       <TimeRangeController
-        clickTimeRange={this.handleTimeRangeClick}/>
+        clickTimeRange={this.handleTimeRangeClick}
+        userStartTimeState = {this.state.userStartDate}
+				userEndTimeState = {this.state.userEndDate} 
+				userDateHandler = {this.handleUserDateInput}					
+			/>
       <div>
         <XYPlot height={350} width={600}
           margin={{bottom:60}}

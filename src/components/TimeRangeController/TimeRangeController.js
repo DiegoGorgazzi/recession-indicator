@@ -1,5 +1,6 @@
 import React from "react";
 import TimeRange from "../TimeRange/TimeRange";
+import TimeUserRange from "../TimeUserRange/TimeUserRange";
 
 const timeRangeController = (props) => (
       <div>
@@ -38,6 +39,17 @@ const timeRangeController = (props) => (
           controlClickTimeRange={props.clickTimeRange}
           timeRangeID="allyrRange" />
 
+        <TimeUserRange
+              controlUserTimeState = {props.userStartTimeState}
+              nameDate = "userStartDate"
+              controlUserDateHandler = {props.userDateHandler}
+            />
+
+        <TimeUserRange
+              controlUserTimeState = {props.userEndTimeState}
+              nameDate = "userEndDate"
+              controlUserDateHandler = {props.userDateHandler}
+            />
 
       </div>
 
