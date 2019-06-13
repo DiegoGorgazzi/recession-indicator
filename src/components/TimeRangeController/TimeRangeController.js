@@ -38,13 +38,13 @@ const timeRangeController = (props) => (
           timeRangeName="All"
           controlClickTimeRange={props.clickTimeRange}
           timeRangeID="allyrRange" />
-
+        From:
         <TimeUserRange
               controlUserTimeState = {props.userStartTimeState}
               nameDate = "userStartDate"
               controlUserDateHandler = {props.userDateHandler}
             />
-
+        To:
         <TimeUserRange
               controlUserTimeState = {props.userEndTimeState}
               nameDate = "userEndDate"
