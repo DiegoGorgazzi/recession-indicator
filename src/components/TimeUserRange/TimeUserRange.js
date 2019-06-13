@@ -9,6 +9,7 @@ const timeUserRange = (props) => (
     value={props.controlUserTimeState}
     onChange={props.controlUserDateHandler} 
     />
+    
 );
 
 export default timeUserRange;
