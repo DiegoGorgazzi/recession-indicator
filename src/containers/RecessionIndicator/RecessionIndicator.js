@@ -122,6 +122,35 @@ class RecessionIndicator extends Component {
       this.setState(checkDateInput(userEndDateEvent, "userEndDateError"));
 
     };
+
+  }
+
+  applyUserInputDate = () => {
+    if(this.state.userStartDateError === "" && this.state.userStartDate.length >= 8){ 
+
+      let userStartDateToSplit = this.state.userStartDate;
+      let splitStartDateStringArr = userStartDateToSplit.split('/');
+
+      let formattedStartDateArr = [... splitStartDateStringArr];
+
+      if (formattedStartDateArr[0].length === 1) {
+          formattedStartDateArr[0]="0"+formattedStartDateArr[0];
+      }
+
+      if (formattedStartDateArr[1].length === 1) {
+          formattedStartDateArr[1]="0"+formattedStartDateArr[1];
+      }
+
+      let newStartDateArr = [formattedStartDateArr[2], formattedStartDateArr[0], formattedStartDateArr[1]];
+      let newStartDateStr = newStartDateArr.join("-");
+      
+      this.setState({
+          dateRangeStart: newStartDateStr
+      });
+
+    }
+
+
   }
 
 
@@ -146,6 +175,9 @@ class RecessionIndicator extends Component {
         let errorStartDateMessage = this.state.userStartDateError;
         let errorEndDateMessage = this.state.userEndDateError;
 
+        console.log(this.state.userStartDateError, "this.state.userStartDateError");
+        console.log(this.state.userStartDate.length, "this.state.userStartDate.length");
+
       //************************ RETURN ************************************
     return (
     <div>
@@ -154,7 +186,8 @@ class RecessionIndicator extends Component {
         clickTimeRange={this.handleTimeRangeClick}
         userStartTimeState = {this.state.userStartDate}
 				userEndTimeState = {this.state.userEndDate} 
-				userDateHandler = {this.handleUserDateInput}					
+        userDateHandler = {this.handleUserDateInput}
+        userDateSetter = {this.applyUserInputDate} 					
 			/>
 
       {errorStartDateMessage} {errorEndDateMessage}
