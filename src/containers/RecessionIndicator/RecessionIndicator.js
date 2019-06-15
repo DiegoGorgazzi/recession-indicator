@@ -20,7 +20,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 //*********************** helperFunctions ******************************
-import {filteredResponse} from "../../shared/helperFunctions/helperFunctions";
+import {filteredResponse, dateFormatConverter} from "../../shared/helperFunctions/helperFunctions";
 
 //************************ data ****************************************
 import {tenYearYield} from "../../data/fedReserveAPI";
@@ -126,30 +126,18 @@ class RecessionIndicator extends Component {
   }
 
   applyUserInputDate = () => {
-    if(this.state.userStartDateError === "" && this.state.userStartDate.length >= 8){ 
-
-      let userStartDateToSplit = this.state.userStartDate;
-      let splitStartDateStringArr = userStartDateToSplit.split('/');
-
-      let formattedStartDateArr = [... splitStartDateStringArr];
-
-      if (formattedStartDateArr[0].length === 1) {
-          formattedStartDateArr[0]="0"+formattedStartDateArr[0];
-      }
-
-      if (formattedStartDateArr[1].length === 1) {
-          formattedStartDateArr[1]="0"+formattedStartDateArr[1];
-      }
-
-      let newStartDateArr = [formattedStartDateArr[2], formattedStartDateArr[0], formattedStartDateArr[1]];
-      let newStartDateStr = newStartDateArr.join("-");
-      
+    if(this.state.userStartDateError === "" && this.state.userStartDate.length >= 8) {      
       this.setState({
-          dateRangeStart: newStartDateStr
+          dateRangeStart: dateFormatConverter(this.state.userStartDate)
       });
 
     }
 
+    if(this.state.userEndDateError === "" && this.state.userEndDate.length >= 8) {
+      this.setState({
+        dateRangeEnd: dateFormatConverter(this.state.userEndDate)
+      });
+    }
 
   }
 

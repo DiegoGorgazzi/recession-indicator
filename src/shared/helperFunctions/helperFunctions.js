@@ -97,3 +97,28 @@ export const dateYearsAgoAndYearAhead = (howManyYearsInThePast) => {
     return dateRangeObj;
 
 };
+
+//*********************************************************************
+//Helper function to turn a string with the date format
+// M/D/YYYY , MM/D/YYYY, M/DD/YYYY, and MM/DD/YYYY
+// to YYYY-MM-DD
+export const dateFormatConverter = (stringToBeChanged) => {
+  
+  let dateToSplit = stringToBeChanged;
+  let splitDateStringArr = dateToSplit.split('/');
+
+  let formattedDateArr = [... splitDateStringArr];
+
+  if (formattedDateArr[0].length === 1) {
+      formattedDateArr[0]="0"+formattedDateArr[0];
+  }
+
+  if (formattedDateArr[1].length === 1) {
+      formattedDateArr[1]="0"+formattedDateArr[1];
+  }
+
+  let newDateArr = [formattedDateArr[2], formattedDateArr[0], formattedDateArr[1]];
+  let newDateStr = newDateArr.join("-");
+
+  return newDateStr;
+}
