@@ -5,7 +5,7 @@ import axios from "axios";
 //*********************** components **********************************
 import Table from '../../components/Table/Table';
 import TimeRangeController from "../../components/TimeRangeController/TimeRangeController";
-import {calcs, numberfyMergedState, xAndYobjects, setStartEndDate} from "../../logic/logic";
+import {calcs, numberfyMergedState, xAndYobjects, setStartEndDate, checkDateInput} from "../../logic/logic";
 
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
@@ -84,267 +84,45 @@ class RecessionIndicator extends Component {
         
     }
 
-      componentDidUpdate(previousProps, previousState, snapshot) {
-        if(previousState.tenThreeMerged.length === 0 || previousState.tenThreeMerged.length === 1 ) {
-          this.setState({
-            tenThreeMerged: calcs(this.state.tenYearInt, this.state.threeMonthInt, this.state.nberRecession, "mergedTenThree" )
-          });
+  componentDidUpdate(previousProps, previousState, snapshot) {
+      if(previousState.tenThreeMerged.length === 0 || previousState.tenThreeMerged.length === 1 ) {
+        this.setState({
+          tenThreeMerged: calcs(this.state.tenYearInt, this.state.threeMonthInt, this.state.nberRecession, "mergedTenThree" )
+        });
         }
-      }
+  }
 
-      handleTimeRangeClick = (event) => {
-        console.log(event.target.id, "event.target.id");
-        //setStartEndDate(event.target.id);
+  handleTimeRangeClick = (event) => {
+      this.setState({
+        dateRangeStart: setStartEndDate(event.target.id, 0),
+        dateRangeEnd: setStartEndDate(event.target.id, 1),
+        });
 
-            this.setState({
-              dateRangeStart: setStartEndDate(event.target.id, 0),
-              dateRangeEnd: setStartEndDate(event.target.id, 1),
-            });
+  }
 
-      }
-
-      handleUserDateInput = (event) => {
+  handleUserDateInput = (event) => {
         console.log(event.target.value, "event.targed.value")
         console.log(event.target.name, "event.target.name");
         
-        if(event.target.name === "userStartDate") {
-          let testDate = event.target.value;
-          //RegEx accepts M/D/YYYY and MM/DD/YYYY
-          let testRegex = /^(((0?[1-9]|1[012])\/(0?[1-9]|1\d|2[0-8])|(0?[13456789]|1[012])\/(29|30)|(0?[13578]|1[02])\/31)\/((19|18)|[2-9]\d)\d{2}|0?2\/29\/(((19|18)|[2-9]\d)(0[48]|[2468][048]|[13579][26])|(([2468][048]|[3579][26])00)))$/;
-        
-          this.setState ({
-              userStartDate: event.target.value		
-            });
+    if(event.target.name === "userStartDate") {
+      this.setState ({
+           userStartDate: event.target.value		
+      });
           
-          const allowedCharacters = ["/", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-          const numbersOnly = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-          
-          if(testDate.length >= 1 && 
-            !numbersOnly.includes(testDate[0])) {
-              this.setState({
-                userStartDateError: "Error! Please provide a month between 01 and 12"
-            });
-          } else {
-             this.setState({
-              userStartDateError: ""
-             });
-          };
-            
-          
+      let userStartDateEvent = event.target.value;
+      this.setState(checkDateInput(userStartDateEvent, "userStartDateError"));   
+    };
 
-          if (testDate === "") {
-            this.setState({
-              userStartDateError: ""
-            });
-          }
+    if(event.target.name === "userEndDate") {
+      this.setState ({
+          userEndDate: event.target.value		
+      });
 
-          //****check user MONTH input **
-          if(testDate.length >= 3) {
-              //check if 2 or 1 digit Month number
-              if(numbersOnly.includes(testDate[0]) && numbersOnly.includes(testDate[1])) {
-                //THEN IT IS A TWO DIGIT NUMBER.
-                //Check if first Month digit is correct
-                if(!["0", "1"].includes(testDate[0])){
-                  this.setState({
-                    userStartDateError: "Error! Please provide a month between 01 and 12"
-                  });
-                } 
-                //If Second digit is incorrect, then error too.
-                else if(!["0", "1", "2"].includes(testDate[1])) {
-                  this.setState({
-                    userStartDateError: "Error! Please provide a month between 01 and 12"
-                  });
-                } 
-                else if(!allowedCharacters.includes(testDate[0]) || !allowedCharacters.includes(testDate[1])) {
-                  this.setState({
-                    userStartDateError: "Error! Please provide a valid month"
-                  });
-                }
-                //if no "/" then needs a Slash
-                else if(testDate[2] !== "/") {
-                  this.setState({
-                    userStartDateError: "Error! Please provide a '/' after the month"
-                  });
-                }
+      let userEndDateEvent = event.target.value;
+      this.setState(checkDateInput(userEndDateEvent, "userEndDateError"));
 
-
-              } 
-              //ELSE IT IS A ONE DIGIT MONTH NUMBER
-              else if(!allowedCharacters.includes(testDate[0]) || !allowedCharacters.includes(testDate[1])) {
-                this.setState({
-                  userStartDateError: "Error! Please provide a valid month"
-                });
-              }
-              //Check a "/" is used in the right spot
-                else if(testDate[1] !== "/") {
-                  this.setState({
-                    userStartDateError: "Error! Please provide a '/' after the month"
-                  });
-                }
-              };
-
-          //*** Check user DAY input **
-          //Check if we have a 2 digit Month
-          if(numbersOnly.includes(testDate[0]) && numbersOnly.includes(testDate[1])) {
-            //Then it is a 2 digit month.
-            //check user input for days
-            if(testDate.length >= 6)  {
-              //Now check if 2 or 1 digit Day number
-              if(numbersOnly.includes(testDate[3]) && numbersOnly.includes(testDate[4])) {
-                //THEN IT IS A TWO DIGIT DAY
-                //Check if first Month digit is correct
-                if(!["0", "1", "2", "3"].includes(testDate[3])){
-                  this.setState({
-                    userStartDateError: "Error! Please provide a valid day"
-                  });
-                } 
-                //If Second digit is incorrect, then error too.
-                else if(!numbersOnly.includes(testDate[4])) {
-                  this.setState({
-                    userStartDateError: "Error! Please provide a valid day"
-                  });
-                } 
-                //No more than 31 days 
-                else if(["3"].includes(testDate[3]) && !["0", "1"].includes(testDate[4])) {
-                  this.setState({
-                    userStartDateError: "Error! Please provide a valid day"
-                  });
-                } 
-                else if(!allowedCharacters.includes(testDate[3]) || !allowedCharacters.includes(testDate[4])) {
-                  this.setState({
-                    userStartDateError: "Error! Please provide a valid Day"
-                  });
-                }
-                //if no "/" then needs a Slash
-                else if(testDate[5] !== "/") {
-                  this.setState({
-                    userStartDateError: "Error! Please provide a '/' after the day"
-                  });
-                }
-
-              } 
-              //ELSE IT IS A ONE DIGIT DAY NUMBER
-              else if(!allowedCharacters.includes(testDate[3]) || !allowedCharacters.includes(testDate[4])) {
-                this.setState({
-                  userStartDateError: "Error! Please provide a valid Day"
-                });
-              }
-              //Check a "/" is used in the right spot
-                else if(testDate[4] !== "/") {
-                  this.setState({
-                    userStartDateError: "Error! Please provide a '/' after the day"
-                  });
-                }
-              } 
-              else if(testDate.length < 6 && testDate.length > 4) {
-                this.setState({
-                  userStartDateError: ""
-                });
-              }; 
-            } 
-            ///** ELSE YOU'RE ON A ONE DIGIT MONTH
-            else if(testDate.length >= 6)  {
-              //Now check if 2 or 1 digit Day number
-              if(numbersOnly.includes(testDate[2]) && numbersOnly.includes(testDate[3])) {
-                //THEN IT IS A TWO DIGIT DAY
-                //Check if first Month digit is correct
-                if(!["0", "1", "2", "3"].includes(testDate[2])){
-                  this.setState({
-                    userStartDateError: "Error! Please provide a valid day"
-                  });
-                } 
-                //If Second digit is incorrect, then error too.
-                else if(!numbersOnly.includes(testDate[3])) {
-                  this.setState({
-                    userStartDateError: "Error! Please provide a valid day"
-                  });
-                } 
-                //No more than 31 days 
-                else if(["3"].includes(testDate[2]) && !["0", "1"].includes(testDate[3])) {
-                  this.setState({
-                    userStartDateError: "Error! Please provide a valid day"
-                  });
-                } 
-                else if(!allowedCharacters.includes(testDate[2]) || !allowedCharacters.includes(testDate[3])) {
-                  this.setState({
-                    userStartDateError: "Error! Please provide a valid Day"
-                  });
-                }
-                //if no "/" then needs a Slash
-                else if(testDate[4] !== "/") {
-                  this.setState({
-                    userStartDateError: "Error! Please provide a '/' after the day"
-                  });
-                }
-
-              } 
-              //ELSE IT IS A ONE DIGIT DAY NUMBER
-              else if(!allowedCharacters.includes(testDate[2]) || !allowedCharacters.includes(testDate[3])) {
-                this.setState({
-                  userStartDateError: "Error! Please provide a valid Day"
-                });
-              }
-              //Check a "/" is used in the right spot
-                else if(testDate[3] !== "/") {
-                  this.setState({
-                    userStartDateError: "Error! Please provide a '/' after the day"
-                  });
-                }
-              }; 
-  
-          
-          //FINALLY, Check the whole date using RegEx
-          if(testDate.length >= 8){
-            if(testDate.length === 8 && !testRegex.test(testDate)) {
-              console.log(testDate.length, "===8")
-              this.setState({
-                userStartDateError: "Please enter a valid date"
-              });    
-            } else if(testDate.length === 9 && !testRegex.test(testDate)) {
-              console.log(testDate.length, "===9")
-              this.setState({
-                userStartDateError: "Please enter a valid date"
-              });
-            } else if(testDate.length === 10 && !testRegex.test(testDate)) {
-              console.log(testDate.length, "===10")
-              this.setState({
-                userStartDateError: "Please enter a valid date"
-              });
-            } else if(testDate.length === 10 && testRegex.test(testDate)) {
-              console.log(testDate.length, "===10 GOOD")
-              this.setState({
-                userStartDateError: ""
-              });
-            } else if(testDate.length > 10 ) {
-              console.log(testDate.length, "TOO MANY NUMS")
-              this.setState({
-                userStartDateError: "Please enter a valid date"
-              });
-            } else if(testDate.length === 9 && testRegex.test(testDate)) {
-              console.log(testDate.length, "===9 GOOD")
-              this.setState({
-                userStartDateError: ""
-              });
-            } else if(testDate.length === 8 && testRegex.test(testDate)) {
-              console.log(testDate.length, "===8 GOOD")
-              this.setState({
-                userStartDateError: ""
-              });
-            } else if (testDate.length <9) {
-              this.setState({
-                userStartDateError: ""
-              });
-            }
-          }         
-          
-        };
-
-        if(event.target.name === "userEndDate") {
-          this.setState ({
-            userEndDate: event.target.value		
-          });
-        };
-      }
+    };
+  }
 
 
   render() {
@@ -366,6 +144,7 @@ class RecessionIndicator extends Component {
         console.log(this.state.dateRangeEnd, "this.state.dateRangeEnd")
         
         let errorStartDateMessage = this.state.userStartDateError;
+        let errorEndDateMessage = this.state.userEndDateError;
 
       //************************ RETURN ************************************
     return (
@@ -377,7 +156,9 @@ class RecessionIndicator extends Component {
 				userEndTimeState = {this.state.userEndDate} 
 				userDateHandler = {this.handleUserDateInput}					
 			/>
-      {errorStartDateMessage}
+
+      {errorStartDateMessage} {errorEndDateMessage}
+      
       <div>
         <XYPlot height={350} width={600}
           margin={{bottom:60}}
