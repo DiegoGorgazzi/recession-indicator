@@ -175,6 +175,16 @@ class RecessionIndicator extends Component {
         console.log(this.state.userStartDateError, "this.state.userStartDateError");
         console.log(this.state.userStartDate.length, "this.state.userStartDate.length");
 
+        const WORDS = [
+          '0',
+          'Very Low',
+          'Low',
+          'Medium',
+          'High',
+          'Very High'
+        ];
+
+
       //************************ RETURN ************************************
     return (
     <div>
@@ -191,7 +201,7 @@ class RecessionIndicator extends Component {
       
       <div>
         <XYPlot height={350} width={600}
-          margin={{bottom:50, left: 50}}
+          margin={{bottom:50, left: 100}}
           xType="time"
           colorType="linear"
           >
@@ -199,16 +209,19 @@ class RecessionIndicator extends Component {
           <HorizontalGridLines />
           {/*<XAxis tickFormat={d3.timeFormat("%Y-%b")} tickLabelAngle={-45} />*/}
           <XAxis tickLabelAngle={-45} tickPadding={5}/>
-          <YAxis  />
+          <YAxis  
+            tickFormat={v => WORDS[v]} 
+            tickLabelAngle={-45} tickPadding={5}
+            />
           <ChartLabel 
             text="Recession likelihood, Actual"
             className="alt-y-label"
             includeMargin={false}
-            xPercent={-0.06}
+            xPercent={-0.12}
             yPercent={0.80}
             style={{
               transform: 'rotate(-90)',
-              "font-weight": "bold" 
+              "fontWeight": "bold" 
             }}
             />
           <AreaSeries
