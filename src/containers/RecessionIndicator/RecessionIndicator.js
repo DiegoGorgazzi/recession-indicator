@@ -12,7 +12,8 @@ import * as d3 from "d3-time-format";
 
 //************************* react-vis *******************************
 import {XYPlot, LineSeries, VerticalGridLines, HorizontalGridLines,
-  XAxis, YAxis, VerticalBarSeries, AreaSeries, DiscreteColorLegend } from 'react-vis';
+  XAxis, YAxis, VerticalBarSeries, AreaSeries, DiscreteColorLegend, 
+ ChartLabel} from 'react-vis';
 import 'react-vis/dist/style.css';
 
 //******************** BootstrapTable **********************************
@@ -190,7 +191,7 @@ class RecessionIndicator extends Component {
       
       <div>
         <XYPlot height={350} width={600}
-          margin={{bottom:50}}
+          margin={{bottom:50, left: 50}}
           xType="time"
           colorType="linear"
           >
@@ -198,7 +199,18 @@ class RecessionIndicator extends Component {
           <HorizontalGridLines />
           {/*<XAxis tickFormat={d3.timeFormat("%Y-%b")} tickLabelAngle={-45} />*/}
           <XAxis tickLabelAngle={-45} tickPadding={5}/>
-          <YAxis />
+          <YAxis  />
+          <ChartLabel 
+            text="Recession likelihood, Actual"
+            className="alt-y-label"
+            includeMargin={false}
+            xPercent={-0.06}
+            yPercent={0.80}
+            style={{
+              transform: 'rotate(-90)',
+              "font-weight": "bold" 
+            }}
+            />
           <AreaSeries
               data = {dataRecDescr}
               color="#ff9999" stroke="#f70"
@@ -210,7 +222,7 @@ class RecessionIndicator extends Component {
           <DiscreteColorLegend
             items={[
               {
-                title: 'Recession Probability 12 months Ahead', 
+                title: 'Recession Likelihood 12 months Ahead', 
                 color: "#ff9999"
               }, 
               {
@@ -219,7 +231,7 @@ class RecessionIndicator extends Component {
               }
             ]}
             orientation="horizontal"
-          />
+            />
 
 
         </XYPlot>
