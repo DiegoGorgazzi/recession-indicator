@@ -5,8 +5,8 @@ import axios from "axios";
 //*********************** components **********************************
 import Table from '../../components/Table/Table';
 import TimeRangeController from "../../components/TimeRangeController/TimeRangeController";
+import ToggleVisibility from '../../components/ToggleVisibility/ToggleVisibility';
 import {calcs, numberfyMergedState, xAndYobjects, setStartEndDate, checkDateInput} from "../../logic/logic";
-
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
 
@@ -44,7 +44,8 @@ class RecessionIndicator extends Component {
     userStartDate: "",
     userEndDate: "", 
     userStartDateError: "",
-    userEndDateError: ""
+    userEndDateError: "",
+    hideTable: true
   }
 
   componentDidMount () {
@@ -141,6 +142,13 @@ class RecessionIndicator extends Component {
 
   }
 
+  toggleCompVisibility = (event) => {
+    let hideComponent = "hide"+event.target.id;
+    let hideStatus = this.state[hideComponent];
+    this.setState({
+      [hideComponent]: !hideStatus
+    })
+  }
 
   render() {
     console.log(this.state.userStartDate, "this.state.userStartDate");
@@ -204,8 +212,19 @@ class RecessionIndicator extends Component {
 
      </div>
      <div>
-        <Table data={this.state.tenThreeMerged}/>
-    </div>
+     <ToggleVisibility
+                whatState = {this.state.hideTable}
+                hideID = "Table"
+                hideOnClick = {this.toggleCompVisibility}
+                showText = "Show Data Table"
+                hideText = "Hide Data Table"
+              />
+
+        {!this.state.hideTable &&
+              <Table data={this.state.tenThreeMerged}/>}
+
+        
+      </div>
     </div>
     )
 

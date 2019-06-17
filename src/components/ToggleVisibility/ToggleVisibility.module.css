@@ -1,0 +1,24 @@
+.showMore {
+  display: block;
+  color: #0000cc;
+  font-weight: 300;
+  cursor: pointer;
+  padding-top: 15px;
+  margin-top: -25px;
+  margin-bottom: 25px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.showMoreArrowUp {
+  margin-bottom: -25px;
+  font-size: 36px;
+  display: block;
+}
+
+.showMoreArrowDown {
+  margin-top: -25px;
+  font-size: 36px;
+  display: block;
+}
