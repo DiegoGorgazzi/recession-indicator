@@ -12,7 +12,7 @@ import * as d3 from "d3-time-format";
 
 //************************* react-vis *******************************
 import {XYPlot, LineSeries, VerticalGridLines, HorizontalGridLines,
-  XAxis, YAxis, VerticalBarSeries, AreaSeries } from 'react-vis';
+  XAxis, YAxis, VerticalBarSeries, AreaSeries, DiscreteColorLegend } from 'react-vis';
 import 'react-vis/dist/style.css';
 
 //******************** BootstrapTable **********************************
@@ -190,7 +190,7 @@ class RecessionIndicator extends Component {
       
       <div>
         <XYPlot height={350} width={600}
-          margin={{bottom:60}}
+          margin={{bottom:50}}
           xType="time"
           colorType="linear"
           >
@@ -199,19 +199,34 @@ class RecessionIndicator extends Component {
           {/*<XAxis tickFormat={d3.timeFormat("%Y-%b")} tickLabelAngle={-45} />*/}
           <XAxis tickLabelAngle={-45} tickPadding={5}/>
           <YAxis />
-            <AreaSeries
+          <AreaSeries
               data = {dataRecDescr}
-                  color="#ff9999" stroke="#f70"
+              color="#ff9999" stroke="#f70"
+          />
+          <LineSeries
+              data = {dataNberValue}
+              color={0.75}
             />
-            <LineSeries
-                  data = {dataNberValue}
-                  color={0.75}
-            />
-       </XYPlot>
+          <DiscreteColorLegend
+            items={[
+              {
+                title: 'Recession Probability 12 months Ahead', 
+                color: "#ff9999"
+              }, 
+              {
+                title: 'Actual Recession', 
+                color: "black"
+              }
+            ]}
+            orientation="horizontal"
+          />
+
+
+        </XYPlot>
 
 
      </div>
-     <div>
+     <div className={recessionIndicatorStyles.tableSection} >
      <ToggleVisibility
                 whatState = {this.state.hideTable}
                 hideID = "Table"
