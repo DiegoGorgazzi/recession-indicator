@@ -13,7 +13,7 @@ import * as d3 from "d3-time-format";
 //************************* react-vis *******************************
 import {XYPlot, LineSeries, VerticalGridLines, HorizontalGridLines,
   XAxis, YAxis, VerticalBarSeries, AreaSeries, DiscreteColorLegend, 
- ChartLabel} from 'react-vis';
+ ChartLabel, Crosshair} from 'react-vis';
 import 'react-vis/dist/style.css';
 
 //******************** BootstrapTable **********************************
@@ -46,7 +46,10 @@ class RecessionIndicator extends Component {
     userEndDate: "", 
     userStartDateError: "",
     userEndDateError: "",
-    hideTable: true
+    hideTable: true,
+    crosshairDataRecDescr: "",
+    crosshairDataNberValue: "",
+    crosshairAllDataValues: []
   }
 
   componentDidMount () {
@@ -166,6 +169,8 @@ class RecessionIndicator extends Component {
                   numberfyMergedState(
                     this.state.tenThreeMerged), "date", "nberValue", this.state.dateRangeStart, this.state.dateRangeEnd);
 
+    console.log(dataNberValue, "dataNberValue");
+    console.log(dataRecDescr, "dataRecDescr")
         console.log(this.state.dateRangeStart, "this.state.dateRangeStart")
         console.log(this.state.dateRangeEnd, "this.state.dateRangeEnd")
         
@@ -184,7 +189,11 @@ class RecessionIndicator extends Component {
           'Very High'
         ];
 
-
+        
+        console.log(this.state.crosshairValues, "crosshairValues");
+        console.log(this.state.crosshairValues2, "crosshairValues2");
+        console.log(this.state.crosshairValues3, "crosshairValues3")
+        console.log(this.state.tenThreeMerged, "this.state.tenThreeMerged")
       //************************ RETURN ************************************
     return (
     <div>
@@ -204,7 +213,14 @@ class RecessionIndicator extends Component {
           margin={{bottom:50, left: 100}}
           xType="time"
           colorType="linear"
-          >
+          onMouseLeave= {() => {
+            this.setState({
+              crosshairValues: "",
+              crosshairValues2: "",
+              crosshairValues3: []
+              })
+          }}
+        >
           <VerticalGridLines />
           <HorizontalGridLines />
           {/*<XAxis tickFormat={d3.timeFormat("%Y-%b")} tickLabelAngle={-45} />*/}
@@ -227,10 +243,18 @@ class RecessionIndicator extends Component {
           <AreaSeries
               data = {dataRecDescr}
               color="#ff9999" stroke="#f70"
+              onNearestX = {(value) => {
+                this.setState({crosshairDataRecDescr: value })}}
           />
           <LineSeries
               data = {dataNberValue}
               color={0.75}
+              onNearestX = {(value) => {
+                this.setState({
+                  crosshairDataNberValue: value, 
+                  crosshairAllDataValues: [this.state.crosshairDataRecDescr, this.state.crosshairDataNberValue]
+                })
+              }}
             />
           <DiscreteColorLegend
             items={[
@@ -245,7 +269,9 @@ class RecessionIndicator extends Component {
             ]}
             orientation="horizontal"
             />
-
+          <Crosshair 
+            values={this.state.crosshairAllDataValues}/>
+          
 
         </XYPlot>
 
