@@ -343,7 +343,7 @@ export const checkDateInput = (eventTargetValue, setDateStatePropError) => {
           state = { [setDateStatePropError]: "Error! Please provide a month between 01 and 12"}
         } 
         //If Second digit is incorrect, then error too.
-        else if(!["0", "1", "2"].includes(testDate[1])) {
+        else if(testDate[0] === "1" && !["0", "1", "2"].includes(testDate[1])) {
           state = {[setDateStatePropError]: "Error! Please provide a month between 01 and 12"}  
         } 
         //if either first or second digit have anything other than allowed characters, then error
