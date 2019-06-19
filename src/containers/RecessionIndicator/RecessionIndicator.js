@@ -189,10 +189,7 @@ class RecessionIndicator extends Component {
           'Very High'
         ];
 
-        
-        console.log(this.state.crosshairValues, "crosshairValues");
-        console.log(this.state.crosshairValues2, "crosshairValues2");
-        console.log(this.state.crosshairValues3, "crosshairValues3")
+        const yrMonthFormat = d3.timeFormat("%Y-%m");
         console.log(this.state.tenThreeMerged, "this.state.tenThreeMerged")
       //************************ RETURN ************************************
     return (
@@ -215,9 +212,9 @@ class RecessionIndicator extends Component {
           colorType="linear"
           onMouseLeave= {() => {
             this.setState({
-              crosshairValues: "",
-              crosshairValues2: "",
-              crosshairValues3: []
+              crosshairDataRecDescr: "",
+              crosshairDataNberValue: "",
+              crosshairAllDataValues: []
               })
           }}
         >
@@ -259,7 +256,7 @@ class RecessionIndicator extends Component {
           <DiscreteColorLegend
             items={[
               {
-                title: 'Recession Likelihood 12 months Ahead', 
+                title: 'Recession Likelihood (12 months Ahead)', 
                 color: "#ff9999"
               }, 
               {
@@ -270,7 +267,10 @@ class RecessionIndicator extends Component {
             orientation="horizontal"
             />
           <Crosshair 
-            values={this.state.crosshairAllDataValues}/>
+            values={this.state.crosshairAllDataValues}
+            titleFormat={(d) => ({title: 'Date', value: yrMonthFormat(d[0].x)})}
+            itemsFormat={(d) => [{title: 'Recession Likelihood', value: d[0].y}, {title: 'Actual Recession', value: d[1].y}]}
+            />
           
 
         </XYPlot>
