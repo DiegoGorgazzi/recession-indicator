@@ -76,7 +76,7 @@ export const dateYearsAgoAndYearAhead = (howManyYearsInThePast) => {
   const todaysDateMonth = todaysDate.getMonth();
   const todaysDateDay = todaysDate.getDate();
   let newDateStartYear, newDateStartMonth, newDateStartDay,
-    newStartDateStr, newStartDateObj, newStartDate, newEndDateObj,
+    newStartDateStr, newStartDateObj, newEndDateObj,
     dateRangeObj, newDateEndYear, newDateEndDay, newEndDateStr,
     newDateEndMonth;
 
@@ -107,7 +107,7 @@ export const dateFormatConverter = (stringToBeChanged) => {
   let dateToSplit = stringToBeChanged;
   let splitDateStringArr = dateToSplit.split('/');
 
-  let formattedDateArr = [... splitDateStringArr];
+  let formattedDateArr = [...splitDateStringArr];
 
   if (formattedDateArr[0].length === 1) {
       formattedDateArr[0]="0"+formattedDateArr[0];
