@@ -21,7 +21,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 //*********************** helperFunctions ******************************
-import {filteredResponse, dateFormatConverter} from "../../shared/helperFunctions/helperFunctions";
+import {filteredResponse, dateFormatConverter, deepJSONArrayClone} from "../../shared/helperFunctions/helperFunctions";
 
 //************************ data ****************************************
 import {tenYearYield} from "../../data/fedReserveAPI";
@@ -33,12 +33,14 @@ import {vix} from "../../data/fedReserveAPI";
 class RecessionIndicator extends Component {
 
   state = {
+    //******** DATA RELATED STATES *****
     tenYearInt: [],
     threeMonthInt: [],
     nberRecession: [],
     wilshireState: [],
     vixState: [],
     tenThreeMerged: [],
+    // ****** DATE RELATED STATES *******
     //VERY IMPORTANT: YOU MUST USE YYYY-MM-DD as your input (just like the JSON API)
     dateRangeStart: "2000-01-01",
     dateRangeEnd: "",
@@ -47,6 +49,7 @@ class RecessionIndicator extends Component {
     userStartDateError: "",
     userEndDateError: "",
     hideTable: true,
+    //**** CROSSHAIR RELATED STATES ***
     crosshairDataRecDescr: "",
     crosshairDataNberValue: "",
     crosshairAllDataValues: []
@@ -106,9 +109,6 @@ class RecessionIndicator extends Component {
   }
 
   handleUserDateInput = (event) => {
-        console.log(event.target.value, "event.targed.value")
-        console.log(event.target.name, "event.target.name");
-        
     if(event.target.name === "userStartDate") {
       this.setState ({
            userStartDate: event.target.value		
@@ -155,11 +155,9 @@ class RecessionIndicator extends Component {
   }
 
   render() {
-    console.log(this.state.userStartDate, "this.state.userStartDate");
-    console.log(this.state.userEndDate, "this.state.userEndDate");
-
+    
     //************************** VISUALIZATION STUF ******************************
-   // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
+    // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
     //--is going to have to be part of state.
     const dataRecDescr = xAndYobjects(
       numberfyMergedState(
@@ -171,27 +169,73 @@ class RecessionIndicator extends Component {
 
     console.log(dataNberValue, "dataNberValue");
     console.log(dataRecDescr, "dataRecDescr")
-        console.log(this.state.dateRangeStart, "this.state.dateRangeStart")
-        console.log(this.state.dateRangeEnd, "this.state.dateRangeEnd")
         
-        let errorStartDateMessage = this.state.userStartDateError;
-        let errorEndDateMessage = this.state.userEndDateError;
-
-        console.log(this.state.userStartDateError, "this.state.userStartDateError");
-        console.log(this.state.userStartDate.length, "this.state.userStartDate.length");
-
-        const WORDS = [
+    let errorStartDateMessage = this.state.userStartDateError;
+    let errorEndDateMessage = this.state.userEndDateError;
+        
+    console.log(this.state.crosshairAllDataValues, "crosshairAllDataValues");
+    
+    //**** Left y-axis label *********
+    const WORDS = [
           '0',
           'Very Low',
           'Low',
           'Medium',
           'High',
           'Very High'
-        ];
+    ];
 
-        const yrMonthFormat = d3.timeFormat("%Y-%m");
-        console.log(this.state.tenThreeMerged, "this.state.tenThreeMerged")
-      //************************ RETURN ************************************
+    // ******** Crosshair stuff *********************
+    //Change display time format in crosshair
+    const yrMonthFormat = d3.timeFormat("%Y-%m");
+  
+
+    //Change display values in crosshair
+    const deepCloneCrosshairValue = deepJSONArrayClone(this.state.crosshairAllDataValues);
+
+    deepCloneCrosshairValue.map( (eachObject, index) => { 
+      //Change Display value of first object, crosshairDataRecDescrValue 
+      if(index === 0) {
+        switch (eachObject.y) {
+          case 5:
+            eachObject.y = "VERY HIGH"
+            break;
+          case 4:
+            eachObject.y = "HIGH"
+            break;
+          case 3:
+            eachObject.y = "MEDIUM"
+            break;
+          case 2:
+            eachObject.y = "LOW"
+            break;
+          case 1:
+            eachObject.y = "VERY LOW"
+            break;
+          default:
+            eachObject.y = "NO DATA"
+            break;
+        }
+      }
+          //Change Display value of Second object, crosshairDataNberValue 
+      if(index === 1) {
+        switch (eachObject.y) {
+          case 0:
+            eachObject.y = "NO"
+            break;
+          case 5.1:
+            eachObject.y = "YES"
+            break;
+          default:
+            eachObject.y = "YES"
+            break;
+        }
+      }
+    });
+
+
+
+    //************************ RETURN ************************************
     return (
     <div>
       <p>Hello </p>
@@ -267,7 +311,7 @@ class RecessionIndicator extends Component {
             orientation="horizontal"
             />
           <Crosshair 
-            values={this.state.crosshairAllDataValues}
+            values={deepCloneCrosshairValue}
             titleFormat={(d) => ({title: 'Date', value: yrMonthFormat(d[0].x)})}
             itemsFormat={(d) => [{title: 'Recession Likelihood', value: d[0].y}, {title: 'Actual Recession', value: d[1].y}]}
             />
