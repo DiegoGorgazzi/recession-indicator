@@ -187,7 +187,11 @@ class RecessionIndicator extends Component {
           eachObject.y = "YES"
           break;
        }
+      //IF it's a date in the future change to Unknown
+       if(eachObject.x > new Date())
+          eachObject.y = "UNKNOWN"
      }
+
      return eachObject;
    }); 
 
