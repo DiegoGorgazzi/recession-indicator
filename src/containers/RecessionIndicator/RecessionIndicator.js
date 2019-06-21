@@ -146,6 +146,14 @@ class RecessionIndicator extends Component {
 
   }
 
+  crosshairAllDataHandler = () => {
+    this.setState({
+      crosshairAllDataValues: 
+        [this.state.crosshairDataRecDescr, 
+          this.state.crosshairDataNberValue]
+      })
+  }
+
   crosshairDisplayHandler = () => {
    //Change display values in crosshair
    const deepCloneCrosshairValue = deepJSONArrayClone(this.state.crosshairAllDataValues);
@@ -264,6 +272,7 @@ class RecessionIndicator extends Component {
           margin={{bottom:50, left: 100}}
           xType="time"
           colorType="linear"
+          onMouseMove = {this.crosshairAllDataHandler}
           onMouseLeave= {() => {
             this.setState({
               crosshairDataRecDescr: "",
@@ -302,8 +311,7 @@ class RecessionIndicator extends Component {
               color={0.75}
               onNearestX = {(value) => {
                 this.setState({
-                  crosshairDataNberValue: value, 
-                  crosshairAllDataValues: [this.state.crosshairDataRecDescr, this.state.crosshairDataNberValue]
+                  crosshairDataNberValue: value
                 })
               }}
             />
