@@ -146,6 +146,57 @@ class RecessionIndicator extends Component {
 
   }
 
+  crosshairDisplayHandler = () => {
+   //Change display values in crosshair
+   const deepCloneCrosshairValue = deepJSONArrayClone(this.state.crosshairAllDataValues);
+
+   return deepCloneCrosshairValue.map( (eachObject, index) => { 
+     //Change Display value of first object, crosshairDataRecDescrValue 
+     if(index === 0) {
+       switch (eachObject.y) {
+         case 5:
+           eachObject.y = "VERY HIGH"
+           break;
+         case 4:
+           eachObject.y = "HIGH"
+           break;
+         case 3:
+           eachObject.y = "MEDIUM"
+           break;
+         case 2:
+           eachObject.y = "LOW"
+           break;
+         case 1:
+           eachObject.y = "VERY LOW"
+           break;
+         default:
+           eachObject.y = "NO DATA"
+           break;
+       }
+     }
+     //Change Display value of Second object, crosshairDataNberValue 
+     if(index === 1) {
+       switch (eachObject.y) {
+         case 0:
+          eachObject.y = "NO"
+          break;
+         case 5.1:
+          eachObject.y = "YES"
+          break;
+         default:
+          eachObject.y = "YES"
+          break;
+       }
+     }
+     return eachObject;
+   }); 
+
+
+  }
+
+
+
+
   toggleCompVisibility = (event) => {
     let hideComponent = "hide"+event.target.id;
     let hideStatus = this.state[hideComponent];
@@ -189,51 +240,6 @@ class RecessionIndicator extends Component {
     //Change display time format in crosshair
     const yrMonthFormat = d3.timeFormat("%Y-%m");
   
-
-    //Change display values in crosshair
-    const deepCloneCrosshairValue = deepJSONArrayClone(this.state.crosshairAllDataValues);
-
-    deepCloneCrosshairValue.map( (eachObject, index) => { 
-      //Change Display value of first object, crosshairDataRecDescrValue 
-      if(index === 0) {
-        switch (eachObject.y) {
-          case 5:
-            eachObject.y = "VERY HIGH"
-            break;
-          case 4:
-            eachObject.y = "HIGH"
-            break;
-          case 3:
-            eachObject.y = "MEDIUM"
-            break;
-          case 2:
-            eachObject.y = "LOW"
-            break;
-          case 1:
-            eachObject.y = "VERY LOW"
-            break;
-          default:
-            eachObject.y = "NO DATA"
-            break;
-        }
-      }
-          //Change Display value of Second object, crosshairDataNberValue 
-      if(index === 1) {
-        switch (eachObject.y) {
-          case 0:
-            eachObject.y = "NO"
-            break;
-          case 5.1:
-            eachObject.y = "YES"
-            break;
-          default:
-            eachObject.y = "YES"
-            break;
-        }
-      }
-    });
-
-
 
     //************************ RETURN ************************************
     return (
@@ -311,9 +317,12 @@ class RecessionIndicator extends Component {
             orientation="horizontal"
             />
           <Crosshair 
-            values={deepCloneCrosshairValue}
+            values={this.crosshairDisplayHandler()}
             titleFormat={(d) => ({title: 'Date', value: yrMonthFormat(d[0].x)})}
-            itemsFormat={(d) => [{title: 'Recession Likelihood', value: d[0].y}, {title: 'Actual Recession', value: d[1].y}]}
+            itemsFormat={(d) => 
+              [{title: 'Recession Likelihood', value: d[0].y}, 
+              {title: 'Actual Recession', value: d[1].y}]
+              }
             />
           
 
