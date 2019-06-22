@@ -6,7 +6,8 @@ import axios from "axios";
 import Table from '../../components/Table/Table';
 import TimeRangeController from "../../components/TimeRangeController/TimeRangeController";
 import ToggleVisibility from '../../components/ToggleVisibility/ToggleVisibility';
-import {calcs, numberfyMergedState, xAndYobjects, setStartEndDate, checkDateInput} from "../../logic/logic";
+import {calcs, numberfyMergedState, xAndYobjects, setStartEndDate, 
+  checkDateInput, crosshairDisplayWords} from "../../logic/logic";
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
 
@@ -156,53 +157,7 @@ class RecessionIndicator extends Component {
 
   crosshairDisplayHandler = () => {
    //Change display values in crosshair
-   const deepCloneCrosshairValue = deepJSONArrayClone(this.state.crosshairAllDataValues);
-
-   return deepCloneCrosshairValue.map( (eachObject, index) => { 
-     //Change Display value of first object, crosshairDataRecDescrValue 
-     if(index === 0) {
-       switch (eachObject.y) {
-         case 5:
-           eachObject.y = "VERY HIGH"
-           break;
-         case 4:
-           eachObject.y = "HIGH"
-           break;
-         case 3:
-           eachObject.y = "MEDIUM"
-           break;
-         case 2:
-           eachObject.y = "LOW"
-           break;
-         case 1:
-           eachObject.y = "VERY LOW"
-           break;
-         default:
-           eachObject.y = "NO DATA"
-           break;
-       }
-     }
-     //Change Display value of Second object, crosshairDataNberValue 
-     if(index === 1) {
-       switch (eachObject.y) {
-         case 0:
-          eachObject.y = "NO"
-          break;
-         case 5.1:
-          eachObject.y = "YES"
-          break;
-         default:
-          eachObject.y = "YES"
-          break;
-       }
-      //IF it's a date in the future change to Unknown
-       if(eachObject.x > new Date())
-          eachObject.y = "UNKNOWN"
-     }
-
-     return eachObject;
-   }); 
-
+   return crosshairDisplayWords(deepJSONArrayClone(this.state.crosshairAllDataValues));
 
   }
 
@@ -250,7 +205,7 @@ class RecessionIndicator extends Component {
 
     // ******** Crosshair stuff *********************
     //Change display time format in crosshair
-    const yrMonthFormat = d3.timeFormat("%Y-%m");
+    const yrMonthFormat = d3.timeFormat("%Y-%B");
   
 
     //************************ RETURN ************************************
