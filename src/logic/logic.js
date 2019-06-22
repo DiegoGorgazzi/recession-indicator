@@ -148,7 +148,7 @@ export const calcs = (mergeState1, mergeState2, nberState, name ) => {
 
   });
 
-  console.log(mergedStates, "mergedStates")
+  //console.log(mergedStates, "mergedStates")
 
 
   return mergedStates;
@@ -198,7 +198,7 @@ export const numberfyMergedState = (mergedStatesArray) => {
       return eachObject;
   });
 
-  console.log(visObject, "visObject");
+  //console.log(visObject, "visObject");
   return visObject;
 };
 
@@ -280,7 +280,7 @@ export const xAndYobjects = (array, xPropFromArray, yPropFromArray, userStartDat
                  const newArray = {x, y};
                  return newArray;
             });
-          console.log(xyMap, "xAndYObjects");
+          //console.log(xyMap, "xAndYObjects");
           return xyMap;
 };
 
@@ -447,37 +447,37 @@ export const checkDateInput = (eventTargetValue, setDateStatePropError) => {
   //Check format M/D/YYYY
   if(testDate.length >= 8){
     if(testDate.length === 8 && !testRegex.test(testDate)) {
-      console.log(testDate.length, "===8")
+      //console.log(testDate.length, "===8")
       state = {[setDateStatePropError]: "Please enter a valid date"}   
     } 
     //check format MM/D/YYYY and M/DD/YYYY
     else if(testDate.length === 9 && !testRegex.test(testDate)) {
-      console.log(testDate.length, "===9")
+      //console.log(testDate.length, "===9")
       state = {[setDateStatePropError]: "Please enter a valid date"}
     } 
     //check format MM/DD/YYYY
     else if(testDate.length === 10 && !testRegex.test(testDate)) {
-      console.log(testDate.length, "===10")
+      //console.log(testDate.length, "===10")
       state = {[setDateStatePropError]: "Please enter a valid date"}
     } 
     //If format MM/DD/YYYY OK then reset state
     else if(testDate.length === 10 && testRegex.test(testDate)) {
-      console.log(testDate.length, "===10 GOOD")
+      //console.log(testDate.length, "===10 GOOD")
       state = {[setDateStatePropError]: ""}
     } 
     //if too many characters, then error
     else if(testDate.length > 10 ) {
-      console.log(testDate.length, "TOO MANY NUMS")
+      //console.log(testDate.length, "TOO MANY NUMS")
       state = {[setDateStatePropError]: "Please enter a valid date"}
     } 
     //if format MM/D/YYYY and M/DD/YYYY OK then reset state
     else if(testDate.length === 9 && testRegex.test(testDate)) {
-        console.log(testDate.length, "===9 GOOD")
+        //console.log(testDate.length, "===9 GOOD")
         state = {[setDateStatePropError]: ""}
     } 
     //if format M/D/YYYY OK then reset state
     else if(testDate.length === 8 && testRegex.test(testDate)) {
-        console.log(testDate.length, "===8 GOOD")
+        //console.log(testDate.length, "===8 GOOD")
         state = {[setDateStatePropError]: ""}
     } 
     //if user deletes his wrong format, reset state
@@ -489,3 +489,59 @@ export const checkDateInput = (eventTargetValue, setDateStatePropError) => {
   return state;
   
 };
+
+// ********************************************************************
+//Function to turn the numerical values in crosshairDataRecDescrValue and
+//crosshairDataNberValue into word equivalents to display in crosshair
+export const crosshairDisplayWords = (crosshairAllDataObject) => {
+  return crosshairAllDataObject.map( (eachObject, index) => { 
+    //Change Display value of first object, crosshairDataRecDescrValue 
+    if(index === 0) {
+      switch (eachObject.y) {
+        case 5:
+          eachObject.y = "VERY HIGH"
+          break;
+        case 4:
+          eachObject.y = "HIGH"
+          break;
+        case 3:
+          eachObject.y = "MEDIUM"
+          break;
+        case 2:
+          eachObject.y = "LOW"
+          break;
+        case 1:
+          eachObject.y = "VERY LOW"
+          break;
+        default:
+          eachObject.y = "NO DATA"
+          break;
+      }
+    }
+    //Change Display value of Second object, crosshairDataNberValue 
+    if(index === 1) {
+      switch (eachObject.y) {
+        case 0:
+         eachObject.y = "NO"
+         break;
+        case 5.1:
+         eachObject.y = "YES"
+         break;
+        default:
+         eachObject.y = "YES"
+         break;
+      }
+     //IF it's a date in the future change to Unknown
+      if(eachObject.x > new Date())
+         eachObject.y = "UNKNOWN"
+    }
+
+    return eachObject;
+  }); 
+
+} 
+
+
+
+
+
