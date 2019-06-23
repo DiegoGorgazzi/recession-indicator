@@ -8,7 +8,8 @@ import TimeRangeController from "../../components/TimeRangeController/TimeRangeC
 import ToggleVisibility from '../../components/ToggleVisibility/ToggleVisibility';
 
 //********************** Logic ****************************************
-import {calcs, numberfyMergedState, xAndYobjects} from "../../logic/logic";
+import {calcs, numberfyMergedState} from "../../logic/logic";
+import {xAndYobjects} from '../../logic/xAndY/xAndYobjects';
 import {setStartEndDate} from '../../logic/date/setStartEndDate';  
 import {checkDateInput} from '../../logic/date/checkDateInput';
 import {crosshairDisplayWords} from "../../logic/crosshair/crosshair"; 
