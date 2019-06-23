@@ -284,6 +284,7 @@ export const xAndYobjects = (array, xPropFromArray, yPropFromArray, userStartDat
           return xyMap;
 };
 
+/*
 // ********************************************************************
 //Function to let the user toggle date ranges
 //use index = 0 for dateRangeStart
@@ -308,3 +309,4 @@ export const setStartEndDate = (dateRangeId, index) => {
       }
 
 };
+*/
