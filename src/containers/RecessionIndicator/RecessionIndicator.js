@@ -6,8 +6,11 @@ import axios from "axios";
 import Table from '../../components/Table/Table';
 import TimeRangeController from "../../components/TimeRangeController/TimeRangeController";
 import ToggleVisibility from '../../components/ToggleVisibility/ToggleVisibility';
+
+//********************** Logic ****************************************
 import {calcs, numberfyMergedState, xAndYobjects, setStartEndDate, 
-  checkDateInput, crosshairDisplayWords} from "../../logic/logic";
+  checkDateInput} from "../../logic/logic";
+import {crosshairDisplayWords} from "../../logic/crosshair/crosshair"; 
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
 
