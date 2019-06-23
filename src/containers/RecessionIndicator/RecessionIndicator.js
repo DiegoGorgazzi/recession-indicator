@@ -9,7 +9,8 @@ import ToggleVisibility from '../../components/ToggleVisibility/ToggleVisibility
 
 //********************** Logic ****************************************
 import {calcs, numberfyMergedState, xAndYobjects, setStartEndDate, 
-  checkDateInput} from "../../logic/logic";
+  } from "../../logic/logic";
+import {checkDateInput} from '../../logic/date/checkDateInput';
 import {crosshairDisplayWords} from "../../logic/crosshair/crosshair"; 
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
