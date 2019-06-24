@@ -82,7 +82,7 @@ class RecessionIndicator extends Component {
             nberRecession:
               filteredResponse(nberResponse.data.observations, "US-recession"),
             wilshireState:
-              filteredResponse(wilshireResponse.data.observations, "Whilshire-5000"),
+              filteredResponse(wilshireResponse.data.observations, "Wilshire-5000"),
             vixState:
               filteredResponse(vixResponse.data.observations, "Vix")
             });
@@ -90,7 +90,7 @@ class RecessionIndicator extends Component {
           console.log(this.state.tenYearInt, "ten");
           //console.log(this.state.threeMonthInt, "three");
           //console.log(this.state.nberRecession, "nber");
-          //console.log(this.state.wilshireState, "wilshire");
+          console.log(this.state.wilshireState, "wilshire");
           //console.log(this.state.vixState, "vix");
           }
         ));
@@ -178,7 +178,64 @@ class RecessionIndicator extends Component {
   }
 
   render() {
-    
+  
+  
+  const wilshireStateCloneDate = deepJSONArrayClone(this.state.wilshireState);
+   
+  //Change the Date to a recognizeable d3 dates
+  wilshireStateCloneDate.forEach( (eachObject) => {
+    //Parse the date string into a Date object
+    eachObject.date = new Date(eachObject.date);
+    //FOR DEBUGGING....
+    eachObject.dateGetTime = eachObject.date.getTime();
+    //Change the format to numerical month and year to allow for sorting
+    //in tables
+    let formatMonthTbl = d3.timeFormat("%Y-%m")
+    eachObject.dateTbl = formatMonthTbl(eachObject.date);
+  });
+
+  let wilshireFilteredArray = [];
+  wilshireStateCloneDate.map( (eachObject, index) => {
+    //There's an issue with the Data provided by the Federal Reserve
+    //If their daily data is lacking a value, they replaced the value 
+    //with a "." So I'm having to change all the dots to a zero
+    //otherwise d3 i.e. react-vis won't plot the data
+    //strangely, the FED graph shows the data in the crosshair
+    //but doesn't display the curve so you can see large gaps in their chart
+    if(eachObject.value === ".") {
+      eachObject.value = "0"
+    } 
+    else {
+    eachObject.value = Number(eachObject.value);
+    }
+    //Only collect the data for a monthly closing prices so I had to 
+    //filter through the data and extract end-of-month closing days
+    //unfortunately, the data provided is not clean and sometimes
+    //it skips days (and replaces them with a ".")
+    //so I'm using the previous day
+    //in the future, if you have the same problem, you can try 
+    //index-3 instead (and increase if index > 2)
+    if(index > 1) {
+      let prevIndex = wilshireStateCloneDate[index-1].date.getMonth();
+      let nextIndex = wilshireStateCloneDate[index].date.getMonth();
+      if (prevIndex !== nextIndex) {          
+        eachObject = wilshireStateCloneDate[index-1];
+        if(eachObject.value === "0") {
+          eachObject = wilshireStateCloneDate[index-2];
+        }
+        wilshireFilteredArray.push(eachObject);
+      }
+    }
+  });
+
+
+  console.log(wilshireStateCloneDate, "wilshireStateCloneDate");
+ 
+  console.log(wilshireFilteredArray, "wilshireFILTERED")
+
+  const wilshireIndex = xAndYobjects(wilshireFilteredArray, "date", "value", this.state.dateRangeStart, this.state.dateRangeEnd);
+  console.log(wilshireIndex, "wilshireIndex");
+
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
     //--is going to have to be part of state.
@@ -275,6 +332,7 @@ class RecessionIndicator extends Component {
                 })
               }}
             />
+
           <DiscreteColorLegend
             items={[
               {
@@ -297,6 +355,24 @@ class RecessionIndicator extends Component {
               }
             />
           
+
+        </XYPlot>
+        
+        <XYPlot height={350} width={600}
+          margin={{bottom:50, left: 100}}
+          xType="time"
+          colorType="linear"
+          >
+          <VerticalGridLines />
+            <HorizontalGridLines />
+            <XAxis tickLabelAngle={-45} tickPadding={5}/>
+          <YAxis  
+            tickLabelAngle={-45} tickPadding={5}
+            />
+          <LineSeries
+                data = {wilshireIndex}
+                color="blue"
+              />
 
         </XYPlot>
 
