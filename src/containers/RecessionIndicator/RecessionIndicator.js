@@ -179,7 +179,7 @@ class RecessionIndicator extends Component {
 
   render() {
   
-  
+  //***** ADD WILSHIRE DATA *****
   const wilshireStateCloneDate = deepJSONArrayClone(this.state.wilshireState);
    
   //Change the Date to a recognizeable d3 dates
@@ -209,8 +209,8 @@ class RecessionIndicator extends Component {
     eachObject.value = Number(eachObject.value);
     }
     //Only collect the data for a monthly closing prices so I had to 
-    //filter through the data and extract end-of-month closing days
-    //unfortunately, the data provided is not clean and sometimes
+    //filter through the data and extract end-of-month closing days.
+    //Unfortunately, the data provided is not clean and sometimes
     //it skips days (and replaces them with a ".")
     //so I'm using the previous day
     //in the future, if you have the same problem, you can try 
@@ -228,13 +228,28 @@ class RecessionIndicator extends Component {
     }
   });
 
-
-  console.log(wilshireStateCloneDate, "wilshireStateCloneDate");
- 
-  console.log(wilshireFilteredArray, "wilshireFILTERED")
+  // ADD 12-mo future dates to chart (No need to modify the wilshire data if you're not making 
+  // a table with it)  
+  let future12Months = []
+  if(this.state.tenThreeMerged.length > 0) {
+    for (let i = 20; i > 0; --i) {
+      let tenThreeMergedLast12Date = this.state.tenThreeMerged[this.state.tenThreeMerged.length-i].date
+      const futureDateObject = {date: "", value: ""};
+      futureDateObject.date = tenThreeMergedLast12Date;
+      future12Months.push(futureDateObject);
+    }
+    //If you're making a table: check to make sure future data doesn't replace existing data
+    //if(future12Months[0].date.getMonth() === wilshireFilteredArray[wilshireFilteredArray.length-1].date.getMonth()) {
+     // future12Months = future12Months.slice(1);
+    //};
+    };
+  //If you're making a table: Update Array with additional 12-months.  
+  //wilshireFilteredArray.push(...future12Months);
 
   const wilshireIndex = xAndYobjects(wilshireFilteredArray, "date", "value", this.state.dateRangeStart, this.state.dateRangeEnd);
   console.log(wilshireIndex, "wilshireIndex");
+  const futureIndex = xAndYobjects(future12Months, "date", "value", this.state.dateRangeStart, this.state.dateRangeEnd);
+
 
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
@@ -355,23 +370,31 @@ class RecessionIndicator extends Component {
               }
             />
           
-
         </XYPlot>
-        
+      </div>
+      <div>
+
         <XYPlot height={350} width={600}
           margin={{bottom:50, left: 100}}
           xType="time"
           colorType="linear"
+          
           >
           <VerticalGridLines />
-            <HorizontalGridLines />
-            <XAxis tickLabelAngle={-45} tickPadding={5}/>
-          <YAxis  
+          <HorizontalGridLines />
+          <XAxis  
             tickLabelAngle={-45} tickPadding={5}
+            />
+          <YAxis  
+             tickLabelAngle={-45} tickPadding={5}
             />
           <LineSeries
                 data = {wilshireIndex}
                 color="blue"
+              />
+          <AreaSeries
+                data = {futureIndex}
+                color= "transparent"
               />
 
         </XYPlot>
