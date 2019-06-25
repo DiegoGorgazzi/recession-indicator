@@ -4,7 +4,7 @@ import {deepJSONArrayClone} from "../../shared/helperFunctions/helperFunctions";
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
 
-
+//Function to turn JSON data into d3 friendly data
 export const addDataSeries = (stateWithData) => {
     const dataStateCloneDate = deepJSONArrayClone(stateWithData);
    //console.log(dataStateCloneDate, "DATASTATECLONEDATE")

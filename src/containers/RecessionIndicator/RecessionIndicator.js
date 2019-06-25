@@ -14,6 +14,7 @@ import {setStartEndDate} from '../../logic/date/setStartEndDate';
 import {checkDateInput} from '../../logic/date/checkDateInput';
 import {crosshairDisplayWords} from "../../logic/crosshair/crosshair"; 
 import {addDataSeries} from '../../logic/addDataSeries/addDataSeries';
+import {future12MonthsSeries} from '../../logic/addDataSeries/future12MonthsSeries';
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
 
@@ -100,11 +101,11 @@ class RecessionIndicator extends Component {
     }
 
   componentDidUpdate(previousProps, previousState, snapshot) {
-      if(previousState.tenThreeMerged.length === 0 || previousState.tenThreeMerged.length === 1 ) {
-        this.setState({
-          tenThreeMerged: calcs(this.state.tenYearInt, this.state.threeMonthInt, this.state.nberRecession, "mergedTenThree" )
-        });
-        }
+    if(previousState.tenThreeMerged.length === 0 || previousState.tenThreeMerged.length === 1 ) {
+      this.setState({
+        tenThreeMerged: calcs(this.state.tenYearInt, this.state.threeMonthInt, this.state.nberRecession, "mergedTenThree" )
+      });
+    }
   }
 
   handleTimeRangeClick = (event) => {
@@ -179,51 +180,48 @@ class RecessionIndicator extends Component {
   }
 
   render() {
-  
-  //***** ADD WILSHIRE DATA *****
-  const wilshireFilteredArray = addDataSeries(this.state.wilshireState);   
-
-  // ADD 12-mo future dates to chart (No need to modify the wilshire data if you're not making 
-  // a table with it)  
-  let future12Months = []
-  if(this.state.tenThreeMerged.length > 0) {
-    for (let i = 20; i > 0; --i) {
-      let tenThreeMergedLast12Date = this.state.tenThreeMerged[this.state.tenThreeMerged.length-i].date
-      const futureDateObject = {date: "", value: ""};
-      futureDateObject.date = tenThreeMergedLast12Date;
-      future12Months.push(futureDateObject);
-    }
-    //If you're making a table: check to make sure future data doesn't replace existing data
-    //if(future12Months[0].date.getMonth() === wilshireFilteredArray[wilshireFilteredArray.length-1].date.getMonth()) {
-     // future12Months = future12Months.slice(1);
-    //};
-    };
-  //If you're making a table: Update Array with additional 12-months.  
-  //wilshireFilteredArray.push(...future12Months);
-
-  const wilshireIndex = xAndYobjects(wilshireFilteredArray, "date", "value", this.state.dateRangeStart, this.state.dateRangeEnd);
-  console.log(wilshireIndex, "wilshireIndex");
-  const futureIndex = xAndYobjects(future12Months, "date", "value", this.state.dateRangeStart, this.state.dateRangeEnd);
-
 
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
     //--is going to have to be part of state.
     const dataRecDescr = xAndYobjects(
-      numberfyMergedState(
-        this.state.tenThreeMerged), "date", "recDescription", this.state.dateRangeStart, this.state.dateRangeEnd);
+                    numberfyMergedState(this.state.tenThreeMerged), 
+                    "date", 
+                    "recDescription", 
+                    this.state.dateRangeStart, 
+                    this.state.dateRangeEnd);
 
     const dataNberValue = xAndYobjects(
-                  numberfyMergedState(
-                    this.state.tenThreeMerged), "date", "nberValue", this.state.dateRangeStart, this.state.dateRangeEnd);
+                    numberfyMergedState(this.state.tenThreeMerged), 
+                    "date", 
+                    "nberValue", 
+                    this.state.dateRangeStart, 
+                    this.state.dateRangeEnd);
+
+    // ADD WILSHIRE DATA   
+    const wilshireIndex = xAndYobjects(
+                    addDataSeries(this.state.wilshireState), 
+                    "date", 
+                    "value", 
+                    this.state.dateRangeStart, 
+                    this.state.dateRangeEnd);                
+
+    const futureDateAddition = xAndYobjects(
+                    future12MonthsSeries(this.state.tenThreeMerged), 
+                    "date", 
+                    "value", 
+                    this.state.dateRangeStart, 
+                    this.state.dateRangeEnd);
+                
 
     console.log(dataNberValue, "dataNberValue");
     console.log(dataRecDescr, "dataRecDescr")
-        
+    console.log(wilshireIndex, "wilshireIndex");
+
     let errorStartDateMessage = this.state.userStartDateError;
     let errorEndDateMessage = this.state.userEndDateError;
         
-    console.log(this.state.crosshairAllDataValues, "crosshairAllDataValues");
+    
     
     //**** Left y-axis label *********
     const WORDS = [
@@ -238,7 +236,7 @@ class RecessionIndicator extends Component {
     // ******** Crosshair stuff *********************
     //Change display time format in crosshair
     const yrMonthFormat = d3.timeFormat("%Y-%B");
-  
+    console.log(this.state.crosshairAllDataValues, "crosshairAllDataValues");
 
     //************************ RETURN ************************************
     return (
@@ -348,7 +346,7 @@ class RecessionIndicator extends Component {
                 color="blue"
               />
           <AreaSeries
-                data = {futureIndex}
+                data = {futureDateAddition}
                 color= "transparent"
               />
 
