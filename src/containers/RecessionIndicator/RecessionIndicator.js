@@ -16,6 +16,7 @@ import {checkDateInput} from '../../logic/date/checkDateInput';
 import {crosshairDisplayWords} from "../../logic/crosshair/crosshair"; 
 import {addDataSeries} from '../../logic/addDataSeries/addDataSeries';
 import {future12MonthsSeries} from '../../logic/addDataSeries/future12MonthsSeries';
+import {displaySeries} from '../../logic/displayGraph/displaySeries';
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
 
@@ -53,10 +54,12 @@ class RecessionIndicator extends Component {
     //VERY IMPORTANT: YOU MUST USE YYYY-MM-DD as your input (just like the JSON API)
     dateRangeStart: "2000-01-01",
     dateRangeEnd: "",
+    //NOTE: user dates are eventually converted to dateRangeStart, End.
     userStartDate: "",
     userEndDate: "", 
     userStartDateError: "",
     userEndDateError: "",
+    // ******* TOGGLE ******
     hideTable: true,
     //**** CROSSHAIR RELATED STATES ***
     crosshairDataRecDescr: "",
@@ -113,6 +116,8 @@ class RecessionIndicator extends Component {
       this.setState({
         dateRangeStart: setStartEndDate(event.target.id, 0),
         dateRangeEnd: setStartEndDate(event.target.id, 1),
+        userStartDate: "",
+        userEndDate: "",
         });
 
   }
@@ -266,13 +271,13 @@ class RecessionIndicator extends Component {
     
 
     
-    console.log(wilshire12moPerf, "wilshire12moPerf");
+    console.log(wilshire12moPerformance, "wilshire12moPerformance");
     
     console.log(dataNberValue, "dataNberValue");
     console.log(dataRecDescr, "dataRecDescr")
     console.log(wilshireIndex, "wilshireIndex");
 
-    
+    console.log(this.state.userEndDate, "this.state.userEndDate");
         
     
     
@@ -339,13 +344,13 @@ class RecessionIndicator extends Component {
             }}
             />
           <AreaSeries
-              data = {dataRecDescr}
+              data = { displaySeries(this.state.dateRangeEnd, dataRecDescr, "x")}
               color="#ff9999" stroke="#f70"
               onNearestX = {(value) => {
                 this.setState({crosshairDataRecDescr: value })}}
           />
           <LineSeries
-              data = {dataNberValue}
+              data = { displaySeries(this.state.dateRangeEnd, dataNberValue, "x")}
               color={0.75}
               onNearestX = {(value) => {
                 this.setState({
@@ -395,7 +400,7 @@ class RecessionIndicator extends Component {
              tickLabelAngle={-45} tickPadding={5}
             />
           <LineSeries
-                data = {wilshireIndex}
+                data = { displaySeries(this.state.dateRangeEnd, wilshireIndex, "x")}
                 color="blue"
               />
           <AreaSeries
@@ -425,7 +430,7 @@ class RecessionIndicator extends Component {
               tickLabelAngle={-45} tickPadding={5}
               />
             <LineSeries
-                  data = {wilshire12moPerformance}
+                  data = { displaySeries(this.state.dateRangeEnd, wilshire12moPerformance, "x")} 
                   color="green"
                 />
             <AreaSeries

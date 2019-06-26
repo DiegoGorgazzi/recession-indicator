@@ -50,16 +50,16 @@ export const xAndYobjects = (array, xPropDateFromArray, yPropFromArray, userStar
       //If endIndex not in array, set to end of time
       if(endIndex == -1) {
           array.map( (object, index)=> {
-  
-  
-              if(object[xPropDateFromArray].getTime() > datedUserEndDate.getTime()
+
+              if(datedUserEndDate.getTime() < array[0][xPropDateFromArray].getTime()) {
+                endIndex = 0;
+              } else if(object[xPropDateFromArray].getTime() > datedUserEndDate.getTime()
               && array[index-1][xPropDateFromArray].getTime() < datedUserEndDate.getTime()){
                   endIndex = index;
               }  else if
                   (array[array.length-1][xPropDateFromArray].getTime() < datedUserEndDate.getTime())  {
                   endIndex = array.length-1;
               }
-  
   
               return endIndex;
               });
