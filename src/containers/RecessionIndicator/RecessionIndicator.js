@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import recessionIndicatorStyles from "./RecessionIndicator.module.css";
 import axios from "axios";
+import * as math from 'mathjs';
 
 //*********************** components **********************************
 import Table from '../../components/Table/Table';
@@ -181,6 +182,10 @@ class RecessionIndicator extends Component {
 
   render() {
 
+    // **** Date Input Error Message
+    let errorStartDateMessage = this.state.userStartDateError;
+    let errorEndDateMessage = this.state.userEndDateError;
+
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
     //--is going to have to be part of state.
@@ -198,28 +203,76 @@ class RecessionIndicator extends Component {
                     this.state.dateRangeStart, 
                     this.state.dateRangeEnd);
 
-    // ADD WILSHIRE DATA   
+    // ADD WILSHIRE DATA
+    //Since I'm reusing addDataSeries(this.state.wilshireState), store it in a variable
+    const wilshireWorkableData = addDataSeries(this.state.wilshireState);   
     const wilshireIndex = xAndYobjects(
-                    addDataSeries(this.state.wilshireState), 
+                    wilshireWorkableData, 
                     "date", 
                     "value", 
                     this.state.dateRangeStart, 
                     this.state.dateRangeEnd);                
 
     const futureDateAddition = xAndYobjects(
-                    future12MonthsSeries(this.state.tenThreeMerged), 
+                    future12MonthsSeries(numberfyMergedState(this.state.tenThreeMerged)), 
                     "date", 
                     "value", 
                     this.state.dateRangeStart, 
                     this.state.dateRangeEnd);
-                
+    
+    //ADD WILSHIRE PERFORMANCE
+    math.config({
+      number: 'BigNumber',
+      precision: 20
+    })
 
+    //Important, do NOT clone an array resulting from xAndYobjects
+    //because the xAndYobjects limits the data to whatever 
+    //date it's passed as a state, meaning if you
+    //zoom into the chart for the last 20 yrs, it'll pretend
+    //anything before 20yrs is not there thus messing up your calcs
+    const wilshireClone = deepJSONArrayClone(wilshireWorkableData);
+    console.log(wilshireClone, "wilshireClone");
+
+    const wilshire12moPerf = wilshireClone.map( (eachObject, index)=>{
+      let newObject;
+      let perfCalc;
+      if(index>11) {
+        perfCalc = Number(math.format(
+                    math.multiply(
+                      math.subtract(
+                        math.divide((wilshireClone[index].value), 
+                          (wilshireClone[index-12].value)), 
+                      1),
+                    100), 
+                  4))
+        newObject = {x:eachObject.date, y:perfCalc}
+      } 
+      
+      if (index < 12) {
+        newObject = {x:eachObject.date, y:0}
+      }
+      
+      return newObject
+
+    });             
+    
+    const wilshire12moPerformance = xAndYobjects(
+      wilshire12moPerf, 
+      "x", 
+      "y", 
+      this.state.dateRangeStart, 
+      this.state.dateRangeEnd);
+    
+
+    
+    console.log(wilshire12moPerf, "wilshire12moPerf");
+    
     console.log(dataNberValue, "dataNberValue");
     console.log(dataRecDescr, "dataRecDescr")
     console.log(wilshireIndex, "wilshireIndex");
 
-    let errorStartDateMessage = this.state.userStartDateError;
-    let errorEndDateMessage = this.state.userEndDateError;
+    
         
     
     
@@ -352,8 +405,39 @@ class RecessionIndicator extends Component {
 
         </XYPlot>
 
+  
+        </div>
+        
+        <div>
 
-     </div>
+          <XYPlot height={350} width={600}
+            margin={{bottom:50, left: 100}}
+            xType="time"
+            colorType="linear"
+            
+            >
+            <VerticalGridLines />
+            <HorizontalGridLines />
+            <XAxis  
+              tickLabelAngle={-45} tickPadding={5}
+              />
+            <YAxis  
+              tickLabelAngle={-45} tickPadding={5}
+              />
+            <LineSeries
+                  data = {wilshire12moPerformance}
+                  color="green"
+                />
+            <AreaSeries
+                  data = {futureDateAddition}
+                  color= "transparent"
+                />
+
+          </XYPlot>
+
+
+        </div>
+
      <div className={recessionIndicatorStyles.tableSection} >
      <ToggleVisibility
                 whatState = {this.state.hideTable}
