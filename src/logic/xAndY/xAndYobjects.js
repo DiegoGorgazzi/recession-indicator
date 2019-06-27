@@ -52,7 +52,7 @@ export const xAndYobjects = (array, xPropDateFromArray, yPropFromArray, userStar
           array.map( (object, index)=> {
 
               if(datedUserEndDate.getTime() < array[0][xPropDateFromArray].getTime()) {
-                endIndex = 0;
+                endIndex = 0
               } else if(object[xPropDateFromArray].getTime() > datedUserEndDate.getTime()
               && array[index-1][xPropDateFromArray].getTime() < datedUserEndDate.getTime()){
                   endIndex = index;

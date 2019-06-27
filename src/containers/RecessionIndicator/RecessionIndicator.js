@@ -59,6 +59,7 @@ class RecessionIndicator extends Component {
     userEndDate: "", 
     userStartDateError: "",
     userEndDateError: "",
+    userDateOutOfRangeError: "",
     // ******* TOGGLE ******
     hideTable: true,
     //**** CROSSHAIR RELATED STATES ***
@@ -110,6 +111,34 @@ class RecessionIndicator extends Component {
         tenThreeMerged: calcs(this.state.tenYearInt, this.state.threeMonthInt, this.state.nberRecession, "mergedTenThree" )
       });
     }
+
+    //CHECK IF DATE INPUT IS OUT OF RANGE AND UPDATE ERROR MESSAGE
+    const sameAsfutureDateAddition = xAndYobjects(
+      future12MonthsSeries(numberfyMergedState(this.state.tenThreeMerged)), 
+      "date", 
+      "value", 
+      this.state.dateRangeStart, 
+      this.state.dateRangeEnd);
+
+    if(sameAsfutureDateAddition.length > 0 ) {
+      if(new Date(this.state.dateRangeEnd).getTime() > sameAsfutureDateAddition[0]["x"].getTime() ) {
+        if(this.state.userDateOutOfRangeError !== "") {
+          this.setState({
+            userDateOutOfRangeError: ""
+          });
+        }
+      } else if (new Date(this.state.dateRangeEnd).getTime() < sameAsfutureDateAddition[0]["x"].getTime() ){
+          if(this.state.userDateOutOfRangeError === ""){
+            this.setState({
+              userDateOutOfRangeError: "DATE OUT OF RANGE, PLEASE CHANGE THE DATE RANGE"
+            });
+          }
+      } 
+
+    } 
+
+
+
   }
 
   handleTimeRangeClick = (event) => {
@@ -118,6 +147,9 @@ class RecessionIndicator extends Component {
         dateRangeEnd: setStartEndDate(event.target.id, 1),
         userStartDate: "",
         userEndDate: "",
+        userStartDateError: "",
+        userEndDateError: "", 
+        userDateOutOfRangeError: ""
         });
 
   }
@@ -176,20 +208,51 @@ class RecessionIndicator extends Component {
 
 
 
+  displayNullHandler = () => {
+      let testFuture = xAndYobjects(
+        future12MonthsSeries(numberfyMergedState(this.state.tenThreeMerged)), 
+        "date", 
+        "value", 
+        this.state.dateRangeStart, 
+        this.state.dateRangeEnd);
+
+      //return displaySeries(this.state.dateRangeEnd, testFuture, "x");
+    /*    
+    if(displaySeries(this.state.dateRangeEnd, testFuture, "x") !== null) {
+      this.setState({
+        userDisplayError: "NOOOOOOOOOO"
+        });
+      };
+      */
+    
+    if(displaySeries(this.state.dateRangeEnd, testFuture, "x") === null) {
+      return null
+      } else {
+        return testFuture
+      }   
+    
+
+  }
+
 
   toggleCompVisibility = (event) => {
     let hideComponent = "hide"+event.target.id;
     let hideStatus = this.state[hideComponent];
     this.setState({
       [hideComponent]: !hideStatus
-    })
+    });
   }
 
   render() {
+    
+    
 
-    // **** Date Input Error Message
-    let errorStartDateMessage = this.state.userStartDateError;
-    let errorEndDateMessage = this.state.userEndDateError;
+      /*
+      this.setState({
+        userStartDateError: "WHHHHHHHAAAAAAA"
+      });
+      */
+    
 
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
@@ -299,7 +362,7 @@ class RecessionIndicator extends Component {
     //************************ RETURN ************************************
     return (
     <div>
-      <p>Hello </p>
+      <p id="hello">Hello </p>
       <TimeRangeController
         clickTimeRange={this.handleTimeRangeClick}
         userStartTimeState = {this.state.userStartDate}
@@ -308,9 +371,10 @@ class RecessionIndicator extends Component {
         userDateSetter = {this.applyUserInputDate} 					
 			/>
 
-      {errorStartDateMessage} {errorEndDateMessage}
+      {this.state.userStartDateError} {this.state.userEndDateError}
       
       <div>
+      {this.state.userDateOutOfRangeError}
         <XYPlot height={350} width={600}
           margin={{bottom:50, left: 100}}
           xType="time"
@@ -400,11 +464,11 @@ class RecessionIndicator extends Component {
              tickLabelAngle={-45} tickPadding={5}
             />
           <LineSeries
-                data = { displaySeries(this.state.dateRangeEnd, wilshireIndex, "x")}
-                color="blue"
+               data = { displaySeries(this.state.dateRangeEnd, wilshireIndex, "x")}
+               color="blue"
               />
           <AreaSeries
-                data = {futureDateAddition}
+                data = {displaySeries(this.state.dateRangeEnd, futureDateAddition, "x")}
                 color= "transparent"
               />
 
@@ -434,7 +498,7 @@ class RecessionIndicator extends Component {
                   color="green"
                 />
             <AreaSeries
-                  data = {futureDateAddition}
+                  data =  {displaySeries(this.state.dateRangeEnd, futureDateAddition, "x")} 
                   color= "transparent"
                 />
 
