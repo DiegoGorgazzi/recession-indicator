@@ -17,6 +17,7 @@ import {crosshairDisplayWords} from "../../logic/crosshair/crosshair";
 import {addDataSeries} from '../../logic/addDataSeries/addDataSeries';
 import {future12MonthsSeries} from '../../logic/addDataSeries/future12MonthsSeries';
 import {displaySeries} from '../../logic/displayGraph/displaySeries';
+import {pastPerformance} from '../../logic/addDataSeries/pastPerformance';
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
 
@@ -216,14 +217,6 @@ class RecessionIndicator extends Component {
 
   render() {
     
-    
-
-      /*
-      this.setState({
-        userStartDateError: "WHHHHHHHAAAAAAA"
-      });
-      */
-    
 
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
@@ -259,45 +252,9 @@ class RecessionIndicator extends Component {
                     this.state.dateRangeStart, 
                     this.state.dateRangeEnd);
     
-    //ADD WILSHIRE PERFORMANCE
-    math.config({
-      number: 'BigNumber',
-      precision: 20
-    })
-
-    //Important, do NOT clone an array resulting from xAndYobjects
-    //because the xAndYobjects limits the data to whatever 
-    //date it's passed as a state, meaning if you
-    //zoom into the chart for the last 20 yrs, it'll pretend
-    //anything before 20yrs is not there thus messing up your calcs
-    const wilshireClone = deepJSONArrayClone(wilshireWorkableData);
-    console.log(wilshireClone, "wilshireClone");
-
-    const wilshire12moPerf = wilshireClone.map( (eachObject, index)=>{
-      let newObject;
-      let perfCalc;
-      if(index>11) {
-        perfCalc = Number(math.format(
-                    math.multiply(
-                      math.subtract(
-                        math.divide((wilshireClone[index].value), 
-                          (wilshireClone[index-12].value)), 
-                      1),
-                    100), 
-                  4))
-        newObject = {x:eachObject.date, y:perfCalc}
-      } 
-      
-      if (index < 12) {
-        newObject = {x:eachObject.date, y:0}
-      }
-      
-      return newObject
-
-    });             
-    
+    //WILSHIRE PERFORMANCE
     const wilshire12moPerformance = xAndYobjects(
-      wilshire12moPerf, 
+      pastPerformance(wilshireWorkableData, 12), 
       "x", 
       "y", 
       this.state.dateRangeStart, 
