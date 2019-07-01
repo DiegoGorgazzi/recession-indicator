@@ -1,10 +1,9 @@
 //Since the Federal Reserve has a Private API, I can't use it publicly here
 // I tried to use firebase cloud functions. However,
-//besides the fact that I need to use Node, which I still haven't figured out
 //the free plan does NOT support outbound networking.
 //Therefore, with the API key I got from the Fed, I downloaded
 // the json files into my dropbox and I'm going to host them from there.
-// When I figure out Node I'll come back to this so I don't have to
+//I'll come back to this later (maybe switch to free tier AWS?) so I don't have to
 //manually update the json files...
 
 export const  tenYearYield = "https://dl.dropbox.com/s/th6ixv6pnu04atg/ten-yr-yields-04-2019.json?dl=0";

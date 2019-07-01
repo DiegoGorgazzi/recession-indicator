@@ -206,35 +206,6 @@ class RecessionIndicator extends Component {
 
   }
 
-
-
-  displayNullHandler = () => {
-      let testFuture = xAndYobjects(
-        future12MonthsSeries(numberfyMergedState(this.state.tenThreeMerged)), 
-        "date", 
-        "value", 
-        this.state.dateRangeStart, 
-        this.state.dateRangeEnd);
-
-      //return displaySeries(this.state.dateRangeEnd, testFuture, "x");
-    /*    
-    if(displaySeries(this.state.dateRangeEnd, testFuture, "x") !== null) {
-      this.setState({
-        userDisplayError: "NOOOOOOOOOO"
-        });
-      };
-      */
-    
-    if(displaySeries(this.state.dateRangeEnd, testFuture, "x") === null) {
-      return null
-      } else {
-        return testFuture
-      }   
-    
-
-  }
-
-
   toggleCompVisibility = (event) => {
     let hideComponent = "hide"+event.target.id;
     let hideStatus = this.state[hideComponent];
