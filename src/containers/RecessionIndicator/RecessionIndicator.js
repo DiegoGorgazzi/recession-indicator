@@ -215,6 +215,48 @@ class RecessionIndicator extends Component {
     });
   }
 
+  scaledRecProbData = ( dataArrayToScaleFrom , dataArrayToScale) => {
+ 
+     //If you have more than One Reference Array, pick the one with the highest/Lowest values
+        //Maybe I can write another function that accepts as input many reference Arrays
+        //and returns the array with the highest values which can then be input into 
+        //this scaledData function
+
+    let maxValueDataArrayToScaleFrom = 0;
+    let minValueDataArrayToScaleFrom = 0;
+    if (dataArrayToScaleFrom !== undefined) {
+      for (let i = 0; i < dataArrayToScaleFrom.length-1; ++i ) {
+        if(dataArrayToScaleFrom[i].y > maxValueDataArrayToScaleFrom) {
+          maxValueDataArrayToScaleFrom = dataArrayToScaleFrom[i].y 
+        };
+        if(dataArrayToScaleFrom[i].y < minValueDataArrayToScaleFrom) {
+          minValueDataArrayToScaleFrom = dataArrayToScaleFrom[i].y
+        };
+      }
+    }
+
+    console.log(maxValueDataArrayToScaleFrom, minValueDataArrayToScaleFrom, "MAX, MIN"  )
+
+    let dataToScale;
+    if (dataArrayToScale !== undefined) {
+      dataToScale = deepJSONArrayClone(dataArrayToScale);
+    
+      if (dataToScale !== undefined) {
+        dataToScale.map( (eachObject, index) => {
+          if(eachObject.y >= 4) {
+            return eachObject.y = maxValueDataArrayToScaleFrom;
+          }
+          else {
+            return eachObject.y = minValueDataArrayToScaleFrom
+          }
+        })
+          
+      }
+    }
+    console.log(dataToScale, "DATA TO SCALE");
+    return dataToScale;
+  }
+
   render() {
     
 
@@ -286,6 +328,9 @@ class RecessionIndicator extends Component {
     //Change display time format in crosshair
     const yrMonthFormat = d3.timeFormat("%Y-%B");
     console.log(this.state.crosshairAllDataValues, "crosshairAllDataValues");
+
+
+    console.log(this.scaledRecProbData(wilshire12moPerformance, dataRecDescr), "scaledRecProbData");
 
     //************************ RETURN ************************************
     return (
@@ -391,6 +436,10 @@ class RecessionIndicator extends Component {
           <YAxis  
              tickLabelAngle={-45} tickPadding={5}
             />
+          <AreaSeries
+            data = { displaySeries(this.state.dateRangeEnd, this.scaledRecProbData(wilshireIndex, dataRecDescr), "x")}
+            color= "#ff9999"
+            /> 
           <LineSeries
                data = { displaySeries(this.state.dateRangeEnd, wilshireIndex, "x")}
                color="blue"
@@ -421,6 +470,10 @@ class RecessionIndicator extends Component {
             <YAxis  
               tickLabelAngle={-45} tickPadding={5}
               />
+            <AreaSeries
+              data = { displaySeries(this.state.dateRangeEnd, this.scaledRecProbData(wilshire12moPerformance, dataRecDescr), "x")}
+              color= "#ff9999"
+              />  
             <LineSeries
                   data = { displaySeries(this.state.dateRangeEnd, wilshire12moPerformance, "x")} 
                   color="green"
