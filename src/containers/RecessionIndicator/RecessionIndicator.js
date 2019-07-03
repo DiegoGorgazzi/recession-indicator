@@ -215,28 +215,24 @@ class RecessionIndicator extends Component {
     });
   }
 
-  scaledRecProbData = ( dataArrayToScaleFrom , dataArrayToScale) => {
- 
-     //If you have more than One Reference Array, pick the one with the highest/Lowest values
-        //Maybe I can write another function that accepts as input many reference Arrays
-        //and returns the array with the highest values which can then be input into 
-        //this scaledData function
-
-    let maxValueDataArrayToScaleFrom = 0;
-    let minValueDataArrayToScaleFrom = 0;
-    if (dataArrayToScaleFrom !== undefined) {
-      for (let i = 0; i < dataArrayToScaleFrom.length-1; ++i ) {
-        if(dataArrayToScaleFrom[i].y > maxValueDataArrayToScaleFrom) {
-          maxValueDataArrayToScaleFrom = dataArrayToScaleFrom[i].y 
-        };
-        if(dataArrayToScaleFrom[i].y < minValueDataArrayToScaleFrom) {
-          minValueDataArrayToScaleFrom = dataArrayToScaleFrom[i].y
-        };
-      }
-    }
-
-    console.log(maxValueDataArrayToScaleFrom, minValueDataArrayToScaleFrom, "MAX, MIN"  )
-
+  scaledRecProbData = (dataArrayToScaleFrom = [] , dataArrayToScale) => {
+        //dataArrayToScaleFrom is an array with Nested data arrays
+        //If you only have one data array, you must still wrap it in [] 
+        let maxValueDataArrayToScaleFrom = 0;
+        let minValueDataArrayToScaleFrom = 0;
+          if (dataArrayToScaleFrom !== undefined) {
+            for (let j = 0; j < dataArrayToScaleFrom.length; ++j){ 
+                for (let i = 0; i < dataArrayToScaleFrom[j].length; ++i ) {
+                    if(dataArrayToScaleFrom[j][i].y > maxValueDataArrayToScaleFrom) {
+                      maxValueDataArrayToScaleFrom = dataArrayToScaleFrom[j][i].y;
+                    };
+                    if(dataArrayToScaleFrom[j][i].y < minValueDataArrayToScaleFrom) {
+                      minValueDataArrayToScaleFrom = dataArrayToScaleFrom[j][i].y;
+                    };
+                  }
+            }
+          }
+    
     let dataToScale;
     if (dataArrayToScale !== undefined) {
       dataToScale = deepJSONArrayClone(dataArrayToScale);
@@ -253,7 +249,7 @@ class RecessionIndicator extends Component {
           
       }
     }
-    console.log(dataToScale, "DATA TO SCALE");
+    
     return dataToScale;
   }
 
@@ -437,7 +433,7 @@ class RecessionIndicator extends Component {
              tickLabelAngle={-45} tickPadding={5}
             />
           <AreaSeries
-            data = { displaySeries(this.state.dateRangeEnd, this.scaledRecProbData(wilshireIndex, dataRecDescr), "x")}
+            data = { displaySeries(this.state.dateRangeEnd, this.scaledRecProbData([wilshireIndex], dataRecDescr), "x")}
             color= "#ff9999"
             /> 
           <LineSeries
@@ -471,7 +467,7 @@ class RecessionIndicator extends Component {
               tickLabelAngle={-45} tickPadding={5}
               />
             <AreaSeries
-              data = { displaySeries(this.state.dateRangeEnd, this.scaledRecProbData(wilshire12moPerformance, dataRecDescr), "x")}
+              data = { displaySeries(this.state.dateRangeEnd, this.scaledRecProbData([wilshire12moPerformance], dataRecDescr), "x")}
               color= "#ff9999"
               />  
             <LineSeries
