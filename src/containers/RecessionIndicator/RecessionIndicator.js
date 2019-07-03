@@ -66,6 +66,7 @@ class RecessionIndicator extends Component {
     //**** CROSSHAIR RELATED STATES ***
     crosshairDataRecDescr: "",
     crosshairDataNberValue: "",
+    crosshairDataWilshireIndex: "",
     crosshairAllDataValues: []
   }
 
@@ -197,7 +198,9 @@ class RecessionIndicator extends Component {
     this.setState({
       crosshairAllDataValues: 
         [this.state.crosshairDataRecDescr, 
-          this.state.crosshairDataNberValue]
+          this.state.crosshairDataNberValue,
+          this.state.crosshairDataWilshireIndex
+        ]
       })
   }
 
@@ -359,6 +362,7 @@ class RecessionIndicator extends Component {
       {this.state.userStartDateError} {this.state.userEndDateError}
       </div>
 
+      {/* ------------- RECESSION AND PREDICTIONS CHART --------------*/}
       <div>
       {this.state.userDateOutOfRangeError}
         <XYPlot height={350} width={600}
@@ -402,9 +406,15 @@ class RecessionIndicator extends Component {
           <LineSeries
               data = { displaySeries(this.state.dateRangeEnd, dataNberValue, "x")}
               color={0.75}
-              onNearestX = {(value) => {
+              onNearestX = {(value, {index}) => {
                 this.setState({
-                  crosshairDataNberValue: value
+                  crosshairDataNberValue: value,
+                  //crosshairDataWilshireIndex: wilshireIndex[wilshireIndex.length-(dataNberValue.length-index)].y
+                  //crosshairDataWilshireIndex: this.state.crosshairAllDataValue[2].y
+                  crosshairDataWilshireIndex: {
+                    x: wilshireIndex[wilshireIndex.length-(dataNberValue.length-index)] !== undefined ? wilshireIndex[wilshireIndex.length-(dataNberValue.length-index)].x: null,
+                    y: wilshireIndex[wilshireIndex.length-(dataNberValue.length-index)] !== undefined ? wilshireIndex[wilshireIndex.length-(dataNberValue.length-index)].y: null
+                  }
                 })
               }}
             />
@@ -433,13 +443,21 @@ class RecessionIndicator extends Component {
           
         </XYPlot>
       </div>
+      
+      {/* -------------WILSHIRE CUMULATIVE PERFORMANCE CHART --------------*/}
       <div className={recessionIndicatorStyles.chartArea}>
 
         <XYPlot height={350} width={600}
           margin={{bottom:50, left: 100}}
           xType="time"
           colorType="linear"
-          
+          onMouseMove = {this.crosshairAllDataHandler}
+          onMouseLeave= {() => {
+            this.setState({
+              crosshairDataWilshireIndex: "",
+              crosshairAllDataValues: []
+              })
+          }}
           >
           <VerticalGridLines />
           <HorizontalGridLines />
@@ -449,6 +467,17 @@ class RecessionIndicator extends Component {
           <YAxis  
              tickLabelAngle={-45} tickPadding={5}
             />
+          <ChartLabel 
+            text="Price Index"
+            className="alt-y-label"
+            includeMargin={false}
+            xPercent={-0.12}
+            yPercent={0.65}
+            style={{
+              transform: 'rotate(-90)',
+              "fontWeight": "bold" 
+            }}
+            />
           <AreaSeries
             data = { displaySeries(this.state.dateRangeEnd, this.scaledRecProbData([wilshireIndex], dataRecDescr), "x")}
             color= "#ff9999"
@@ -456,18 +485,49 @@ class RecessionIndicator extends Component {
           <LineSeries
                data = { displaySeries(this.state.dateRangeEnd, wilshireIndex, "x")}
                color="blue"
-              />
+               onNearestX = {(value) => {
+                this.setState({
+                  crosshairDataRecDescr: value,
+                  crosshairDataNberValue: value,
+                  crosshairDataWilshireIndex: value
+                })
+              }}
+            />
           <AreaSeries
                 data = {displaySeries(this.state.dateRangeEnd, futureDateAddition, "x")}
                 color= "transparent"
               />
+          <DiscreteColorLegend
+            items={[
+              {
+                title: 'Recession >= "High" Likelihood (12 months Ahead)', 
+                color: "#ff9999"
+              }, 
+              {
+                title: 'Wilshire 5000, Price Index', 
+                color: "blue"
+              }
+            ]}
+            orientation="horizontal"
+            />
+          
+          <Crosshair 
+            values={this.state.crosshairAllDataValues}
+            titleFormat={(d) => ({title: 'Date', value: yrMonthFormat(d[0].x)})}
+            itemsFormat={(d) => 
+              [{title: 'Index Value', value: d[2].y}
+              ]
+              }
+            />
+          
 
         </XYPlot>
 
   
         </div>
         
-        <div>
+        {/* -------------WILSHIRE PAST PERFORMANCE CHART --------------*/}
+        <div className={recessionIndicatorStyles.chartArea}>
 
           <XYPlot height={350} width={600}
             margin={{bottom:50, left: 100}}
@@ -512,6 +572,7 @@ class RecessionIndicator extends Component {
 
         </div>
 
+     {/* ------------------------------TABLE -------------------------------*/}               
      <div className={recessionIndicatorStyles.tableSection} >
      <ToggleVisibility
                 whatState = {this.state.hideTable}
