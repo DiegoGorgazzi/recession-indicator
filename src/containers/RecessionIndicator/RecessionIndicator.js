@@ -343,7 +343,11 @@ class RecessionIndicator extends Component {
     //************************ RETURN ************************************
     return (
     <div>
-      <p id="hello">Hello </p>
+      <h1 className={recessionIndicatorStyles.title}>
+        US STOCK MARKET & ECONOMIC RECESSION PREDICTION 
+      </h1>
+      
+      <div className={recessionIndicatorStyles.TimeRangeController}>
       <TimeRangeController
         clickTimeRange={this.handleTimeRangeClick}
         userStartTimeState = {this.state.userStartDate}
@@ -353,7 +357,8 @@ class RecessionIndicator extends Component {
 			/>
 
       {this.state.userStartDateError} {this.state.userEndDateError}
-      
+      </div>
+
       <div>
       {this.state.userDateOutOfRangeError}
         <XYPlot height={350} width={600}
@@ -428,7 +433,7 @@ class RecessionIndicator extends Component {
           
         </XYPlot>
       </div>
-      <div>
+      <div className={recessionIndicatorStyles.chartArea}>
 
         <XYPlot height={350} width={600}
           margin={{bottom:50, left: 100}}
@@ -495,7 +500,7 @@ class RecessionIndicator extends Component {
               />  
             <LineSeries
                   data = { displaySeries(this.state.dateRangeEnd, wilshire12moPerformance, "x")} 
-                  color="#004d00"
+                  color="#003300"
                 />
             <AreaSeries
                   data =  {displaySeries(this.state.dateRangeEnd, futureDateAddition, "x")} 
