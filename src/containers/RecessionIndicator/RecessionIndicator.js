@@ -298,7 +298,19 @@ class RecessionIndicator extends Component {
       this.state.dateRangeStart, 
       this.state.dateRangeEnd);
     
+    const wilshire18moPerformance = xAndYobjects(
+      pastPerformance(wilshireWorkableData, 18), 
+      "x", 
+      "y", 
+      this.state.dateRangeStart, 
+      this.state.dateRangeEnd);
 
+    const wilshire24moPerformance = xAndYobjects(
+      pastPerformance(wilshireWorkableData, 24), 
+      "x", 
+      "y", 
+      this.state.dateRangeStart, 
+      this.state.dateRangeEnd);
     
     console.log(wilshire12moPerformance, "wilshire12moPerformance");
     
@@ -467,12 +479,23 @@ class RecessionIndicator extends Component {
               tickLabelAngle={-45} tickPadding={5}
               />
             <AreaSeries
-              data = { displaySeries(this.state.dateRangeEnd, this.scaledRecProbData([wilshire12moPerformance], dataRecDescr), "x")}
+              data = { displaySeries(this.state.dateRangeEnd, 
+                  this.scaledRecProbData([wilshire12moPerformance, 
+                    wilshire18moPerformance, wilshire24moPerformance], 
+                    dataRecDescr), "x")}
               color= "#ff9999"
               />  
             <LineSeries
+                  data = { displaySeries(this.state.dateRangeEnd, wilshire24moPerformance, "x")} 
+                  color="#00ff00"
+              />  
+            <LineSeries
+                  data = { displaySeries(this.state.dateRangeEnd, wilshire18moPerformance, "x")} 
+                  color="#009900"
+              />  
+            <LineSeries
                   data = { displaySeries(this.state.dateRangeEnd, wilshire12moPerformance, "x")} 
-                  color="green"
+                  color="#004d00"
                 />
             <AreaSeries
                   data =  {displaySeries(this.state.dateRangeEnd, futureDateAddition, "x")} 
