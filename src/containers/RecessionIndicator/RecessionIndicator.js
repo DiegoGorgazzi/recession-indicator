@@ -640,9 +640,9 @@ class RecessionIndicator extends Component {
               values={this.state.crosshairAllDataValues}
               titleFormat={(d) => ({title: 'Date', value: yrMonthFormat(d[0].x)})}
               itemsFormat={(d) => 
-                [{title: '12-mo Performance', value: d[3].y},
-                 {title: '18-mo Performance', value: d[4].y},
-                 {title: '24-mo Performance', value: d[5].y}
+                [{title: '12-mo Performance', value: math.format(d[3].y, 3)+"%"},
+                 {title: '18-mo Performance', value: math.format(d[4].y, 3)+"%"},
+                 {title: '24-mo Performance', value: math.format(d[5].y, 3)+"%"}
                 ]
                 }
               />
