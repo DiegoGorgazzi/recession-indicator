@@ -13,7 +13,8 @@ import {calcs, numberfyMergedState} from "../../logic/logic";
 import {xAndYobjects} from '../../logic/xAndY/xAndYobjects';
 import {setStartEndDate} from '../../logic/date/setStartEndDate';  
 import {checkDateInput} from '../../logic/date/checkDateInput';
-import {crosshairDisplayWords} from "../../logic/crosshair/crosshair"; 
+import {crosshairDisplayWords} from "../../logic/crosshair/crosshair";
+import {otherChartCrosshairVal} from '../../logic/crosshair/otherChartCrosshairVal'; 
 import {addDataSeries} from '../../logic/addDataSeries/addDataSeries';
 import {future12MonthsSeries} from '../../logic/addDataSeries/future12MonthsSeries';
 import {displaySeries} from '../../logic/displayGraph/displaySeries';
@@ -67,6 +68,9 @@ class RecessionIndicator extends Component {
     crosshairDataRecDescr: "",
     crosshairDataNberValue: "",
     crosshairDataWilshireIndex: "",
+    crosshairDataWilshire12moPerformance: "",
+    crosshairDataWilshire18moPerformance: "",
+    crosshairDataWilshire24moPerformance: "",
     crosshairAllDataValues: []
   }
 
@@ -199,7 +203,10 @@ class RecessionIndicator extends Component {
       crosshairAllDataValues: 
         [this.state.crosshairDataRecDescr, 
           this.state.crosshairDataNberValue,
-          this.state.crosshairDataWilshireIndex
+          this.state.crosshairDataWilshireIndex,
+          this.state.crosshairDataWilshire12moPerformance,
+          this.state.crosshairDataWilshire18moPerformance,
+          this.state.crosshairDataWilshire24moPerformance
         ]
       })
   }
@@ -347,7 +354,7 @@ class RecessionIndicator extends Component {
     return (
     <div>
       <h1 className={recessionIndicatorStyles.title}>
-        US STOCK MARKET & ECONOMIC RECESSION PREDICTION 
+        US STOCK MARKET & PREDICTING ECONOMIC RECESSIONS 
       </h1>
       
       <div className={recessionIndicatorStyles.TimeRangeController}>
@@ -408,13 +415,8 @@ class RecessionIndicator extends Component {
               color={0.75}
               onNearestX = {(value, {index}) => {
                 this.setState({
-                  crosshairDataNberValue: value,
-                  //crosshairDataWilshireIndex: wilshireIndex[wilshireIndex.length-(dataNberValue.length-index)].y
-                  //crosshairDataWilshireIndex: this.state.crosshairAllDataValue[2].y
-                  crosshairDataWilshireIndex: {
-                    x: wilshireIndex[wilshireIndex.length-(dataNberValue.length-index)] !== undefined ? wilshireIndex[wilshireIndex.length-(dataNberValue.length-index)].x: null,
-                    y: wilshireIndex[wilshireIndex.length-(dataNberValue.length-index)] !== undefined ? wilshireIndex[wilshireIndex.length-(dataNberValue.length-index)].y: null
-                  }
+                  crosshairDataNberValue: value,  
+                  crosshairDataWilshireIndex: otherChartCrosshairVal(dataNberValue, wilshireIndex, index)
                 })
               }}
             />
@@ -533,7 +535,15 @@ class RecessionIndicator extends Component {
             margin={{bottom:50, left: 100}}
             xType="time"
             colorType="linear"
-            
+            onMouseMove = {this.crosshairAllDataHandler}
+            onMouseLeave= {() => {
+              this.setState({
+                crosshairDataWilshire12moPerformance: "",
+                crosshairDataWilshire18moPerformance: "",
+                crosshairDataWilshire24moPerformance: "",
+                crosshairAllDataValues: []
+                })
+            }} 
             >
             <VerticalGridLines />
             <HorizontalGridLines />
@@ -542,6 +552,17 @@ class RecessionIndicator extends Component {
               />
             <YAxis  
               tickLabelAngle={-45} tickPadding={5}
+              />
+            <ChartLabel 
+              text="Percentage"
+              className="alt-y-label"
+              includeMargin={false}
+              xPercent={-0.12}
+              yPercent={0.65}
+              style={{
+                transform: 'rotate(-90)',
+                "fontWeight": "bold" 
+              }}
               />
             <AreaSeries
               data = { displaySeries(this.state.dateRangeEnd, 
@@ -553,19 +574,75 @@ class RecessionIndicator extends Component {
             <LineSeries
                   data = { displaySeries(this.state.dateRangeEnd, wilshire24moPerformance, "x")} 
                   color="#00ff00"
+                  onNearestX = {(value) => {
+                    this.setState({
+                      crosshairDataRecDescr: value,
+                      crosshairDataNberValue: value,
+                      crosshairDataWilshire24moPerformance: value
+                    })
+                  }}
               />  
             <LineSeries
                   data = { displaySeries(this.state.dateRangeEnd, wilshire18moPerformance, "x")} 
                   color="#009900"
+                  onNearestX = {(value) => {
+                    this.setState({
+                      crosshairDataRecDescr: value,
+                      crosshairDataNberValue: value,
+                      crosshairDataWilshire18moPerformance: value
+                    })
+                  }}
               />  
             <LineSeries
                   data = { displaySeries(this.state.dateRangeEnd, wilshire12moPerformance, "x")} 
                   color="#003300"
+                  onNearestX = {(value, {index}) => {
+                    this.setState({
+                      crosshairDataRecDescr: value,
+                      crosshairDataNberValue: value,
+                      crosshairDataWilshireIndex: {
+                        x: wilshireIndex[wilshireIndex.length-(dataNberValue.length-index)] !== undefined ? wilshireIndex[wilshireIndex.length-(dataNberValue.length-index)].x: null,
+                        y: wilshireIndex[wilshireIndex.length-(dataNberValue.length-index)] !== undefined ? wilshireIndex[wilshireIndex.length-(dataNberValue.length-index)].y: null
+                      },
+                      crosshairDataWilshire12moPerformance: value
+                    })
+                  }}
                 />
             <AreaSeries
                   data =  {displaySeries(this.state.dateRangeEnd, futureDateAddition, "x")} 
                   color= "transparent"
                 />
+            <DiscreteColorLegend
+                items={[
+                  {
+                    title: 'Recession >= "High" Likelihood (12 months Ahead)', 
+                    color: "#ff9999"
+                  }, 
+                  {
+                    title: 'Wilshire 12-month Performance', 
+                    color: "#003300"
+                  },
+                  {
+                    title: 'Wilshire 18-month Performance', 
+                    color: "#009900"
+                  },
+                  {
+                    title: 'Wilshire 24-month Performance', 
+                    color: "#00ff00"
+                  }
+                ]}
+                orientation="horizontal"
+                />
+            <Crosshair 
+              values={this.state.crosshairAllDataValues}
+              titleFormat={(d) => ({title: 'Date', value: yrMonthFormat(d[0].x)})}
+              itemsFormat={(d) => 
+                [{title: '12-mo Performance', value: d[3].y},
+                 {title: '18-mo Performance', value: d[4].y},
+                 {title: '24-mo Performance', value: d[5].y}
+                ]
+                }
+              />
 
           </XYPlot>
 
