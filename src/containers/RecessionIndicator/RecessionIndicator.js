@@ -19,6 +19,7 @@ import {addDataSeries} from '../../logic/addDataSeries/addDataSeries';
 import {future12MonthsSeries} from '../../logic/addDataSeries/future12MonthsSeries';
 import {displaySeries} from '../../logic/displayGraph/displaySeries';
 import {pastPerformance} from '../../logic/addDataSeries/pastPerformance';
+import {futurePerformance} from '../../logic/addDataSeries/futurePerformance';
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
 
@@ -300,7 +301,7 @@ class RecessionIndicator extends Component {
                     this.state.dateRangeStart, 
                     this.state.dateRangeEnd);
     
-    //WILSHIRE PERFORMANCE
+    //WILSHIRE PAST PERFORMANCE
     const wilshire12moPerformance = xAndYobjects(
       pastPerformance(wilshireWorkableData, 12), 
       "x", 
@@ -317,6 +318,28 @@ class RecessionIndicator extends Component {
 
     const wilshire24moPerformance = xAndYobjects(
       pastPerformance(wilshireWorkableData, 24), 
+      "x", 
+      "y", 
+      this.state.dateRangeStart, 
+      this.state.dateRangeEnd);
+    
+    //WILSHIRE FUTURE PERFORMANCE
+    const wilshire12moFuturePerformance = xAndYobjects(
+      futurePerformance(wilshireWorkableData, 12), 
+      "x", 
+      "y", 
+      this.state.dateRangeStart, 
+      this.state.dateRangeEnd);
+    
+    const wilshire18moFuturePerformance = xAndYobjects(
+      futurePerformance(wilshireWorkableData, 18), 
+      "x", 
+      "y", 
+      this.state.dateRangeStart, 
+      this.state.dateRangeEnd);
+
+    const wilshire24moFuturePerformance = xAndYobjects(
+      futurePerformance(wilshireWorkableData, 24), 
       "x", 
       "y", 
       this.state.dateRangeStart, 
@@ -651,6 +674,125 @@ class RecessionIndicator extends Component {
 
 
         </div>
+
+        {/* -------------WILSHIRE FUTURE PERFORMANCE CHART --------------*/}
+        <div className={recessionIndicatorStyles.chartArea}>
+
+        <XYPlot height={350} width={600}
+          margin={{bottom:50, left: 100}}
+          xType="time"
+          colorType="linear"
+          onMouseMove = {this.crosshairAllDataHandler}
+          onMouseLeave= {() => {
+            this.setState({
+              crosshairDataWilshire12moPerformance: "",
+              crosshairDataWilshire18moPerformance: "",
+              crosshairDataWilshire24moPerformance: "",
+              crosshairAllDataValues: []
+              })
+          }} 
+          >
+          <VerticalGridLines />
+          <HorizontalGridLines />
+          <XAxis  
+            tickLabelAngle={-45} tickPadding={5}
+            />
+          <YAxis  
+            tickLabelAngle={-45} tickPadding={5}
+            />
+          <ChartLabel 
+            text="Percentage"
+            className="alt-y-label"
+            includeMargin={false}
+            xPercent={-0.12}
+            yPercent={0.65}
+            style={{
+              transform: 'rotate(-90)',
+              "fontWeight": "bold" 
+            }}
+            />
+          <AreaSeries
+            data = { displaySeries(this.state.dateRangeEnd, 
+                this.scaledRecProbData([wilshire12moFuturePerformance, 
+                  wilshire18moFuturePerformance, wilshire24moFuturePerformance], 
+                  dataRecDescr), "x")}
+            color= "#ff9999"
+            />  
+          <LineSeries
+                data = { displaySeries(this.state.dateRangeEnd, wilshire24moFuturePerformance, "x")} 
+                color="#00ff00"
+                onNearestX = {(value) => {
+                  this.setState({
+                    crosshairDataRecDescr: value,
+                    crosshairDataNberValue: value,
+                    crosshairDataWilshire24moPerformance: value
+                  })
+                }}
+            />  
+          <LineSeries
+                data = { displaySeries(this.state.dateRangeEnd, wilshire18moFuturePerformance, "x")} 
+                color="#009900"
+                onNearestX = {(value) => {
+                  this.setState({
+                    crosshairDataRecDescr: value,
+                    crosshairDataNberValue: value,
+                    crosshairDataWilshire18moPerformance: value
+                  })
+                }}
+            />  
+          <LineSeries
+                data = { displaySeries(this.state.dateRangeEnd, wilshire12moFuturePerformance, "x")} 
+                color="#003300"
+                onNearestX = {(value, {index}) => {
+                  this.setState({
+                    crosshairDataRecDescr: value,
+                    crosshairDataNberValue: value,
+                    crosshairDataWilshireIndex: otherChartCrosshairVal(dataNberValue, wilshireIndex, index+12),
+                    crosshairDataWilshire12moPerformance: value
+                  })
+                }}
+              />
+          <AreaSeries
+                data =  {displaySeries(this.state.dateRangeEnd, futureDateAddition, "x")} 
+                color= "transparent"
+              />
+          <DiscreteColorLegend
+              items={[
+                {
+                  title: 'Recession >= "High" Likelihood (12 months Ahead)', 
+                  color: "#ff9999"
+                }, 
+                {
+                  title: 'Wilshire 12-month Performance', 
+                  color: "#003300"
+                },
+                {
+                  title: 'Wilshire 18-month Performance', 
+                  color: "#009900"
+                },
+                {
+                  title: 'Wilshire 24-month Performance', 
+                  color: "#00ff00"
+                }
+              ]}
+              orientation="horizontal"
+              />
+          <Crosshair 
+            values={this.state.crosshairAllDataValues}
+            titleFormat={(d) => ({title: 'Date', value: yrMonthFormat(d[0].x)})}
+            itemsFormat={(d) => 
+              [{title: '12-mo Performance', value: math.format(d[3].y, 3)+"%"},
+              {title: '18-mo Performance', value: math.format(d[4].y, 3)+"%"},
+              {title: '24-mo Performance', value: math.format(d[5].y, 3)+"%"}
+              ]
+              }
+            />
+
+        </XYPlot>
+
+
+      </div>
+
 
      {/* ------------------------------TABLE -------------------------------*/}               
      <div className={recessionIndicatorStyles.tableSection} >
