@@ -523,7 +523,7 @@ class RecessionIndicator extends Component {
             /> 
           <LineSeries
                data = { displaySeries(this.state.dateRangeEnd, wilshireIndex, "x")}
-               color="blue"
+               color="#800080"
                onNearestX = {(value, {index}) => {
                 this.setState({
                   crosshairDataRecDescr: otherChartCrosshairVal(dataNberValue, dataRecDescr, index),
@@ -550,7 +550,7 @@ class RecessionIndicator extends Component {
               }, 
               {
                 title: 'Wilshire 5000, Price Index', 
-                color: "blue"
+                color: "#800080"
               }
             ]}
             orientation="horizontal"
@@ -745,7 +745,7 @@ class RecessionIndicator extends Component {
             />  
           <LineSeries
                 data = { displaySeries(this.state.dateRangeEnd, wilshire24moFuturePerformance, "x")} 
-                color="#00ff00"
+                color="#6666ff"
                 onNearestX = {(value, {index}) => {
                   this.setState({
                     crosshairDataRecDescr: otherChartCrosshairVal(dataNberValue, dataRecDescr, index),
@@ -757,7 +757,7 @@ class RecessionIndicator extends Component {
             />  
           <LineSeries
                 data = { displaySeries(this.state.dateRangeEnd, wilshire18moFuturePerformance, "x")} 
-                color="#009900"
+                color="#0000e6"
                 onNearestX = {(value, {index}) => {
                   this.setState({
                     crosshairDataRecDescr: otherChartCrosshairVal(dataNberValue, dataRecDescr, index),
@@ -770,7 +770,7 @@ class RecessionIndicator extends Component {
             />  
           <LineSeries
                 data = { displaySeries(this.state.dateRangeEnd, wilshire12moFuturePerformance, "x")} 
-                color="#003300"
+                color="#000066"
                 onNearestX = {(value, {index}) => {
                   this.setState({
                     crosshairDataRecDescr: otherChartCrosshairVal(dataNberValue, dataRecDescr, index),
