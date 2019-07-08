@@ -19,6 +19,7 @@ export const filteredResponse = (toBeFiltered, name) => {
 export const mergedResponse = (mainToBeMerged, additionalArr, name) => {
   //Since data sets have different starting dates, we need to
   //check to see which is the longest array to map through
+    if (mainToBeMerged !== undefined && additionalArr !== undefined) {
       if(mainToBeMerged.length > additionalArr.length) {
         return mainToBeMerged.map((eachObject, index) => {
           const date = eachObject.date;
@@ -53,7 +54,8 @@ export const mergedResponse = (mainToBeMerged, additionalArr, name) => {
           }
         );
       }
-    };
+    }
+  };
 
 //************************************************************************
 //Helper function to create a deep clone of an array with the signature:
@@ -109,12 +111,14 @@ export const dateFormatConverter = (stringToBeChanged) => {
 
   let formattedDateArr = [...splitDateStringArr];
 
-  if (formattedDateArr[0].length === 1) {
-      formattedDateArr[0]="0"+formattedDateArr[0];
-  }
+  if(formattedDateArr.length > 7) {
+    if (formattedDateArr[0].length === 1) {
+        formattedDateArr[0]="0"+formattedDateArr[0];
+    }
 
-  if (formattedDateArr[1].length === 1) {
-      formattedDateArr[1]="0"+formattedDateArr[1];
+    if (formattedDateArr[1].length === 1) {
+        formattedDateArr[1]="0"+formattedDateArr[1];
+    }
   }
 
   let newDateArr = [formattedDateArr[2], formattedDateArr[0], formattedDateArr[1]];

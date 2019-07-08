@@ -1,3 +1,20 @@
+.title {
+  font-weight: 700;
+  margin: 20px;
+  margin-bottom: 50px;
+}
+
+.chartArea {
+  margin-top: 80px;
+  margin-bottom: 30px;
+}
+
 .tableSection {
     padding-top: 80px;
-  }
+}
+
+.TimeRangeController {
+  margin: 30px 5px 30px 5px;
+}
+
+
