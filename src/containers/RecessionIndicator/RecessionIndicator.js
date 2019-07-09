@@ -396,11 +396,12 @@ class RecessionIndicator extends Component {
 			/>
 
       {this.state.userStartDateError} {this.state.userEndDateError}
+      {this.state.userDateOutOfRangeError}
       </div>
 
       {/* ------------- RECESSION AND PREDICTIONS CHART --------------*/}
       <div>
-      {this.state.userDateOutOfRangeError}
+      
         <XYPlot height={350} width={600}
           margin={{bottom:50, left: 100}}
           xType="time"
@@ -793,15 +794,15 @@ class RecessionIndicator extends Component {
                 }, 
                 {
                   title: 'Wilshire 12-month FUTURE Performance', 
-                  color: "#003300"
+                  color: "#000066"
                 },
                 {
                   title: 'Wilshire 18-month FUTURE Performance', 
-                  color: "#009900"
+                  color: "#0000e6"
                 },
                 {
                   title: 'Wilshire 24-month FUTURE Performance', 
-                  color: "#00ff00"
+                  color: "#6666ff"
                 }
               ]}
               orientation="horizontal"
