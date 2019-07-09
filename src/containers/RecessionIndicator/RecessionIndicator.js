@@ -26,7 +26,7 @@ import * as d3 from "d3-time-format";
 //************************* react-vis *******************************
 import {XYPlot, LineSeries, VerticalGridLines, HorizontalGridLines,
   XAxis, YAxis, VerticalBarSeries, AreaSeries, DiscreteColorLegend, 
- ChartLabel, Crosshair} from 'react-vis';
+ ChartLabel, Crosshair, FlexibleXYPlot } from 'react-vis';
 import 'react-vis/dist/style.css';
 
 //******************** BootstrapTable **********************************
@@ -381,10 +381,12 @@ class RecessionIndicator extends Component {
 
     //************************ RETURN ************************************
     return (
-    <div>
+    <div className = {recessionIndicatorStyles.container}>
+      <header>
       <h1 className={recessionIndicatorStyles.title}>
         The Stock Market & Predicting Recessions 
       </h1>
+      </header>
       
       <div className={recessionIndicatorStyles.TimeRangeController}>
       <TimeRangeController
@@ -400,10 +402,11 @@ class RecessionIndicator extends Component {
       </div>
 
       {/* ------------- RECESSION AND PREDICTIONS CHART --------------*/}
-      <div>
+      <div className= {recessionIndicatorStyles.chartArea}>
       
-        <XYPlot height={350} width={600}
-          margin={{bottom:50, left: 100}}
+        <FlexibleXYPlot 
+          margin={{bottom:35, left: 70}}
+          className = {recessionIndicatorStyles.plot}
           xType="time"
           colorType="linear"
           onMouseMove = {this.crosshairAllDataHandler}
@@ -423,6 +426,7 @@ class RecessionIndicator extends Component {
             tickFormat={v => WORDS[v]} 
             tickLabelAngle={-45} tickPadding={5}
             />
+          
           <ChartLabel 
             text="Recession likelihood, Actual"
             className="alt-y-label"
@@ -434,6 +438,7 @@ class RecessionIndicator extends Component {
               "fontWeight": "bold" 
             }}
             />
+          
           <AreaSeries
               data = { displaySeries(this.state.dateRangeEnd, dataRecDescr, "x")}
               color="#ff9999" stroke="#f70"
@@ -470,6 +475,7 @@ class RecessionIndicator extends Component {
             ]}
             orientation="horizontal"
             />
+          
           <Crosshair 
             values={this.crosshairDisplayHandler()}
             titleFormat={(d) => ({title: 'Date', value: yrMonthFormat(d[0].x)})}
@@ -479,13 +485,30 @@ class RecessionIndicator extends Component {
               }
             />
           
-        </XYPlot>
+        </FlexibleXYPlot>
       </div>
+      {/*
+      <div>
+      <DiscreteColorLegend
+            items={[
+              {
+                title: 'Recession Likelihood (12 months Ahead)', 
+                color: "#ff9999"
+              }, 
+              {
+                title: 'Actual Recession', 
+                color: "black"
+              }
+            ]}
+            orientation="horizontal"
+            />
+      </div>
+          */}
       
       {/* -------------WILSHIRE CUMULATIVE PERFORMANCE CHART --------------*/}
       <div className={recessionIndicatorStyles.chartArea}>
 
-        <XYPlot height={350} width={600}
+        <FlexibleXYPlot 
           margin={{bottom:50, left: 100}}
           xType="time"
           colorType="linear"
@@ -567,7 +590,7 @@ class RecessionIndicator extends Component {
             />
           
 
-        </XYPlot>
+        </FlexibleXYPlot >
 
   
         </div>
@@ -575,7 +598,7 @@ class RecessionIndicator extends Component {
         {/* -------------WILSHIRE PAST PERFORMANCE CHART --------------*/}
         <div className={recessionIndicatorStyles.chartArea}>
 
-          <XYPlot height={350} width={600}
+          <FlexibleXYPlot 
             margin={{bottom:50, left: 100}}
             xType="time"
             colorType="linear"
@@ -696,7 +719,7 @@ class RecessionIndicator extends Component {
                 }
               />
 
-          </XYPlot>
+          </FlexibleXYPlot >
 
 
         </div>
@@ -704,7 +727,7 @@ class RecessionIndicator extends Component {
         {/* -------------WILSHIRE FUTURE PERFORMANCE CHART --------------*/}
         <div className={recessionIndicatorStyles.chartArea}>
 
-        <XYPlot height={350} width={600}
+        <FlexibleXYPlot 
           margin={{bottom:50, left: 100}}
           xType="time"
           colorType="linear"
@@ -818,7 +841,7 @@ class RecessionIndicator extends Component {
               }
             />
 
-        </XYPlot>
+        </FlexibleXYPlot >
 
 
       </div>
