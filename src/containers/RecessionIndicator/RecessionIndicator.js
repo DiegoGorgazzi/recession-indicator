@@ -65,6 +65,8 @@ class RecessionIndicator extends Component {
     userDateOutOfRangeError: "",
     // ******* TOGGLE ******
     hideTable: true,
+    // ******* WINDOW WIDTH ******
+    currentWindowWidth: window.innerWidth,
     //**** CROSSHAIR RELATED STATES ***
     crosshairDataRecDescr: "",
     crosshairDataNberValue: "",
@@ -79,6 +81,8 @@ class RecessionIndicator extends Component {
   }
 
   componentDidMount () {
+    window.addEventListener("resize", this.getWindowWidth);
+
     axios.all([
       axios.get(tenYearYield),
       axios.get(threeMonthYield),
@@ -112,8 +116,11 @@ class RecessionIndicator extends Component {
           }
         ));
 
-        
     }
+
+  componentWillUnmount() {
+      window.removeEventListener("resize", this.getWindowWidth);
+  }
 
   componentDidUpdate(previousProps, previousState, snapshot) {
     if(previousState.tenThreeMerged.length === 0 || previousState.tenThreeMerged.length === 1 ) {
@@ -270,9 +277,31 @@ class RecessionIndicator extends Component {
     return dataToScale;
   }
 
-  render() {
-    
+  //This is needed for variableChartLabel
+  getWindowWidth = () => {
+    this.setState({
+      currentWindowWidth: window.innerWidth
+    });
+  }
 
+  //Function to physically fix the location of the y-axis
+    //label in the component ChartLabel
+    //whenever the width of the chart is variable
+    //Since no id is available as a prop in the ChartLabel
+    //use the className as the replacement for Id so, 
+    //make sure you use UNIQUE names
+    variableChartLabel = (UniqueClassName, margin) => {
+      if(document.getElementsByClassName(UniqueClassName)[0] !== undefined) {
+        const width = document.getElementsByClassName(UniqueClassName)[0]
+                        .parentElement.width.animVal.value
+        let  xPos = margin / width;
+       
+        return xPos;
+      }
+      
+    }
+
+  render() {
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
     //--is going to have to be part of state.
@@ -377,7 +406,7 @@ class RecessionIndicator extends Component {
     console.log(this.state.crosshairAllDataValues, "crosshairAllDataValues");
 
 
-    console.log(this.scaledRecProbData(wilshire12moPerformance, dataRecDescr), "scaledRecProbData");
+    console.log(this.scaledRecProbData(wilshire12moPerformance, dataRecDescr), "scaledRecProbData");  
 
     //************************ RETURN ************************************
     return (
@@ -429,13 +458,15 @@ class RecessionIndicator extends Component {
           
           <ChartLabel 
             text="Recession likelihood, Actual"
-            className="alt-y-label"
+            //IMPORTANT, DO NOT DELETE OR RENAME CLASSNAME
+            //AS IT IS USED BY THE variableChartLabel FUNCTION
+            className="altYlabelRecession"
             includeMargin={false}
-            xPercent={-0.12}
+            xPercent={this.variableChartLabel("altYlabelRecession", -65)}
             yPercent={0.80}
             style={{
               transform: 'rotate(-90)',
-              "fontWeight": "bold" 
+              fontWeight: "bold"
             }}
             />
           
@@ -509,7 +540,7 @@ class RecessionIndicator extends Component {
       <div className={recessionIndicatorStyles.chartArea}>
 
         <FlexibleXYPlot 
-          margin={{bottom:50, left: 100}}
+          margin={{bottom:50, left: 70}}
           xType="time"
           colorType="linear"
           onMouseMove = {this.crosshairAllDataHandler}
@@ -532,9 +563,9 @@ class RecessionIndicator extends Component {
             />
           <ChartLabel 
             text="Price Index"
-            className="alt-y-label"
+            className="altYlabelWilshire"
             includeMargin={false}
-            xPercent={-0.12}
+            xPercent={this.variableChartLabel("altYlabelWilshire", -65)}
             yPercent={0.65}
             style={{
               transform: 'rotate(-90)',
@@ -599,7 +630,7 @@ class RecessionIndicator extends Component {
         <div className={recessionIndicatorStyles.chartArea}>
 
           <FlexibleXYPlot 
-            margin={{bottom:50, left: 100}}
+            margin={{bottom:50, left: 70}}
             xType="time"
             colorType="linear"
             onMouseMove = {this.crosshairAllDataHandler}
@@ -622,9 +653,9 @@ class RecessionIndicator extends Component {
               />
             <ChartLabel 
               text="Percentage"
-              className="alt-y-label"
+              className="altYlabelPastPerf"
               includeMargin={false}
-              xPercent={-0.12}
+              xPercent={this.variableChartLabel("altYlabelPastPerf", -65)}
               yPercent={0.65}
               style={{
                 transform: 'rotate(-90)',
@@ -728,7 +759,7 @@ class RecessionIndicator extends Component {
         <div className={recessionIndicatorStyles.chartArea}>
 
         <FlexibleXYPlot 
-          margin={{bottom:50, left: 100}}
+          margin={{bottom:50, left: 70}}
           xType="time"
           colorType="linear"
           onMouseMove = {this.crosshairAllDataHandler}
@@ -751,9 +782,9 @@ class RecessionIndicator extends Component {
             />
           <ChartLabel 
             text="Percentage"
-            className="alt-y-label"
+            className="altYlabelFutPerf"
             includeMargin={false}
-            xPercent={-0.12}
+            xPercent={this.variableChartLabel("altYlabelFutPerf", -65)}
             yPercent={0.65}
             style={{
               transform: 'rotate(-90)',
