@@ -408,6 +408,13 @@ class RecessionIndicator extends Component {
 
     console.log(this.scaledRecProbData(wilshire12moPerformance, dataRecDescr), "scaledRecProbData");  
 
+    // ************ Legend  *********************
+    const legendStyle = {
+      display: "flex",
+      flexWrap: "wrap",
+      maxHeight: 100
+    }
+
     //************************ RETURN ************************************
     return (
     <div className = {recessionIndicatorStyles.container}>
@@ -455,7 +462,7 @@ class RecessionIndicator extends Component {
             tickFormat={v => WORDS[v]} 
             tickLabelAngle={-45} tickPadding={5}
             />
-          
+        
           <ChartLabel 
             text="Recession likelihood, Actual"
             //IMPORTANT, DO NOT DELETE OR RENAME CLASSNAME
@@ -494,6 +501,7 @@ class RecessionIndicator extends Component {
             />
 
           <DiscreteColorLegend
+            style={legendStyle}
             items={[
               {
                 title: 'Recession Likelihood (12 months Ahead)', 
@@ -518,29 +526,13 @@ class RecessionIndicator extends Component {
           
         </FlexibleXYPlot>
       </div>
-      {/*
-      <div>
-      <DiscreteColorLegend
-            items={[
-              {
-                title: 'Recession Likelihood (12 months Ahead)', 
-                color: "#ff9999"
-              }, 
-              {
-                title: 'Actual Recession', 
-                color: "black"
-              }
-            ]}
-            orientation="horizontal"
-            />
-      </div>
-          */}
       
       {/* -------------WILSHIRE CUMULATIVE PERFORMANCE CHART --------------*/}
       <div className={recessionIndicatorStyles.chartArea}>
 
         <FlexibleXYPlot 
           margin={{bottom:50, left: 70}}
+          className = {recessionIndicatorStyles.plot}
           xType="time"
           colorType="linear"
           onMouseMove = {this.crosshairAllDataHandler}
@@ -598,6 +590,7 @@ class RecessionIndicator extends Component {
                 color= "transparent"
               />
           <DiscreteColorLegend
+            style={legendStyle}
             items={[
               {
                 title: 'Recession >= "High" Likelihood (12 months Ahead)', 
@@ -631,6 +624,7 @@ class RecessionIndicator extends Component {
 
           <FlexibleXYPlot 
             margin={{bottom:50, left: 70}}
+            className = {recessionIndicatorStyles.plot}
             xType="time"
             colorType="linear"
             onMouseMove = {this.crosshairAllDataHandler}
@@ -719,6 +713,7 @@ class RecessionIndicator extends Component {
                   color= "transparent"
                 />
             <DiscreteColorLegend
+                style={legendStyle}
                 items={[
                   {
                     title: 'Recession >= "High" Likelihood (12 months Ahead)', 
@@ -760,6 +755,7 @@ class RecessionIndicator extends Component {
 
         <FlexibleXYPlot 
           margin={{bottom:50, left: 70}}
+          className = {recessionIndicatorStyles.plot}
           xType="time"
           colorType="linear"
           onMouseMove = {this.crosshairAllDataHandler}
@@ -841,6 +837,7 @@ class RecessionIndicator extends Component {
                 color= "transparent"
               />
           <DiscreteColorLegend
+              style={legendStyle}
               items={[
                 {
                   title: 'Recession >= "High" Likelihood (12 months Ahead)', 
