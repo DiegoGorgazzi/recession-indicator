@@ -9,16 +9,28 @@
   width: 100%;
   margin-left: auto;
   margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .showMoreArrowUp {
   margin-bottom: -25px;
   font-size: 36px;
   display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .showMoreArrowDown {
   margin-top: -25px;
   font-size: 36px;
   display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
