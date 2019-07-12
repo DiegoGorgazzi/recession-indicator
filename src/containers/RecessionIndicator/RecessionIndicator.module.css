@@ -36,6 +36,37 @@
 
 .TimeRangeController {
   margin: 30px 5px 30px 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.TimeRangeController > div {
+  margin: 30px 5px 30px 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.TimeRangeController > div > div {
+  margin: 5px 5px 5px 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 
 
+.TimeRangeController > div > div >div {
+  margin: 5px 5px 5px 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
