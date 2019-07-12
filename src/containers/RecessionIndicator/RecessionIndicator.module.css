@@ -27,7 +27,8 @@
 }
 
 .plot {
-  background-color: hsla(0, 0%, 98%, 0.8);
+  background-color: hsla(0, 0%, 98%, .6);
+  font-weight: 500;
 }
 
 .tableSection {
