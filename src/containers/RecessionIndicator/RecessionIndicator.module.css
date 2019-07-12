@@ -9,8 +9,12 @@
   font-weight: 700;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
   text-align: center;
   justify-content: center;
+  color: #0081f2;
+  font-family: Helvetica, Arial;
 }
 
 .chartArea {
@@ -34,25 +38,58 @@
     justify-content: center;
 }
 
+.TimeRangeController-container {
+  margin: 0px 0px 0px 0px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.TimeRangeController-container >button {
+  height: 45px;
+  font-size: 18px;
+  background-color: #0081f2;
+  border: none;
+  border-radius: 3px;
+  color: white;
+}
+
+
 .TimeRangeController {
-  margin: 30px 5px 30px 5px;
+  margin: 5px 5px 5px 5px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+  font-weight: bold;
 }
 
-.TimeRangeController > div {
-  margin: 30px 5px 30px 5px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
+.TimeRangeController button {
+  width: 60px;
+  height: 45px;
+  font-size: 18px;
+  background-color: #0081f2;
+  border: 50px;
+  border-radius: 0px;
+  color: white;
 }
 
-.TimeRangeController > div > div {
+@media (hover: hover) {
+  button:hover  {
+    background-color: #1a74c4;
+  }
+}
+
+.dateErrorMessage {
+  font-weight: bold;
+  color: red;
+  background-color: rgb(27, 190, 62);
+}
+
+.TimeUserRange-container {
   margin: 5px 5px 5px 5px;
   display: flex;
   flex-direction: row;
@@ -62,11 +99,16 @@
 }
 
 
-.TimeRangeController > div > div >div {
+.TimeUserRange {
   margin: 5px 5px 5px 5px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+}
+
+.TimeUserRange input {
+  height: 45px;
+  width: 130px;
 }

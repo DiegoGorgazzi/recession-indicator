@@ -3,8 +3,8 @@ import TimeRange from "../TimeRange/TimeRange";
 import TimeUserRange from "../TimeUserRange/TimeUserRange";
 
 const timeRangeController = (props) => (
-      <div>
-        <div>
+      <div className={props.timeRangeContainerClassName}>
+        <div className={props.timeRangeClassName}>
           <TimeRange
             timeRangeName="2Y"
             controlClickTimeRange={props.clickTimeRange}
@@ -40,17 +40,17 @@ const timeRangeController = (props) => (
             controlClickTimeRange={props.clickTimeRange}
             timeRangeID="allyrRange" />
         </div>
-        <div>
-          <div>
-            <span style={{marginRight: "5px"}}> From: </span>
+        <div className={props.timeUserRangeContainerClassName}>
+          <div className = {props.timeUserRangeClassName}>
+            <span style={{marginLeft: "5px", marginRight: "5px"}}> From: </span>
               <TimeUserRange
                     controlUserTimeState = {props.userStartTimeState}
                     nameDate = "userStartDate"
                     controlUserDateHandler = {props.userDateHandler}
                   />
           </div>
-          <div>
-            <span style={{marginRight: "5px"}}> To: </span>
+          <div className = {props.timeUserRangeClassName}>
+            <span style={{marginLeft: "5px", marginRight:"5px"}}> To: </span>
               <TimeUserRange
                     controlUserTimeState = {props.userEndTimeState}
                     nameDate = "userEndDate"

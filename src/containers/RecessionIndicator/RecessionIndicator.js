@@ -419,22 +419,27 @@ class RecessionIndicator extends Component {
     return (
     <div className = {recessionIndicatorStyles.container}>
       <header>
-      <h1 className={recessionIndicatorStyles.title}>
-        The Stock Market & Predicting Recessions 
-      </h1>
+        <h1 className={recessionIndicatorStyles.title}>
+          The Stock Market & Predicting Recessions 
+        </h1>
       </header>
       
-      <div className={recessionIndicatorStyles.TimeRangeController}>
-      <TimeRangeController
-        clickTimeRange={this.handleTimeRangeClick}
-        userStartTimeState = {this.state.userStartDate}
-				userEndTimeState = {this.state.userEndDate} 
-        userDateHandler = {this.handleUserDateInput}
-        userDateSetter = {this.applyUserInputDate} 					
-			/>
-
-      {this.state.userStartDateError} {this.state.userEndDateError}
-      {this.state.userDateOutOfRangeError}
+      <div>
+        <TimeRangeController
+          clickTimeRange={this.handleTimeRangeClick}
+          userStartTimeState = {this.state.userStartDate}
+          userEndTimeState = {this.state.userEndDate} 
+          userDateHandler = {this.handleUserDateInput}
+          userDateSetter = {this.applyUserInputDate} 	
+          timeRangeContainerClassName= {recessionIndicatorStyles["TimeRangeController-container"]}				
+          timeRangeClassName= {recessionIndicatorStyles.TimeRangeController}				
+          timeUserRangeContainerClassName = {recessionIndicatorStyles["TimeUserRange-container"]}
+          timeUserRangeClassName = {recessionIndicatorStyles.TimeUserRange}
+        />
+        <span className={recessionIndicatorStyles.dateErrorMessage}>
+          {this.state.userStartDateError} {this.state.userEndDateError}
+          {this.state.userDateOutOfRangeError}
+        </span>
       </div>
 
       {/* ------------- RECESSION AND PREDICTIONS CHART --------------*/}
