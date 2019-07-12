@@ -97,9 +97,17 @@
 }
 
 .dateErrorMessage {
+  margin: 5px 5px 5px 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: Helvetica, Arial;
   font-weight: bold;
-  color: red;
-  background-color: rgb(27, 190, 62);
+  color: #CC0000;
+  background-color: #FCE9E9;
 }
 
 .TimeUserRange-container {
