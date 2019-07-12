@@ -47,6 +47,12 @@
   justify-content: center;
 }
 
+@media (max-width: 800px) {
+  .TimeRangeController-container  {
+    max-width: 526px;
+  }
+}
+
 .TimeRangeController-container >button {
   height: 45px;
   font-size: 18px;
@@ -64,7 +70,7 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  font-weight: bold; 
 }
 
 .TimeRangeController button {
@@ -75,6 +81,13 @@
   border: 50px;
   border-radius: 0px;
   color: white;
+}
+
+@media (max-width: 430px) {
+  .TimeRangeController button {
+    height: 60px;
+    flex-grow: 1; 
+  }
 }
 
 @media (hover: hover) {
@@ -98,6 +111,12 @@
   justify-content: center;
 }
 
+@media (max-width: 800px) {
+  .TimeUserRange-container  {
+    margin: 18px 5px 18px 5px;
+  }
+}
+
 
 .TimeUserRange {
   margin: 5px 5px 5px 5px;
@@ -110,5 +129,11 @@
 
 .TimeUserRange input {
   height: 45px;
-  width: 130px;
+  width: 104px;
+}
+
+@media (max-width: 474px) {
+  .TimeUserRange button {
+    height: 60px;
+  }
 }
