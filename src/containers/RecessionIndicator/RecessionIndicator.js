@@ -66,7 +66,7 @@ class RecessionIndicator extends Component {
     // ******* TOGGLE ******
     hideTable: true,
     // ******* WINDOW WIDTH ******
-    currentWindowWidth: window.innerWidth,
+    currentWindowWidth: "",
     //**** CROSSHAIR RELATED STATES ***
     crosshairDataRecDescr: "",
     crosshairDataNberValue: "",
