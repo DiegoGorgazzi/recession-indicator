@@ -891,7 +891,10 @@ class RecessionIndicator extends Component {
               />
 
         {!this.state.hideTable &&
-              <Table data={this.state.tenThreeMerged}/>}
+              <Table 
+                tableContainerClass = {recessionIndicatorStyles["Table-container"]}
+                data={this.state.tenThreeMerged}
+                />}
 
         
       </div>
