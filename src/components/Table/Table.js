@@ -27,7 +27,7 @@ const columns = [{
 },
 {
   dataField: 'recProbAdj',
-  text: 'Recession probability, Adjusted',
+  text: 'Recession probability (Adjusted)',
   hidden: false,
   sort: true
 },
@@ -87,7 +87,7 @@ sizePerPageList: [{
 
 
 const table = (props) => (
-<div>
+<div className={props.tableContainerClass}>
     <ToolkitProvider
       keyField="id"
       data={ props.data }

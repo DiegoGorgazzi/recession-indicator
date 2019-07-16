@@ -26,7 +26,7 @@ import * as d3 from "d3-time-format";
 //************************* react-vis *******************************
 import {XYPlot, LineSeries, VerticalGridLines, HorizontalGridLines,
   XAxis, YAxis, VerticalBarSeries, AreaSeries, DiscreteColorLegend, 
- ChartLabel, Crosshair} from 'react-vis';
+ ChartLabel, Crosshair, FlexibleXYPlot } from 'react-vis';
 import 'react-vis/dist/style.css';
 
 //******************** BootstrapTable **********************************
@@ -65,6 +65,8 @@ class RecessionIndicator extends Component {
     userDateOutOfRangeError: "",
     // ******* TOGGLE ******
     hideTable: true,
+    // ******* WINDOW WIDTH ******
+    currentWindowWidth: "",
     //**** CROSSHAIR RELATED STATES ***
     crosshairDataRecDescr: "",
     crosshairDataNberValue: "",
@@ -79,6 +81,11 @@ class RecessionIndicator extends Component {
   }
 
   componentDidMount () {
+    window.addEventListener("resize", this.getWindowWidth);
+    //window.addEventListener("scroll", this.getToggleTableYposition);
+
+    this.getToggleTableYposition();
+
     axios.all([
       axios.get(tenYearYield),
       axios.get(threeMonthYield),
@@ -112,8 +119,12 @@ class RecessionIndicator extends Component {
           }
         ));
 
-        
     }
+
+  componentWillUnmount() {
+      window.removeEventListener("resize", this.getWindowWidth);
+      //window.removeEventListener("scroll", this.getToggleTableYPosition);
+  }
 
   componentDidUpdate(previousProps, previousState, snapshot) {
     if(previousState.tenThreeMerged.length === 0 || previousState.tenThreeMerged.length === 1 ) {
@@ -224,6 +235,66 @@ class RecessionIndicator extends Component {
 
   }
 
+  //When the table is not hidden, for smaller screens (less than 660px), the 
+  //width of the table will exceed the width of the window and so horizontal 
+  //scroll bar will be available. However, if the user scrolls back up to the 
+  //charts, he will not see the charts if he was scrolled all the way to the right.
+  //This function, therefore, closes the table when the table is no longer visible 
+  //and the user is scrolling back up
+  getToggleTableYposition = () => {
+    let numSteps = 20.0;
+
+    let observer;
+
+    const buildThresholdList = () => {
+      let thresholds = [0];
+          
+      for (let i=1.0; i<=numSteps; i++) {
+        let ratio = i/numSteps;
+        thresholds.push(ratio);
+      }
+
+      return thresholds;
+    }
+
+    let options = {
+      root: null,
+      rootMargin: "0px",
+      threshold: buildThresholdList(),
+    };
+    
+   const handleIntersect = (entries) => {
+    entries.forEach((entry) => {
+      //If Element not Visible
+      if (entry.intersectionRatio <= 0) {
+        //If window innerwidth is less than the min width of the table
+        //WARNING... HARDCODED WIDTH
+        if(window.innerWidth < 661 && this.state.hideTable === false 
+          && entry.boundingClientRect.top >= 0.8*window.innerHeight) {
+          this.setState({
+            hideTable: true
+          })
+        }
+          
+      } else {
+        //If Element is visible and width is less than min width of table...
+        if(window.innerWidth < 661 && this.state.hideTable === false 
+          && entry.boundingClientRect.top >= 0.6*window.innerHeight 
+          && entry.boundingClientRect.left<(window.innerWidth*(-1))) {
+          this.setState({
+            hideTable: true
+          })
+        }
+      }
+    }
+    )
+  }
+
+    observer = new IntersectionObserver(handleIntersect, options);
+    observer.observe(document.getElementById("Table").parentElement);
+  
+  }
+
   toggleCompVisibility = (event) => {
     let hideComponent = "hide"+event.target.id;
     let hideStatus = this.state[hideComponent];
@@ -270,9 +341,31 @@ class RecessionIndicator extends Component {
     return dataToScale;
   }
 
-  render() {
-    
+  //This is needed for variableChartLabel
+  getWindowWidth = () => {
+    this.setState({
+      currentWindowWidth: window.innerWidth
+    });
+  }
 
+  //Function to physically fix the location of the y-axis
+    //label in the component ChartLabel
+    //whenever the width of the chart is variable
+    //Since no id is available as a prop in the ChartLabel
+    //use the className as the replacement for Id so, 
+    //make sure you use UNIQUE names
+    variableChartLabel = (UniqueClassName, margin) => {
+      if(document.getElementsByClassName(UniqueClassName)[0] !== undefined) {
+        const width = document.getElementsByClassName(UniqueClassName)[0]
+                        .parentElement.width.animVal.value
+        let  xPos = margin / width;
+       
+        return xPos;
+      }
+      
+    }
+
+  render() {
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
     //--is going to have to be part of state.
@@ -377,32 +470,48 @@ class RecessionIndicator extends Component {
     console.log(this.state.crosshairAllDataValues, "crosshairAllDataValues");
 
 
-    console.log(this.scaledRecProbData(wilshire12moPerformance, dataRecDescr), "scaledRecProbData");
+    console.log(this.scaledRecProbData(wilshire12moPerformance, dataRecDescr), "scaledRecProbData");  
+
+    // ************ Legend  *********************
+    const legendStyle = {
+      display: "flex",
+      flexWrap: "wrap",
+      maxHeight: 100
+    }
 
     //************************ RETURN ************************************
     return (
-    <div>
-      <h1 className={recessionIndicatorStyles.title}>
-        The Stock Market & Predicting Recessions 
-      </h1>
+    <div className = {recessionIndicatorStyles.container}>
+      <header>
+        <h1 className={recessionIndicatorStyles.title}>
+          The Stock Market & Predicting Recessions 
+        </h1>
+      </header>
       
-      <div className={recessionIndicatorStyles.TimeRangeController}>
-      <TimeRangeController
-        clickTimeRange={this.handleTimeRangeClick}
-        userStartTimeState = {this.state.userStartDate}
-				userEndTimeState = {this.state.userEndDate} 
-        userDateHandler = {this.handleUserDateInput}
-        userDateSetter = {this.applyUserInputDate} 					
-			/>
-
-      {this.state.userStartDateError} {this.state.userEndDateError}
+      <div>
+        <TimeRangeController
+          clickTimeRange={this.handleTimeRangeClick}
+          userStartTimeState = {this.state.userStartDate}
+          userEndTimeState = {this.state.userEndDate} 
+          userDateHandler = {this.handleUserDateInput}
+          userDateSetter = {this.applyUserInputDate} 	
+          timeRangeContainerClassName= {recessionIndicatorStyles["TimeRangeController-container"]}				
+          timeRangeClassName= {recessionIndicatorStyles.TimeRangeController}				
+          timeUserRangeContainerClassName = {recessionIndicatorStyles["TimeUserRange-container"]}
+          timeUserRangeClassName = {recessionIndicatorStyles.TimeUserRange}
+        />
+        <span className={recessionIndicatorStyles.dateErrorMessage}>
+          {this.state.userStartDateError} {this.state.userEndDateError}
+          {this.state.userDateOutOfRangeError}
+        </span>
       </div>
 
       {/* ------------- RECESSION AND PREDICTIONS CHART --------------*/}
-      <div>
-      {this.state.userDateOutOfRangeError}
-        <XYPlot height={350} width={600}
-          margin={{bottom:50, left: 100}}
+      <div className= {recessionIndicatorStyles.chartArea}>
+      
+        <FlexibleXYPlot 
+          margin={{bottom:35, left: 70}}
+          className = {recessionIndicatorStyles.plot}
           xType="time"
           colorType="linear"
           onMouseMove = {this.crosshairAllDataHandler}
@@ -422,17 +531,21 @@ class RecessionIndicator extends Component {
             tickFormat={v => WORDS[v]} 
             tickLabelAngle={-45} tickPadding={5}
             />
+        
           <ChartLabel 
             text="Recession likelihood, Actual"
-            className="alt-y-label"
+            //IMPORTANT, DO NOT DELETE OR RENAME CLASSNAME
+            //AS IT IS USED BY THE variableChartLabel FUNCTION
+            className="altYlabelRecession"
             includeMargin={false}
-            xPercent={-0.12}
+            xPercent={this.variableChartLabel("altYlabelRecession", -65)}
             yPercent={0.80}
             style={{
               transform: 'rotate(-90)',
-              "fontWeight": "bold" 
+              fontWeight: "bold"
             }}
             />
+          
           <AreaSeries
               data = { displaySeries(this.state.dateRangeEnd, dataRecDescr, "x")}
               color="#ff9999" stroke="#f70"
@@ -457,6 +570,7 @@ class RecessionIndicator extends Component {
             />
 
           <DiscreteColorLegend
+            style={legendStyle}
             items={[
               {
                 title: 'Recession Likelihood (12 months Ahead)', 
@@ -469,6 +583,7 @@ class RecessionIndicator extends Component {
             ]}
             orientation="horizontal"
             />
+          
           <Crosshair 
             values={this.crosshairDisplayHandler()}
             titleFormat={(d) => ({title: 'Date', value: yrMonthFormat(d[0].x)})}
@@ -478,14 +593,15 @@ class RecessionIndicator extends Component {
               }
             />
           
-        </XYPlot>
+        </FlexibleXYPlot>
       </div>
       
       {/* -------------WILSHIRE CUMULATIVE PERFORMANCE CHART --------------*/}
       <div className={recessionIndicatorStyles.chartArea}>
 
-        <XYPlot height={350} width={600}
-          margin={{bottom:50, left: 100}}
+        <FlexibleXYPlot 
+          margin={{bottom:50, left: 70}}
+          className = {recessionIndicatorStyles.plot}
           xType="time"
           colorType="linear"
           onMouseMove = {this.crosshairAllDataHandler}
@@ -508,9 +624,9 @@ class RecessionIndicator extends Component {
             />
           <ChartLabel 
             text="Price Index"
-            className="alt-y-label"
+            className="altYlabelWilshire"
             includeMargin={false}
-            xPercent={-0.12}
+            xPercent={this.variableChartLabel("altYlabelWilshire", -65)}
             yPercent={0.65}
             style={{
               transform: 'rotate(-90)',
@@ -543,6 +659,7 @@ class RecessionIndicator extends Component {
                 color= "transparent"
               />
           <DiscreteColorLegend
+            style={legendStyle}
             items={[
               {
                 title: 'Recession >= "High" Likelihood (12 months Ahead)', 
@@ -566,7 +683,7 @@ class RecessionIndicator extends Component {
             />
           
 
-        </XYPlot>
+        </FlexibleXYPlot >
 
   
         </div>
@@ -574,8 +691,9 @@ class RecessionIndicator extends Component {
         {/* -------------WILSHIRE PAST PERFORMANCE CHART --------------*/}
         <div className={recessionIndicatorStyles.chartArea}>
 
-          <XYPlot height={350} width={600}
-            margin={{bottom:50, left: 100}}
+          <FlexibleXYPlot 
+            margin={{bottom:50, left: 70}}
+            className = {recessionIndicatorStyles.plot}
             xType="time"
             colorType="linear"
             onMouseMove = {this.crosshairAllDataHandler}
@@ -598,9 +716,9 @@ class RecessionIndicator extends Component {
               />
             <ChartLabel 
               text="Percentage"
-              className="alt-y-label"
+              className="altYlabelPastPerf"
               includeMargin={false}
-              xPercent={-0.12}
+              xPercent={this.variableChartLabel("altYlabelPastPerf", -65)}
               yPercent={0.65}
               style={{
                 transform: 'rotate(-90)',
@@ -664,6 +782,7 @@ class RecessionIndicator extends Component {
                   color= "transparent"
                 />
             <DiscreteColorLegend
+                style={legendStyle}
                 items={[
                   {
                     title: 'Recession >= "High" Likelihood (12 months Ahead)', 
@@ -695,7 +814,7 @@ class RecessionIndicator extends Component {
                 }
               />
 
-          </XYPlot>
+          </FlexibleXYPlot >
 
 
         </div>
@@ -703,8 +822,9 @@ class RecessionIndicator extends Component {
         {/* -------------WILSHIRE FUTURE PERFORMANCE CHART --------------*/}
         <div className={recessionIndicatorStyles.chartArea}>
 
-        <XYPlot height={350} width={600}
-          margin={{bottom:50, left: 100}}
+        <FlexibleXYPlot 
+          margin={{bottom:50, left: 70}}
+          className = {recessionIndicatorStyles.plot}
           xType="time"
           colorType="linear"
           onMouseMove = {this.crosshairAllDataHandler}
@@ -727,9 +847,9 @@ class RecessionIndicator extends Component {
             />
           <ChartLabel 
             text="Percentage"
-            className="alt-y-label"
+            className="altYlabelFutPerf"
             includeMargin={false}
-            xPercent={-0.12}
+            xPercent={this.variableChartLabel("altYlabelFutPerf", -65)}
             yPercent={0.65}
             style={{
               transform: 'rotate(-90)',
@@ -786,6 +906,7 @@ class RecessionIndicator extends Component {
                 color= "transparent"
               />
           <DiscreteColorLegend
+              style={legendStyle}
               items={[
                 {
                   title: 'Recession >= "High" Likelihood (12 months Ahead)', 
@@ -793,15 +914,15 @@ class RecessionIndicator extends Component {
                 }, 
                 {
                   title: 'Wilshire 12-month FUTURE Performance', 
-                  color: "#003300"
+                  color: "#000066"
                 },
                 {
                   title: 'Wilshire 18-month FUTURE Performance', 
-                  color: "#009900"
+                  color: "#0000e6"
                 },
                 {
                   title: 'Wilshire 24-month FUTURE Performance', 
-                  color: "#00ff00"
+                  color: "#6666ff"
                 }
               ]}
               orientation="horizontal"
@@ -817,7 +938,7 @@ class RecessionIndicator extends Component {
               }
             />
 
-        </XYPlot>
+        </FlexibleXYPlot >
 
 
       </div>
@@ -834,7 +955,10 @@ class RecessionIndicator extends Component {
               />
 
         {!this.state.hideTable &&
-              <Table data={this.state.tenThreeMerged}/>}
+              <Table 
+                tableContainerClass = {recessionIndicatorStyles["Table-container"]}
+                data={this.state.tenThreeMerged}
+                />}
 
         
       </div>

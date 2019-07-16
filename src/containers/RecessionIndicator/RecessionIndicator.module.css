@@ -1,20 +1,177 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .title {
   font-weight: 700;
-  margin: 20px;
-  margin-bottom: 50px;
-}
-
-.chartArea {
-  margin-top: 80px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
   margin-bottom: 30px;
+  text-align: center;
+  justify-content: center;
+  color: #0081f2;
+  font-family: Helvetica, Arial;
 }
 
-.tableSection {
-    padding-top: 80px;
+/*********************** TIME RANGE ***************************************/
+.TimeRangeController-container {
+  margin: 0px 0px 0px 0px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
+
+@media (max-width: 800px) {
+  .TimeRangeController-container  {
+    max-width: 526px;
+  }
+}
+
+.TimeRangeController-container >button {
+  height: 45px;
+  font-size: 18px;
+  background-color: #0081f2;
+  border: none;
+  border-radius: 3px;
+  color: white;
+}
+
 
 .TimeRangeController {
-  margin: 30px 5px 30px 5px;
+  margin: 5px 5px 5px 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold; 
+}
+
+.TimeRangeController button {
+  width: 60px;
+  height: 45px;
+  font-size: 18px;
+  background-color: #0081f2;
+  border: 50px;
+  border-radius: 0px;
+  color: white;
+}
+
+@media (max-width: 430px) {
+  .TimeRangeController button {
+    height: 60px;
+    flex-grow: 1; 
+  }
+}
+
+@media (hover: hover) {
+  button:hover  {
+    background-color: #1a74c4;
+  }
+}
+
+.dateErrorMessage {
+  margin: 5px 5px 5px 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: Helvetica, Arial;
+  font-weight: bold;
+  color: #CC0000;
+  background-color: #FCE9E9;
+}
+
+.TimeUserRange-container {
+  margin: 5px 5px 5px 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 800px) {
+  .TimeUserRange-container  {
+    margin: 18px 5px 18px 5px;
+  }
 }
 
 
+.TimeUserRange {
+  margin: 5px 5px 5px 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.TimeUserRange input {
+  height: 45px;
+  width: 104px;
+}
+
+@media (max-width: 474px) {
+  .TimeUserRange button {
+    height: 60px;
+  }
+}
+
+/*************************  CHART ****************************************/
+.chartArea {
+  display: flex;
+  min-width: 320px;
+  margin-top: 25px;
+  margin-bottom: 100px;
+  width: 100%;
+  height: 320px;
+}
+
+.plot {
+  background-color: hsla(0, 0%, 98%, .6);
+  font-weight: 500;
+}
+
+
+/*********************** TABLE  ***********************/
+.tableSection {
+  padding-top: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* NOTE: REACT Bootstrap Table is very very limiting:
+You're stuck with whatever style it gives you without
+the possibility of modyfying it
+I ended up having to add a "calc" to the margin-left
+and fixing the width to try to solve the problem
+that the table, when the width is less than 660px, 
+would be pushed too much to the left thus hiding
+one of the table's column.
+NEXT TIME: Make your own table component.
+*/
+.Table-container {
+width: 95%;   
+}
+
+@media (max-width: 660px) {
+.Table-container {
+  width: 660px;    
+}
+.Table-container > div {
+  width: 660px;
+  margin-left: calc(-45vw + 311px);
+}
+}
