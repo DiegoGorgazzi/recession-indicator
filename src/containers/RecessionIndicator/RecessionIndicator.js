@@ -82,6 +82,9 @@ class RecessionIndicator extends Component {
 
   componentDidMount () {
     window.addEventListener("resize", this.getWindowWidth);
+    //window.addEventListener("scroll", this.getToggleTableYposition);
+
+    this.getToggleTableYposition();
 
     axios.all([
       axios.get(tenYearYield),
@@ -120,6 +123,7 @@ class RecessionIndicator extends Component {
 
   componentWillUnmount() {
       window.removeEventListener("resize", this.getWindowWidth);
+      //window.removeEventListener("scroll", this.getToggleTableYPosition);
   }
 
   componentDidUpdate(previousProps, previousState, snapshot) {
@@ -229,6 +233,64 @@ class RecessionIndicator extends Component {
    //Change display values in crosshair
    return crosshairDisplayWords(deepJSONArrayClone(this.state.crosshairAllDataValues));
 
+  }
+
+  //When the table is not hidden, for smaller screens (less than 660px), the 
+  //width of the table will exceed the width of the window and so horizontal 
+  //scroll bar will be available. However, if the user scrolls back up to the 
+  //charts, he will not see the charts if he was scrolled all the way to the right.
+  //This function, therefore, closes the table when the table is no longer visible 
+  //and the user is scrolling back up
+  getToggleTableYposition = () => {
+    let numSteps = 20.0;
+
+    let observer;
+
+    const buildThresholdList = () => {
+      let thresholds = [0];
+          
+      for (let i=1.0; i<=numSteps; i++) {
+        let ratio = i/numSteps;
+        thresholds.push(ratio);
+      }
+
+      return thresholds;
+    }
+
+    let options = {
+      root: null,
+      rootMargin: "0px",
+      threshold: buildThresholdList(),
+    };
+    
+   const handleIntersect = (entries) => {
+    entries.forEach((entry) => {
+      if (entry.intersectionRatio <= 0) {
+        console.log(entry.boundingClientRect, "ENTRIES NOT VISIBLE");
+        if(window.innerWidth < 661 && this.state.hideTable === false && entry.boundingClientRect.top >= 0.8*window.innerHeight) {
+          //console.log(entry.boundingClientRect, "FALSE ENTRY")
+          this.setState({
+            hideTable: true
+          })
+        }
+          
+        
+      } else {
+        console.log(entry.boundingClientRect, "ENTRIES VISIBLE");
+        if(window.innerWidth < 661 && this.state.hideTable === false && entry.boundingClientRect.top >= 0.6*window.innerHeight && entry.boundingClientRect.left<(window.innerWidth*(-1))) {
+          //console.log(entry.boundingClientRect, "FALSE ENTRY")
+          this.setState({
+            hideTable: true
+          })
+        }
+      }
+    }
+    )
+  }
+
+    observer = new IntersectionObserver(handleIntersect, options);
+    observer.observe(document.getElementById("Table").parentElement);
+  
   }
 
   toggleCompVisibility = (event) => {
