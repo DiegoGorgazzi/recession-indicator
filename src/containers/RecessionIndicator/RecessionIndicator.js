@@ -265,20 +265,22 @@ class RecessionIndicator extends Component {
     
    const handleIntersect = (entries) => {
     entries.forEach((entry) => {
+      //If Element not Visible
       if (entry.intersectionRatio <= 0) {
-        console.log(entry.boundingClientRect, "ENTRIES NOT VISIBLE");
-        if(window.innerWidth < 661 && this.state.hideTable === false && entry.boundingClientRect.top >= 0.8*window.innerHeight) {
-          //console.log(entry.boundingClientRect, "FALSE ENTRY")
+        //If window innerwidth is less than the min width of the table
+        //WARNING... HARDCODED WIDTH
+        if(window.innerWidth < 661 && this.state.hideTable === false 
+          && entry.boundingClientRect.top >= 0.8*window.innerHeight) {
           this.setState({
             hideTable: true
           })
         }
           
-        
       } else {
-        console.log(entry.boundingClientRect, "ENTRIES VISIBLE");
-        if(window.innerWidth < 661 && this.state.hideTable === false && entry.boundingClientRect.top >= 0.6*window.innerHeight && entry.boundingClientRect.left<(window.innerWidth*(-1))) {
-          //console.log(entry.boundingClientRect, "FALSE ENTRY")
+        //If Element is visible and width is less than min width of table...
+        if(window.innerWidth < 661 && this.state.hideTable === false 
+          && entry.boundingClientRect.top >= 0.6*window.innerHeight 
+          && entry.boundingClientRect.left<(window.innerWidth*(-1))) {
           this.setState({
             hideTable: true
           })

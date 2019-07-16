@@ -132,21 +132,29 @@ export const checkDateInput = (eventTargetValue, setDateStatePropError) => {
   
   
     //FINALLY, Check the whole date using RegEx
-    //Check format M/D/YYYY
-    if(testDate.length >= 8){
-      if(testDate.length === 8 && !testRegex.test(testDate)) {
+    //Check format M/D/YYYY, MM/D/YYYY, M/DD/YYYY, MM/DD/YYYY
+    if(testDate.length >= 8) {
+      
+      if(testDate.length === 8 && testDate[testDate.length-5] === "/"){
+        if(!testRegex.test(testDate)){
+          //console.log(testDate.length, "===8")
+          state = {[setDateStatePropError]: "Please enter a valid date"}   
+        } 
+      } else if(testDate.length === 8 && testDate[testDate.length-3] === "/"){
+          if(!testRegex.test(testDate)){
+          //console.log(testDate.length, "===8")
+          state = {[setDateStatePropError]: "Please enter a 4-digit Year"}   
+          } 
+      } else if(testDate.length === 9 && testDate[testDate.length-5] === "/"){
+          if(!testRegex.test(testDate)){
+          //console.log(testDate.length, "===8")
+          state = {[setDateStatePropError]: "Please enter a valid date"}   
+          } 
+      } else if(testDate.length === 10 && testDate[testDate.length-5] === "/"){
+        if(!testRegex.test(testDate)){
         //console.log(testDate.length, "===8")
         state = {[setDateStatePropError]: "Please enter a valid date"}   
-      } 
-      //check format MM/D/YYYY and M/DD/YYYY
-      else if(testDate.length === 9 && !testRegex.test(testDate)) {
-        //console.log(testDate.length, "===9")
-        state = {[setDateStatePropError]: "Please enter a valid date"}
-      } 
-      //check format MM/DD/YYYY
-      else if(testDate.length === 10 && !testRegex.test(testDate)) {
-        //console.log(testDate.length, "===10")
-        state = {[setDateStatePropError]: "Please enter a valid date"}
+        } 
       } 
       //If format MM/DD/YYYY OK then reset state
       else if(testDate.length === 10 && testRegex.test(testDate)) {
@@ -155,6 +163,16 @@ export const checkDateInput = (eventTargetValue, setDateStatePropError) => {
       } 
       //if too many characters, then error
       else if(testDate.length > 10 ) {
+        //console.log(testDate.length, "TOO MANY NUMS")
+        state = {[setDateStatePropError]: "Please enter a valid date"}
+      }     
+      //if too many characters over 9, then error
+      else if(testDate.length > 9 && testDate[testDate.length-6] === "/" ) {
+        //console.log(testDate.length, "TOO MANY NUMS")
+        state = {[setDateStatePropError]: "Please enter a valid date"}
+      } 
+      //if too many characters over 8, then error
+      else if(testDate.length > 8 && testDate[testDate.length-6] === "/" ) {
         //console.log(testDate.length, "TOO MANY NUMS")
         state = {[setDateStatePropError]: "Please enter a valid date"}
       } 
@@ -167,12 +185,21 @@ export const checkDateInput = (eventTargetValue, setDateStatePropError) => {
       else if(testDate.length === 8 && testRegex.test(testDate)) {
           //console.log(testDate.length, "===8 GOOD")
           state = {[setDateStatePropError]: ""}
-      } 
+      }
+      //if format is completely wrong
+      else if(testDate.length === 8 && !testRegex.test(testDate)) {
+        //console.log(testDate.length, "===8 SUPER WRONG")
+        state = {[setDateStatePropError]: "Please enter a valid date"}
+      }
       //if user deletes his wrong format, reset state
       else if (testDate.length <9) {
           state = {[setDateStatePropError]: ""}
       }
-    };         
+      else {
+        state = {[setDateStatePropError]: "Please enter a Valid date"}
+      }
+
+    };      
   
     return state;
     
