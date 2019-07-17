@@ -507,6 +507,12 @@ class RecessionIndicator extends Component {
       </div>
 
       {/* ------------- RECESSION AND PREDICTIONS CHART --------------*/}
+      <div>
+          <h2 className={recessionIndicatorStyles["chart-titles"]}>
+            Future Recession Prediction and Actual Recessions
+          </h2>
+      </div>
+
       <div className= {recessionIndicatorStyles.chartArea}>
       
         <FlexibleXYPlot 
@@ -597,6 +603,12 @@ class RecessionIndicator extends Component {
       </div>
       
       {/* -------------WILSHIRE CUMULATIVE PERFORMANCE CHART --------------*/}
+      <div>
+          <h2 className={recessionIndicatorStyles["chart-titles"]}>
+            U.S. Stock Market and Future Recession Prediction
+          </h2>
+      </div>
+      
       <div className={recessionIndicatorStyles.chartArea}>
 
         <FlexibleXYPlot 
@@ -689,6 +701,12 @@ class RecessionIndicator extends Component {
         </div>
         
         {/* -------------WILSHIRE PAST PERFORMANCE CHART --------------*/}
+        <div>
+          <h2 className={recessionIndicatorStyles["chart-titles"]}>
+            U.S. Stock Market Performance and Future Recession Prediction
+          </h2>
+        </div>
+        
         <div className={recessionIndicatorStyles.chartArea}>
 
           <FlexibleXYPlot 
@@ -820,6 +838,13 @@ class RecessionIndicator extends Component {
         </div>
 
         {/* -------------WILSHIRE FUTURE PERFORMANCE CHART --------------*/}
+        <div>
+          <h2 className={recessionIndicatorStyles["chart-titles"]}>
+            U.S. Stock Market Future Performance and Future Recession Prediction
+          </h2>
+        </div>
+        
+        
         <div className={recessionIndicatorStyles.chartArea}>
 
         <FlexibleXYPlot 
