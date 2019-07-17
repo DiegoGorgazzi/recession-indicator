@@ -17,17 +17,6 @@
   font-family: Helvetica, Arial;
 }
 
-.chart-titles {
-  font-weight: 300;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 10px;
-  margin-bottom: 0px;
-  text-align: center;
-  justify-content: center;
-  color: #0081f2;
-  font-family: Helvetica, Arial;
-}
 
 /*********************** TIME RANGE ***************************************/
 .TimeRangeController-container {
@@ -139,6 +128,30 @@
 }
 
 /*************************  CHART ****************************************/
+.chart-titles {
+  font-weight: 300;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  margin-bottom: 0px;
+  text-align: center;
+  justify-content: center;
+  color: #0081f2;
+  font-family: Helvetica, Arial;
+}
+
+.chart-description {
+  padding-top: 20px;
+  margin-bottom: -30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: Helvetica, Arial;
+  margin-right: 10%;
+  margin-left: 10%;
+}
+
 .chartArea {
   display: flex;
   min-width: 320px;

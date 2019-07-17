@@ -65,6 +65,10 @@ class RecessionIndicator extends Component {
     userDateOutOfRangeError: "",
     // ******* TOGGLE ******
     hideTable: true,
+    hideRecessionChart: true,
+    hideWilshireCumulativeChart: true,
+    hideWilshirePastPerformanceChart: true,
+    hideWilshireFuturePerformanceChart: true,
     // ******* WINDOW WIDTH ******
     currentWindowWidth: "",
     //**** CROSSHAIR RELATED STATES ***
@@ -513,6 +517,26 @@ class RecessionIndicator extends Component {
           </h2>
       </div>
 
+      <div className={recessionIndicatorStyles["chart-description"]} >
+        <ToggleVisibility
+                    whatState = {this.state.hideRecessionChart}
+                    hideID = "RecessionChart"
+                    hideOnClick = {this.toggleCompVisibility}
+                    showText = "Show Description"
+                    hideText = "Hide Description"
+                  />
+
+            {!this.state.hideRecessionChart &&
+                  <div> 
+                    <p>Actual Recessions are given by 
+                      The National Bureau of Economic Research (NBER). Predictions 
+                      of a recession are calculated 12-months into the future based
+                      on current 10-year and 3-month US Bonds averages, using our own 
+                      modified equation from research publicly provided by the 
+                      New York Federal Reserve. </p>
+                    </div>}
+      </div>
+
       <div className= {recessionIndicatorStyles.chartArea}>
       
         <FlexibleXYPlot 
@@ -607,6 +631,24 @@ class RecessionIndicator extends Component {
           <h2 className={recessionIndicatorStyles["chart-titles"]}>
             U.S. Stock Market and Future Recession Prediction
           </h2>
+      </div>
+
+      <div className={recessionIndicatorStyles["chart-description"]} >
+        <ToggleVisibility
+                    whatState = {this.state.hideWilshireCumulativeChart}
+                    hideID = "WilshireCumulativeChart"
+                    hideOnClick = {this.toggleCompVisibility}
+                    showText = "Show Description"
+                    hideText = "Hide Description"
+                  />
+
+            {!this.state.hideWilshireCumulativeChart &&
+                  <div> 
+                    <p> Here the Stock Market is represented by the
+                      Wilshire 5000 price index. Recession Predictions are shown 
+                      only for those cases where the probability is "High" and "Very High". 
+                      </p>
+                    </div>}
       </div>
       
       <div className={recessionIndicatorStyles.chartArea}>
@@ -706,6 +748,29 @@ class RecessionIndicator extends Component {
             U.S. Stock Market Performance and Future Recession Prediction
           </h2>
         </div>
+
+        <div className={recessionIndicatorStyles["chart-description"]} >
+          <ToggleVisibility
+                      whatState = {this.state.hideWilshirePastPerformanceChart}
+                      hideID = "WilshirePastPerformanceChart"
+                      hideOnClick = {this.toggleCompVisibility}
+                      showText = "Show Description"
+                      hideText = "Hide Description"
+                    />
+
+              {!this.state.hideWilshirePastPerformanceChart &&
+                    <div> 
+                      <p> Here the Stock Market past performance is represented by the
+                        Wilshire 5000 price index; as such, dividends and re-investment  
+                        of dividends were not considered. Performance is taken as 
+                        end-of-month closing prices to end-of-month closing prices.
+                      </p>
+                      <p> 
+                        Recession Predictions are shown only for those cases where the 
+                        probability is "High" and "Very High". 
+                      </p>
+                      </div>}
+      </div>
         
         <div className={recessionIndicatorStyles.chartArea}>
 
@@ -844,6 +909,36 @@ class RecessionIndicator extends Component {
           </h2>
         </div>
         
+        <div className={recessionIndicatorStyles["chart-description"]} >
+          <ToggleVisibility
+                      whatState = {this.state.hideWilshireFuturePerformanceChart}
+                      hideID = "WilshireFuturePerformanceChart"
+                      hideOnClick = {this.toggleCompVisibility}
+                      showText = "Show Description"
+                      hideText = "Hide Description"
+                    />
+
+              {!this.state.hideWilshireFuturePerformanceChart &&
+                    <div> 
+                      <p> Here the Stock Market "future" performance is represented by the
+                        Wilshire 5000 price index; as such, dividends and re-investment  
+                        of dividends were not considered. Performance is taken as 
+                        end-of-month closing prices to end-of-month closing prices. 
+                        This past performance is then moved backwards in time thus 
+                        portraying what the future performance would have been in
+                        reference to the selected date.  
+                      </p>
+                      <p>
+                        For example, in October 2004 the future 12-month performance 
+                        reads 12.8%. That value is the performance of the index between 
+                        closing last day of October 2004 and October 2005.  
+                      </p>
+                      <p> 
+                        Recession Predictions are shown only for those cases where the 
+                        probability is "High" and "Very High". 
+                      </p>
+                      </div>}
+      </div>
         
         <div className={recessionIndicatorStyles.chartArea}>
 
@@ -971,22 +1066,21 @@ class RecessionIndicator extends Component {
 
      {/* ------------------------------TABLE -------------------------------*/}               
      <div className={recessionIndicatorStyles.tableSection} >
-     <ToggleVisibility
-                whatState = {this.state.hideTable}
-                hideID = "Table"
-                hideOnClick = {this.toggleCompVisibility}
-                showText = "Show Data Table"
-                hideText = "Hide Data Table"
-              />
+      <ToggleVisibility
+                  whatState = {this.state.hideTable}
+                  hideID = "Table"
+                  hideOnClick = {this.toggleCompVisibility}
+                  showText = "Show Data Table"
+                  hideText = "Hide Data Table"
+                />
 
-        {!this.state.hideTable &&
-              <Table 
-                tableContainerClass = {recessionIndicatorStyles["Table-container"]}
-                data={this.state.tenThreeMerged}
-                />}
+          {!this.state.hideTable &&
+                <Table 
+                  tableContainerClass = {recessionIndicatorStyles["Table-container"]}
+                  data={this.state.tenThreeMerged}
+                  />}
+     </div>
 
-        
-      </div>
     </div>
     )
 
