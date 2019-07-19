@@ -7,6 +7,7 @@ import * as math from 'mathjs';
 import Table from '../../components/Table/Table';
 import TimeRangeController from "../../components/TimeRangeController/TimeRangeController";
 import ToggleVisibility from '../../components/ToggleVisibility/ToggleVisibility';
+import TermsConditionsPrivacy from '../../components/TemsConditionsPrivacy/TermsConditionsPrivacy';
 
 //********************** Logic ****************************************
 import {calcs, numberfyMergedState} from "../../logic/logic";
@@ -69,6 +70,7 @@ class RecessionIndicator extends Component {
     hideWilshireCumulativeChart: true,
     hideWilshirePastPerformanceChart: true,
     hideWilshireFuturePerformanceChart: true,
+    hideTerms: true,
     // ******* WINDOW WIDTH ******
     currentWindowWidth: "",
     //**** CROSSHAIR RELATED STATES ***
@@ -1085,8 +1087,36 @@ class RecessionIndicator extends Component {
       {/* ------------------------------FOOTER -------------------------------*/}  
 
       <footer>
-        <p> Thanks for Stopping By </p>
-        <p>&copy; {(new Date().getFullYear())}</p>
+        <p className={recessionIndicatorStyles["footer-left-text"]} >
+          Bond, Wilshire, and NBER data retrieved from FRED, Federal Reserve 
+          Bank of St. Louis 
+        </p>
+        
+        <p className={recessionIndicatorStyles["footer-left-text"]}>
+          THIS WEBSITE CONTAINS ONLY GENERAL INFORMATION, WHICH MUST NOT BE 
+          CONSTRUED AS SPECIFIC ADVICE OR RECOMMENDATIONS
+        </p>
+
+      <div className={recessionIndicatorStyles.termsSection} >
+          <ToggleVisibility
+                      whatState = {this.state.hideTerms}
+                      hideID = "Terms"
+                      hideOnClick = {this.toggleCompVisibility}
+                      showText = "Show Terms, Conditions, & Privacy Policy"
+                      hideText = "Hide Terms, Conditions, & Privacy Policy"
+                    />
+
+              {!this.state.hideTerms &&
+                    <TermsConditionsPrivacy
+                      termsContainerClass = {recessionIndicatorStyles["Terms-container"]}
+                      />}
+      </div>
+        
+
+
+
+        <p className={recessionIndicatorStyles["footer-centered-text"]}>
+          &copy; {(new Date().getFullYear())}</p>
       </footer>
             
 
