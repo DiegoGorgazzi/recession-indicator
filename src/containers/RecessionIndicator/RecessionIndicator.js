@@ -1081,6 +1081,15 @@ class RecessionIndicator extends Component {
                   />}
      </div>
 
+
+      {/* ------------------------------FOOTER -------------------------------*/}  
+
+      <footer>
+        <p> Thanks for Stopping By </p>
+        <p>&copy; {(new Date().getFullYear())}</p>
+      </footer>
+            
+
     </div>
     )
 
