@@ -542,7 +542,7 @@ class RecessionIndicator extends Component {
       <div className= {recessionIndicatorStyles.chartArea}>
       
         <FlexibleXYPlot 
-          margin={{bottom:35, left: 70}}
+          margin={{bottom:50, left: 70}}
           className = {recessionIndicatorStyles.plot}
           xType="time"
           colorType="linear"
@@ -698,15 +698,15 @@ class RecessionIndicator extends Component {
                color="#800080"
                onNearestX = {(value, {index}) => {
                 this.setState({
-                  crosshairDataRecDescr: otherChartCrosshairVal(dataNberValue, dataRecDescr, index),
-                  crosshairDataNberValue: otherChartCrosshairVal(dataNberValue, dataNberValue, index),
+                  crosshairDataRecDescr: otherChartCrosshairVal(wilshireIndex, dataRecDescr, index-12),
+                  crosshairDataNberValue: otherChartCrosshairVal(wilshireIndex, dataNberValue, index-12),
                   crosshairDataWilshireIndex: value,
-                  crosshairDataWilshire12moPerformance: otherChartCrosshairVal(dataNberValue, wilshire12moPerformance, index+12),
-                  crosshairDataWilshire18moPerformance: otherChartCrosshairVal(dataNberValue, wilshire18moPerformance, index+12),
-                  crosshairDataWilshire24moPerformance: otherChartCrosshairVal(dataNberValue, wilshire24moPerformance, index+12),
-                  crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire12moFuturePerformance, index+12),
-                  crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire18moFuturePerformance, index+12),
-                  crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire24moFuturePerformance, index+12)
+                  crosshairDataWilshire12moPerformance: otherChartCrosshairVal(wilshireIndex, wilshire12moPerformance, index),
+                  crosshairDataWilshire18moPerformance: otherChartCrosshairVal(wilshireIndex, wilshire18moPerformance, index),
+                  crosshairDataWilshire24moPerformance: otherChartCrosshairVal(wilshireIndex, wilshire24moPerformance, index),
+                  crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(wilshireIndex, wilshire12moFuturePerformance, index),
+                  crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(wilshireIndex, wilshire18moFuturePerformance, index),
+                  crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(wilshireIndex, wilshire24moFuturePerformance, index)
                 })
               }}
             />
@@ -822,12 +822,12 @@ class RecessionIndicator extends Component {
                   color="#00ff00"
                   onNearestX = {(value, {index}) => {
                     this.setState({
-                      crosshairDataRecDescr: otherChartCrosshairVal(dataNberValue, dataRecDescr, index),
-                      crosshairDataNberValue: otherChartCrosshairVal(dataNberValue, dataNberValue, index),
-                      crosshairDataWilshireIndex: otherChartCrosshairVal(dataNberValue, wilshireIndex, index+12),
-                      crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire12moFuturePerformance, index+12),
-                      crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire18moFuturePerformance, index+12),
-                      crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire24moFuturePerformance, index+12),
+                      crosshairDataRecDescr: otherChartCrosshairVal(wilshire24moPerformance, dataRecDescr, index-12),
+                      crosshairDataNberValue: otherChartCrosshairVal(wilshire24moPerformance, dataNberValue, index-12),
+                      crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire24moPerformance, wilshireIndex, index),
+                      crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(wilshire24moPerformance, wilshire12moFuturePerformance, index),
+                      crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(wilshire24moPerformance, wilshire18moFuturePerformance, index),
+                      crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(wilshire24moPerformance, wilshire24moFuturePerformance, index),
                       crosshairDataWilshire24moPerformance: value
                     })
                   }}
@@ -837,12 +837,12 @@ class RecessionIndicator extends Component {
                   color="#009900"
                   onNearestX = {(value, {index}) => {
                     this.setState({
-                      crosshairDataRecDescr: otherChartCrosshairVal(dataNberValue, dataRecDescr, index),
-                      crosshairDataNberValue: otherChartCrosshairVal(dataNberValue, dataNberValue, index),
-                      crosshairDataWilshireIndex: otherChartCrosshairVal(dataNberValue, wilshireIndex, index+12),
-                      crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire12moFuturePerformance, index+12),
-                      crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire18moFuturePerformance, index+12),
-                      crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire24moFuturePerformance, index+12),
+                      crosshairDataRecDescr: otherChartCrosshairVal(wilshire18moPerformance, dataRecDescr, index-12),
+                      crosshairDataNberValue: otherChartCrosshairVal(wilshire18moPerformance, dataNberValue, index-12),
+                      crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire18moPerformance, wilshireIndex, index),
+                      crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(wilshire18moPerformance, wilshire12moFuturePerformance, index),
+                      crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(wilshire18moPerformance, wilshire18moFuturePerformance, index),
+                      crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(wilshire18moPerformance, wilshire24moFuturePerformance, index),
                       crosshairDataWilshire18moPerformance: value
                     })
                   }}
@@ -852,12 +852,12 @@ class RecessionIndicator extends Component {
                   color="#003300"
                   onNearestX = {(value, {index}) => {
                     this.setState({
-                      crosshairDataRecDescr: otherChartCrosshairVal(dataNberValue, dataRecDescr, index),
-                      crosshairDataNberValue: otherChartCrosshairVal(dataNberValue, dataNberValue, index),
-                      crosshairDataWilshireIndex: otherChartCrosshairVal(dataNberValue, wilshireIndex, index+12),
-                      crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire24moFuturePerformance, index+12),
-                      crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire18moFuturePerformance, index+12),
-                      crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire12moFuturePerformance, index+12),
+                      crosshairDataRecDescr: otherChartCrosshairVal(wilshire12moPerformance, dataRecDescr, index-12),
+                      crosshairDataNberValue: otherChartCrosshairVal(wilshire12moPerformance, dataNberValue, index-12),
+                      crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire12moPerformance, wilshireIndex, index),
+                      crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(wilshire12moPerformance, wilshire24moFuturePerformance, index),
+                      crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(wilshire12moPerformance, wilshire18moFuturePerformance, index),
+                      crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(wilshire12moPerformance, wilshire12moFuturePerformance, index),
                       crosshairDataWilshire12moPerformance: value
                     })
                   }}
@@ -990,9 +990,9 @@ class RecessionIndicator extends Component {
                 color="#6666ff"
                 onNearestX = {(value, {index}) => {
                   this.setState({
-                    crosshairDataRecDescr: otherChartCrosshairVal(dataNberValue, dataRecDescr, index),
-                    crosshairDataNberValue: otherChartCrosshairVal(dataNberValue, dataNberValue, index),
-                    crosshairDataWilshire24moPerformance: otherChartCrosshairVal(dataNberValue, wilshire24moPerformance, index+12),
+                    crosshairDataRecDescr: otherChartCrosshairVal(wilshire24moFuturePerformance, dataRecDescr, index-12),
+                    crosshairDataNberValue: otherChartCrosshairVal(wilshire24moFuturePerformance, dataNberValue, index-12),
+                    crosshairDataWilshire24moPerformance: otherChartCrosshairVal(wilshire24moFuturePerformance, wilshire24moPerformance, index),
                     crosshairDataWilshire24moFuturePerformance: value
                   })
                 }}
@@ -1002,10 +1002,10 @@ class RecessionIndicator extends Component {
                 color="#0000e6"
                 onNearestX = {(value, {index}) => {
                   this.setState({
-                    crosshairDataRecDescr: otherChartCrosshairVal(dataNberValue, dataRecDescr, index),
-                    crosshairDataNberValue: otherChartCrosshairVal(dataNberValue, dataNberValue, index),
-                    crosshairDataWilshireIndex: otherChartCrosshairVal(dataNberValue, wilshireIndex, index+12),
-                    crosshairDataWilshire18moPerformance: otherChartCrosshairVal(dataNberValue, wilshire18moPerformance, index+12),
+                    crosshairDataRecDescr: otherChartCrosshairVal(wilshire18moFuturePerformance, dataRecDescr, index-12),
+                    crosshairDataNberValue: otherChartCrosshairVal(wilshire18moFuturePerformance, dataNberValue, index-12),
+                    crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire18moFuturePerformance, wilshireIndex, index),
+                    crosshairDataWilshire18moPerformance: otherChartCrosshairVal(wilshire18moFuturePerformance, wilshire18moPerformance, index),
                     crosshairDataWilshire18moFuturePerformance: value
                   })
                 }}
@@ -1015,10 +1015,10 @@ class RecessionIndicator extends Component {
                 color="#000066"
                 onNearestX = {(value, {index}) => {
                   this.setState({
-                    crosshairDataRecDescr: otherChartCrosshairVal(dataNberValue, dataRecDescr, index),
-                    crosshairDataNberValue: otherChartCrosshairVal(dataNberValue, dataNberValue, index),
-                    crosshairDataWilshireIndex: otherChartCrosshairVal(dataNberValue, wilshireIndex, index+12),
-                    crosshairDataWilshire12moPerformance: otherChartCrosshairVal(dataNberValue, wilshire12moPerformance, index+12),
+                    crosshairDataRecDescr: otherChartCrosshairVal(wilshire12moFuturePerformance, dataRecDescr, index-12),
+                    crosshairDataNberValue: otherChartCrosshairVal(wilshire12moFuturePerformance, dataNberValue, index-12),
+                    crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire12moFuturePerformance, wilshireIndex, index),
+                    crosshairDataWilshire12moPerformance: otherChartCrosshairVal(wilshire12moFuturePerformance, wilshire12moPerformance, index),
                     crosshairDataWilshire12moFuturePerformance: value
                   })
                 }}
