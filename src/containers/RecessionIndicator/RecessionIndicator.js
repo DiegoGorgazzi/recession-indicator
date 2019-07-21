@@ -83,7 +83,8 @@ class RecessionIndicator extends Component {
     crosshairDataWilshire12moFuturePerformance: "",
     crosshairDataWilshire18moFuturePerformance: "",
     crosshairDataWilshire24moFuturePerformance: "",
-    crosshairAllDataValues: []
+    crosshairAllDataValues: [],
+    crosshairRecOnlyDataValues : []
   }
 
   componentDidMount () {
@@ -222,9 +223,7 @@ class RecessionIndicator extends Component {
   crosshairAllDataHandler = () => {
     this.setState({
       crosshairAllDataValues: 
-        [this.state.crosshairDataRecDescr, 
-          this.state.crosshairDataNberValue,
-          this.state.crosshairDataWilshireIndex,
+        [ this.state.crosshairDataWilshireIndex,
           this.state.crosshairDataWilshire12moPerformance,
           this.state.crosshairDataWilshire18moPerformance,
           this.state.crosshairDataWilshire24moPerformance,
@@ -235,9 +234,18 @@ class RecessionIndicator extends Component {
       })
   }
 
+  crosshairRecOnlyDataHandler= () => {
+    this.setState({
+      crosshairRecOnlyDataValues: 
+        [this.state.crosshairDataRecDescr, 
+          this.state.crosshairDataNberValue
+        ]
+      })
+  }
+
   crosshairDisplayHandler = () => {
    //Change display values in crosshair
-   return crosshairDisplayWords(deepJSONArrayClone(this.state.crosshairAllDataValues));
+   return crosshairDisplayWords(deepJSONArrayClone(this.state.crosshairRecOnlyDataValues));
 
   }
 
@@ -473,6 +481,7 @@ class RecessionIndicator extends Component {
     // ******** Crosshair stuff *********************
     //Change display time format in crosshair
     const yrMonthFormat = d3.timeFormat("%Y-%B");
+    const yrMonthDayFormat = d3.timeFormat("%Y-%B-%d");
     console.log(this.state.crosshairAllDataValues, "crosshairAllDataValues");
 
 
@@ -546,12 +555,12 @@ class RecessionIndicator extends Component {
           className = {recessionIndicatorStyles.plot}
           xType="time"
           colorType="linear"
-          onMouseMove = {this.crosshairAllDataHandler}
+          onMouseMove = {this.crosshairRecOnlyDataHandler}
           onMouseLeave= {() => {
             this.setState({
               crosshairDataRecDescr: "",
               crosshairDataNberValue: "",
-              crosshairAllDataValues: []
+              crosshairRecOnlyDataValues: []
               })
           }}
         >
@@ -589,7 +598,8 @@ class RecessionIndicator extends Component {
               color={0.75}
               onNearestX = {(value, {index}) => {
                 this.setState({
-                  crosshairDataNberValue: value,  
+                  crosshairDataNberValue: value
+                  /*
                   crosshairDataWilshireIndex: otherChartCrosshairVal(dataNberValue, wilshireIndex, index+12),
                   crosshairDataWilshire12moPerformance: otherChartCrosshairVal(dataNberValue, wilshire12moPerformance, index+12),
                   crosshairDataWilshire18moPerformance: otherChartCrosshairVal(dataNberValue, wilshire18moPerformance, index+12),
@@ -597,6 +607,7 @@ class RecessionIndicator extends Component {
                   crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire12moFuturePerformance, index+12),
                   crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire18moFuturePerformance, index+12),
                   crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire24moFuturePerformance, index+12)
+                  */
                 })
               }}
             />
@@ -698,12 +709,6 @@ class RecessionIndicator extends Component {
                color="#800080"
                onNearestX = {(value, {index}) => {
                 this.setState({
-                  crosshairDataRecDescr: (new Date(this.state.dateRangeEnd) < new Date() ? 
-                    otherChartCrosshairVal(wilshireIndex, dataRecDescr, index) : 
-                      otherChartCrosshairVal(wilshireIndex, dataRecDescr, index-12)),
-                  crosshairDataNberValue: (new Date(this.state.dateRangeEnd) < new Date() ? 
-                    otherChartCrosshairVal(wilshireIndex, dataNberValue, index) : 
-                      otherChartCrosshairVal(wilshireIndex, dataNberValue, index-12)) ,
                   crosshairDataWilshireIndex: value,
                   crosshairDataWilshire12moPerformance: otherChartCrosshairVal(wilshireIndex, wilshire12moPerformance, index),
                   crosshairDataWilshire18moPerformance: otherChartCrosshairVal(wilshireIndex, wilshire18moPerformance, index),
@@ -717,7 +722,7 @@ class RecessionIndicator extends Component {
           <AreaSeries
                 data = {displaySeries(this.state.dateRangeEnd, futureDateAddition, "x")}
                 color= "transparent"
-              />
+            />     
           <DiscreteColorLegend
             style={legendStyle}
             items={[
@@ -735,9 +740,9 @@ class RecessionIndicator extends Component {
           
           <Crosshair 
             values={this.state.crosshairAllDataValues}
-            titleFormat={(d) => ({title: 'Date', value: yrMonthFormat(d[0].x)})}
+            titleFormat={(d) => ({title: 'Date', value: yrMonthDayFormat(d[0].x)})}
             itemsFormat={(d) => 
-              [{title: 'Index Value', value: d[2].y}
+              [{title: 'Index Value', value: d[0].y}
               ]
               }
             />
@@ -826,12 +831,6 @@ class RecessionIndicator extends Component {
                   color="#00ff00"
                   onNearestX = {(value, {index}) => {
                     this.setState({
-                      crosshairDataRecDescr: new Date(this.state.dateRangeEnd) < new Date() ? 
-                        otherChartCrosshairVal(wilshire24moPerformance, dataRecDescr, index) :
-                          otherChartCrosshairVal(wilshire24moPerformance, dataRecDescr, index-12),
-                      crosshairDataNberValue: new Date(this.state.dateRangeEnd) < new Date() ? 
-                        otherChartCrosshairVal(wilshire24moPerformance, dataNberValue, index) :
-                          otherChartCrosshairVal(wilshire24moPerformance, dataNberValue, index-12),
                       crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire24moPerformance, wilshireIndex, index),
                       crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(wilshire24moPerformance, wilshire12moFuturePerformance, index),
                       crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(wilshire24moPerformance, wilshire18moFuturePerformance, index),
@@ -845,12 +844,6 @@ class RecessionIndicator extends Component {
                   color="#009900"
                   onNearestX = {(value, {index}) => {
                     this.setState({
-                      crosshairDataRecDescr: new Date(this.state.dateRangeEnd) < new Date() ? 
-                        otherChartCrosshairVal(wilshire18moPerformance, dataRecDescr, index) :
-                          otherChartCrosshairVal(wilshire18moPerformance, dataRecDescr, index-12),
-                      crosshairDataNberValue: new Date(this.state.dateRangeEnd) < new Date() ? 
-                        otherChartCrosshairVal(wilshire18moPerformance, dataNberValue, index) :
-                          otherChartCrosshairVal(wilshire18moPerformance, dataNberValue, index-12),
                       crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire18moPerformance, wilshireIndex, index),
                       crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(wilshire18moPerformance, wilshire12moFuturePerformance, index),
                       crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(wilshire18moPerformance, wilshire18moFuturePerformance, index),
@@ -864,12 +857,6 @@ class RecessionIndicator extends Component {
                   color="#003300"
                   onNearestX = {(value, {index}) => {
                     this.setState({
-                      crosshairDataRecDescr: new Date(this.state.dateRangeEnd) < new Date() ? 
-                        otherChartCrosshairVal(wilshire12moPerformance, dataRecDescr, index) : 
-                          otherChartCrosshairVal(wilshire12moPerformance, dataRecDescr, index-12),
-                      crosshairDataNberValue: new Date(this.state.dateRangeEnd) < new Date() ? 
-                        otherChartCrosshairVal(wilshire12moPerformance, dataNberValue, index) :
-                          otherChartCrosshairVal(wilshire12moPerformance, dataNberValue, index-12),
                       crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire12moPerformance, wilshireIndex, index),
                       crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(wilshire12moPerformance, wilshire24moFuturePerformance, index),
                       crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(wilshire12moPerformance, wilshire18moFuturePerformance, index),
@@ -906,11 +893,11 @@ class RecessionIndicator extends Component {
                 />
             <Crosshair 
               values={this.state.crosshairAllDataValues}
-              titleFormat={(d) => ({title: 'Date', value: yrMonthFormat(d[0].x)})}
+              titleFormat={(d) => ({title: 'Date', value: yrMonthDayFormat(d[0].x)})}
               itemsFormat={(d) => 
-                [{title: '12-mo Performance', value: math.format(d[3].y, 3)+"%"},
-                 {title: '18-mo Performance', value: math.format(d[4].y, 3)+"%"},
-                 {title: '24-mo Performance', value: math.format(d[5].y, 3)+"%"}
+                [{title: '12-mo Performance', value: math.format(d[1].y, 3)+"%"},
+                 {title: '18-mo Performance', value: math.format(d[2].y, 3)+"%"},
+                 {title: '24-mo Performance', value: math.format(d[3].y, 3)+"%"}
                 ]
                 }
               />
@@ -1006,12 +993,6 @@ class RecessionIndicator extends Component {
                 color="#6666ff"
                 onNearestX = {(value, {index}) => {
                   this.setState({
-                    crosshairDataRecDescr: new Date(this.state.dateRangeEnd) < new Date() ? 
-                      otherChartCrosshairVal(wilshire24moFuturePerformance, dataRecDescr, index) :
-                      otherChartCrosshairVal(wilshire24moFuturePerformance, dataRecDescr, index-12),
-                    crosshairDataNberValue: new Date(this.state.dateRangeEnd) < new Date() ? 
-                      otherChartCrosshairVal(wilshire24moFuturePerformance, dataNberValue, index) :
-                        otherChartCrosshairVal(wilshire24moFuturePerformance, dataNberValue, index-12),
                     crosshairDataWilshire24moPerformance: otherChartCrosshairVal(wilshire24moFuturePerformance, wilshire24moPerformance, index),
                     crosshairDataWilshire24moFuturePerformance: value
                   })
@@ -1022,12 +1003,6 @@ class RecessionIndicator extends Component {
                 color="#0000e6"
                 onNearestX = {(value, {index}) => {
                   this.setState({
-                    crosshairDataRecDescr: new Date(this.state.dateRangeEnd) < new Date() ? 
-                      otherChartCrosshairVal(wilshire18moFuturePerformance, dataRecDescr, index) :
-                        otherChartCrosshairVal(wilshire18moFuturePerformance, dataRecDescr, index-12),
-                    crosshairDataNberValue: new Date(this.state.dateRangeEnd) < new Date() ? 
-                      otherChartCrosshairVal(wilshire18moFuturePerformance, dataNberValue, index) :
-                        otherChartCrosshairVal(wilshire18moFuturePerformance, dataNberValue, index-12),
                     crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire18moFuturePerformance, wilshireIndex, index),
                     crosshairDataWilshire18moPerformance: otherChartCrosshairVal(wilshire18moFuturePerformance, wilshire18moPerformance, index),
                     crosshairDataWilshire18moFuturePerformance: value
@@ -1039,12 +1014,6 @@ class RecessionIndicator extends Component {
                 color="#000066"
                 onNearestX = {(value, {index}) => {
                   this.setState({
-                    crosshairDataRecDescr: new Date(this.state.dateRangeEnd) < new Date() ? 
-                      otherChartCrosshairVal(wilshire12moFuturePerformance, dataRecDescr, index) : 
-                        otherChartCrosshairVal(wilshire12moFuturePerformance, dataRecDescr, index-12),
-                    crosshairDataNberValue: new Date(this.state.dateRangeEnd) < new Date() ? 
-                      otherChartCrosshairVal(wilshire12moFuturePerformance, dataNberValue, index) : 
-                        otherChartCrosshairVal(wilshire12moFuturePerformance, dataNberValue, index-12),
                     crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire12moFuturePerformance, wilshireIndex, index),
                     crosshairDataWilshire12moPerformance: otherChartCrosshairVal(wilshire12moFuturePerformance, wilshire12moPerformance, index),
                     crosshairDataWilshire12moFuturePerformance: value
@@ -1079,11 +1048,11 @@ class RecessionIndicator extends Component {
               />
           <Crosshair 
             values={this.state.crosshairAllDataValues}
-            titleFormat={(d) => ({title: 'Date', value: yrMonthFormat(d[0].x)})}
+            titleFormat={(d) => ({title: 'Date', value: yrMonthDayFormat(d[0].x)})}
             itemsFormat={(d) => 
-              [{title: '12-mo FUTURE Performance', value: math.format(d[6].y, 3)+"%"},
-              {title: '18-mo FUTURE Performance', value: math.format(d[7].y, 3)+"%"},
-              {title: '24-mo FUTURE Performance', value: math.format(d[8].y, 3)+"%"}
+              [{title: '12-mo FUTURE Performance', value: math.format(d[4].y, 3)+"%"},
+              {title: '18-mo FUTURE Performance', value: math.format(d[5].y, 3)+"%"},
+              {title: '24-mo FUTURE Performance', value: math.format(d[6].y, 3)+"%"}
               ]
               }
             />
