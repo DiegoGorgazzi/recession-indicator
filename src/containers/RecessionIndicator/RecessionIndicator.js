@@ -42,7 +42,7 @@ import {tenYearYield} from "../../data/fedReserveAPI";
 import {threeMonthYield} from "../../data/fedReserveAPI";
 import {nberUSrecess} from "../../data/fedReserveAPI";
 import {wilshire5000} from "../../data/fedReserveAPI";
-import {vix} from "../../data/fedReserveAPI";
+//import {vix} from "../../data/fedReserveAPI";
 
 class RecessionIndicator extends Component {
 
@@ -52,7 +52,7 @@ class RecessionIndicator extends Component {
     threeMonthInt: [],
     nberRecession: [],
     wilshireState: [],
-    vixState: [],
+    //vixState: [],
     tenThreeMerged: [],
     // ****** DATE RELATED STATES *******
     //VERY IMPORTANT: YOU MUST USE YYYY-MM-DD as your input (just like the JSON API)
@@ -98,7 +98,7 @@ class RecessionIndicator extends Component {
       axios.get(threeMonthYield),
       axios.get(nberUSrecess),
       axios.get(wilshire5000),
-      axios.get(vix)
+      //axios.get(vix)
       ])
         .then(axios.spread(
           (tenYrYldResponse,
@@ -113,9 +113,9 @@ class RecessionIndicator extends Component {
             nberRecession:
               filteredResponse(nberResponse.data.observations, "US-recession"),
             wilshireState:
-              filteredResponse(wilshireResponse.data.observations, "Wilshire-5000"),
-            vixState:
-              filteredResponse(vixResponse.data.observations, "Vix")
+              filteredResponse(wilshireResponse.data.observations, "Wilshire-5000")
+            //vixState:
+            //  filteredResponse(vixResponse.data.observations, "Vix")
             });
 
           console.log(this.state.tenYearInt, "ten");
