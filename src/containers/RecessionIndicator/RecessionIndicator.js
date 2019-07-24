@@ -54,6 +54,8 @@ class RecessionIndicator extends Component {
     wilshireState: [],
     //vixState: [],
     tenThreeMerged: [],
+    axiosError: false,
+    axiosErrorMessage: "We're having problems... please check your internet connection and try again",
     // ****** DATE RELATED STATES *******
     //VERY IMPORTANT: YOU MUST USE YYYY-MM-DD as your input (just like the JSON API)
     dateRangeStart: "2000-01-01",
@@ -118,13 +120,16 @@ class RecessionIndicator extends Component {
             //  filteredResponse(vixResponse.data.observations, "Vix")
             });
 
-          console.log(this.state.tenYearInt, "ten");
+          //console.log(this.state.tenYearInt, "ten");
           //console.log(this.state.threeMonthInt, "three");
           //console.log(this.state.nberRecession, "nber");
-          console.log(this.state.wilshireState, "wilshire");
+          //console.log(this.state.wilshireState, "wilshire");
           //console.log(this.state.vixState, "vix");
           }
-        ));
+        )) 
+        .catch(error=> {
+          this.setState({axiosError:true});
+        });
 
     }
 
@@ -134,37 +139,40 @@ class RecessionIndicator extends Component {
   }
 
   componentDidUpdate(previousProps, previousState, snapshot) {
-    if(previousState.tenThreeMerged.length === 0 || previousState.tenThreeMerged.length === 1 ) {
-      this.setState({
-        tenThreeMerged: calcs(this.state.tenYearInt, this.state.threeMonthInt, this.state.nberRecession, "mergedTenThree" )
-      });
+    if(this.state.axiosError === false) {
+      if(previousState.tenThreeMerged.length === 0 || previousState.tenThreeMerged.length === 1 ) {
+        this.setState({
+          tenThreeMerged: calcs(this.state.tenYearInt, this.state.threeMonthInt, this.state.nberRecession, "mergedTenThree" )
+        });
+      }
     }
 
     //CHECK IF DATE INPUT IS OUT OF RANGE AND UPDATE ERROR MESSAGE
-    const sameAsfutureDateAddition = xAndYobjects(
-      future12MonthsSeries(numberfyMergedState(this.state.tenThreeMerged)), 
-      "date", 
-      "value", 
-      this.state.dateRangeStart, 
-      this.state.dateRangeEnd);
+    if(this.state.axiosError === false) {
+      const sameAsfutureDateAddition = xAndYobjects(
+        future12MonthsSeries(numberfyMergedState(this.state.tenThreeMerged)), 
+        "date", 
+        "value", 
+        this.state.dateRangeStart, 
+        this.state.dateRangeEnd);
 
-    if(sameAsfutureDateAddition.length > 0 ) {
-      if(new Date(this.state.dateRangeEnd).getTime() > sameAsfutureDateAddition[0]["x"].getTime() ) {
-        if(this.state.userDateOutOfRangeError !== "") {
-          this.setState({
-            userDateOutOfRangeError: ""
-          });
-        }
-      } else if (new Date(this.state.dateRangeEnd).getTime() < sameAsfutureDateAddition[0]["x"].getTime() ){
-          if(this.state.userDateOutOfRangeError === ""){
+      if(sameAsfutureDateAddition.length > 0 ) {
+        if(new Date(this.state.dateRangeEnd).getTime() > sameAsfutureDateAddition[0]["x"].getTime() ) {
+          if(this.state.userDateOutOfRangeError !== "") {
             this.setState({
-              userDateOutOfRangeError: "DATE OUT OF RANGE, PLEASE CHANGE THE DATE RANGE"
+              userDateOutOfRangeError: ""
             });
           }
-      } 
+        } else if (new Date(this.state.dateRangeEnd).getTime() < sameAsfutureDateAddition[0]["x"].getTime() ){
+            if(this.state.userDateOutOfRangeError === ""){
+              this.setState({
+                userDateOutOfRangeError: "DATE OUT OF RANGE, PLEASE CHANGE THE DATE RANGE"
+              });
+            }
+        } 
 
-    } 
-
+        } 
+    }
 
 
   }
@@ -517,7 +525,8 @@ class RecessionIndicator extends Component {
         />
         <span className={recessionIndicatorStyles.dateErrorMessage}>
           {this.state.userStartDateError} {this.state.userEndDateError}
-          {this.state.userDateOutOfRangeError}
+          {this.state.userDateOutOfRangeError} 
+          {this.state.axiosError ? this.state.axiosErrorMessage : null}
         </span>
       </div>
 
