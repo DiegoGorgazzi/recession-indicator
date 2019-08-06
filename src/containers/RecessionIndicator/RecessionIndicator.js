@@ -25,8 +25,8 @@ import {futurePerformance} from '../../logic/addDataSeries/futurePerformance';
 import * as d3 from "d3-time-format";
 
 //************************* react-vis *******************************
-import {XYPlot, LineSeries, VerticalGridLines, HorizontalGridLines,
-  XAxis, YAxis, VerticalBarSeries, AreaSeries, DiscreteColorLegend, 
+import {LineSeries, VerticalGridLines, HorizontalGridLines,
+  XAxis, YAxis, AreaSeries, DiscreteColorLegend, 
  ChartLabel, Crosshair, FlexibleXYPlot } from 'react-vis';
 import 'react-vis/dist/style.css';
 
