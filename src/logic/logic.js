@@ -3,7 +3,7 @@ import * as math from 'mathjs';
 import NormalDistribution from "normal-distribution";
 
 //*********************** helperFunctions ******************************
-import {mergedResponse, deepJSONArrayClone, dateYearsAgoAndYearAhead} from "../shared/helperFunctions/helperFunctions";
+import {mergedResponse, deepJSONArrayClone} from "../shared/helperFunctions/helperFunctions";
 
 //************************ d3js *************************************
 import * as d3 from "d3-time-format";
