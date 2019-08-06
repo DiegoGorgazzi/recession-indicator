@@ -728,10 +728,6 @@ class RecessionIndicator extends Component {
                 })
               }}
             />
-          <AreaSeries
-                data = {displaySeries(this.state.dateRangeEnd, futureDateAddition, "x")}
-                color= "transparent"
-            />     
           <DiscreteColorLegend
             style={legendStyle}
             items={[
@@ -873,10 +869,6 @@ class RecessionIndicator extends Component {
                       crosshairDataWilshire12moPerformance: value
                     })
                   }}
-                />
-            <AreaSeries
-                  data =  {displaySeries(this.state.dateRangeEnd, futureDateAddition, "x")} 
-                  color= "transparent"
                 />
             <DiscreteColorLegend
                 style={legendStyle}
@@ -1028,10 +1020,6 @@ class RecessionIndicator extends Component {
                     crosshairDataWilshire12moFuturePerformance: value
                   })
                 }}
-              />
-          <AreaSeries
-                data =  {displaySeries(this.state.dateRangeEnd, futureDateAddition, "x")} 
-                color= "transparent"
               />
           <DiscreteColorLegend
               style={legendStyle}
