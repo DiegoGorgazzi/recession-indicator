@@ -6,10 +6,10 @@ export const xAndYobjects = (array, xPropDateFromArray, yPropFromArray, userStar
     //Since the state is set initially to "", then it defaults as
     // "" instead of the default value provided, hence, two following
     // if statements below
-      if(userStartDate == "") {
+      if(userStartDate === "") {
         userStartDate = "1600-01-01";
       };
-      if(userEndDate == "") {
+      if(userEndDate === "") {
         userEndDate = "2100-01-01";
       };
   
@@ -29,13 +29,13 @@ export const xAndYobjects = (array, xPropDateFromArray, yPropFromArray, userStar
   
   
       //Find index in main array where
-      let startIndex = array.findIndex( (object) => object[xPropDateFromArray].getTime() == datedUserStartDate.getTime() );
-      let endIndex = array.findIndex( (object) => object[xPropDateFromArray].getTime() == datedUserEndDate.getTime() );
+      let startIndex = array.findIndex( (object) => object[xPropDateFromArray].getTime() === datedUserStartDate.getTime() );
+      let endIndex = array.findIndex( (object) => object[xPropDateFromArray].getTime() === datedUserEndDate.getTime() );
   
       //If startIndex not in array, set it to the closest earlier date
         //available, else set it to the beginning of time
         //this ASSUMES the array starts with the oldest date
-      if(startIndex == -1) {
+      if(startIndex === -1) {
         array.map( (object, index)=> {
           if (array[0][xPropDateFromArray].getTime() > datedUserStartDate.getTime()) {
                    startIndex = 0;
@@ -48,7 +48,7 @@ export const xAndYobjects = (array, xPropDateFromArray, yPropFromArray, userStar
        }
   
       //If endIndex not in array, set to end of time
-      if(endIndex == -1) {
+      if(endIndex === -1) {
           array.map( (object, index)=> {
 
               if(datedUserEndDate.getTime() < array[0][xPropDateFromArray].getTime()) {
