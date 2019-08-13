@@ -388,6 +388,7 @@ class RecessionIndicator extends Component {
     }
 
   render() {
+    console.log('rendering...')
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
     //--is going to have to be part of state.
@@ -466,14 +467,14 @@ class RecessionIndicator extends Component {
       this.state.dateRangeStart, 
       this.state.dateRangeEnd);
     
-    console.log(wilshire12moPerformance, "wilshire12moPerformance");
+    /* console.log(wilshire12moPerformance, "wilshire12moPerformance");
     
     console.log(dataNberValue, "dataNberValue");
     console.log(dataRecDescr, "dataRecDescr")
     console.log(wilshireIndex, "wilshireIndex");
 
     console.log(this.state.userEndDate, "this.state.userEndDate");
-        
+         */
     
     
     //**** Left y-axis label *********
@@ -490,10 +491,10 @@ class RecessionIndicator extends Component {
     //Change display time format in crosshair
     const yrMonthFormat = d3.timeFormat("%Y-%B");
     const yrMonthDayFormat = d3.timeFormat("%Y-%B-%d");
-    console.log(this.state.crosshairAllDataValues, "crosshairAllDataValues");
+    //console.log(this.state.crosshairAllDataValues, "crosshairAllDataValues");
 
 
-    console.log(this.scaledRecProbData(wilshire12moPerformance, dataRecDescr), "scaledRecProbData");  
+    //console.log(this.scaledRecProbData(wilshire12moPerformance, dataRecDescr), "scaledRecProbData");  
 
     // ************ Legend  *********************
     const legendStyle = {
