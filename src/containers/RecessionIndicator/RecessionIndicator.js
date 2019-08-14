@@ -490,50 +490,9 @@ class RecessionIndicator extends Component {
   };
 
   render() {
-    console.log("rendering...");
+    console.log("[RecessionIndicator.js] rendering...");
     //************************** VISUALIZATION STUF ******************************
-    // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
-    //--is going to have to be part of state.
 
-    // ADD WILSHIRE DATA
-    //Since I'm reusing addDataSeries(this.state.wilshireState), store it in a variable
-    const wilshireWorkableData = addDataSeries(this.state.wilshireState);
-
-    /* const futureDateAddition = xAndYobjects(
-      future12MonthsSeries(numberfyMergedState(this.state.tenThreeMerged)),
-      "date",
-      "value",
-      this.state.dateRangeStart,
-      this.state.dateRangeEnd
-    ); */
-
-      //WILSHIRE FUTURE PERFORMANCE
-    const wilshire12moFuturePerformance = xAndYobjects(
-      futurePerformance(wilshireWorkableData, 12),
-      "x",
-      "y",
-      this.state.dateRangeStart,
-      this.state.dateRangeEnd
-    );
-
-    const wilshire18moFuturePerformance = xAndYobjects(
-      futurePerformance(wilshireWorkableData, 18),
-      "x",
-      "y",
-      this.state.dateRangeStart,
-      this.state.dateRangeEnd
-    );
-
-    const wilshire24moFuturePerformance = xAndYobjects(
-      futurePerformance(wilshireWorkableData, 24),
-      "x",
-      "y",
-      this.state.dateRangeStart,
-      this.state.dateRangeEnd
-    );
-
-    //**** Left y-axis label *********
-    const WORDS = ["0", "Very Low", "Low", "Medium", "High", "Very High"];
 
     // ******** Crosshair stuff *********************
     //Change display time format in crosshair
@@ -627,7 +586,7 @@ class RecessionIndicator extends Component {
             <HorizontalGridLines />
             <XAxis tickLabelAngle={-45} tickPadding={5} />
             <YAxis
-              tickFormat={v => WORDS[v]}
+              tickFormat={v => ["0", "Very Low", "Low", "Medium", "High", "Very High"][v]}
               tickLabelAngle={-45}
               tickPadding={5}
             />
