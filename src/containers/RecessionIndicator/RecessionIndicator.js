@@ -10,6 +10,7 @@ import ToggleVisibility from '../../components/ToggleVisibility/ToggleVisibility
 import TermsConditionsPrivacy from '../../components/TemsConditionsPrivacy/TermsConditionsPrivacy';
 import WilshireFuturePerf from '../../components/Charts/WilshireFuturePerf';
 import WilshirePastPerf from '../../components/Charts/WilshirePastPerf';
+import WilshireIndex from '../../components/Charts/WilshireIndex'; 
 
 //********************** Logic ****************************************
 import {calcs, numberfyMergedState} from "../../logic/logic";
@@ -693,84 +694,48 @@ class RecessionIndicator extends Component {
           )}
         </div>
 
-        <div className={recessionIndicatorStyles.chartArea}>
-          <FlexibleXYPlot
-            margin={{ bottom: 50, left: 70 }}
-            className={recessionIndicatorStyles.plot}
-            xType="time"
-            colorType="linear"
-            onMouseMove={this.crosshairWilshireIndexDataHandler}
-            onMouseLeave={() => {
-              this.setState({
-                crosshairDataWilshireIndex: "",
-                crosshairWilshireIndexValues: []
-              });
-            }}
-          >
-            <VerticalGridLines />
-            <HorizontalGridLines />
-            <XAxis tickLabelAngle={-45} tickPadding={5} />
-            <YAxis tickLabelAngle={-45} tickPadding={5} />
-            <ChartLabel
-              text="Price Index"
-              className="altYlabelWilshire"
-              includeMargin={false}
-              xPercent={this.variableChartLabel("altYlabelWilshire", -65)}
-              yPercent={0.65}
-              style={{
-                transform: "rotate(-90)",
-                fontWeight: "bold"
-              }}
-            />
-            <AreaSeries
-              data={displaySeries(
-                this.state.dateRangeEnd,
-                this.scaledRecProbData(
-                  [this.wilshireIndex()],
-                  this.dataRecDescr()
-                ),
-                "x"
-              )}
-              color="#ff9999"
-            />
-            <LineSeries
-              data={displaySeries(
-                this.state.dateRangeEnd,
-                this.wilshireIndex(),
-                "x"
-              )}
-              color="#800080"
-              onNearestX={(value, { index }) => {
-                this.setState({
-                  crosshairDataWilshireIndex: value
-                });
-              }}
-            />
-            <DiscreteColorLegend
-              style={legendStyle}
-              items={[
-                {
-                  title: 'Recession >= "High" Likelihood (12 months Ahead)',
-                  color: "#ff9999"
-                },
-                {
-                  title: "Wilshire 5000, Price Index",
-                  color: "#800080"
-                }
-              ]}
-              orientation="horizontal"
-            />
+        <div className={recessionIndicatorStyles.chartArea} >
+          <WilshireIndex 
+                FlexiClassName = {recessionIndicatorStyles.plot}
+                onMouseMove = {this.crosshairWilshireIndexDataHandler}
+                onMouseLeave = {() => {
+                  this.setState({
+                    crosshairDataWilshireIndex: "",
+                    crosshairWilshireIndexValues: []
+                  });
+                }}
+                className = "altYlabelWilshire"
+                xPercent = {this.variableChartLabel("altYlabelWilshire", -65)}
+                areaSeriesData = {displaySeries(
+                  this.state.dateRangeEnd,
+                  this.scaledRecProbData(
+                    [this.wilshireIndex()],
+                    this.dataRecDescr()
+                  ),
+                  "x"
+                )}
+                lineSeriesData = {displaySeries(
+                  this.state.dateRangeEnd,
+                  this.wilshireIndex(),
+                  "x"
+                )}
+                onNearestX = {(value, { index }) => {
+                  this.setState({
+                    crosshairDataWilshireIndex: value
+                  });
+                }}
 
-            <Crosshair
-              values={this.state.crosshairWilshireIndexValues}
-              titleFormat={d => ({
-                title: "Date",
-                value: yrMonthDayFormat(d[0].x)
-              })}
-              itemsFormat={d => [{ title: "Index Value", value: d[0].y }]}
-            />
-          </FlexibleXYPlot>
-        </div>
+            
+                crosshairVal = {this.state.crosshairWilshireIndexValues}
+                crosshairTitleFormat = {d => ({
+                  title: "Date",
+                  value: yrMonthDayFormat(d[0].x)
+                })}
+                crosshairItemsFormat = {d => [{ title: "Index Value", value: d[0].y }]}
+
+              
+              />
+          </div>
 
         {/* -------------WILSHIRE PAST PERFORMANCE CHART --------------*/}
         <div>
