@@ -467,6 +467,17 @@ class RecessionIndicator extends Component {
     );
   };
 
+  wilshirePastPerformance = (months) => {
+    const wilshireWorkableData = addDataSeries(this.state.wilshireState);
+    return xAndYobjects(
+      pastPerformance(wilshireWorkableData, months),
+      "x",
+      "y",
+      this.state.dateRangeStart,
+      this.state.dateRangeEnd
+    );
+  };
+
   render() {
     console.log("rendering...");
     //************************** VISUALIZATION STUF ******************************
@@ -477,40 +488,15 @@ class RecessionIndicator extends Component {
     //Since I'm reusing addDataSeries(this.state.wilshireState), store it in a variable
     const wilshireWorkableData = addDataSeries(this.state.wilshireState);
 
-    const futureDateAddition = xAndYobjects(
+    /* const futureDateAddition = xAndYobjects(
       future12MonthsSeries(numberfyMergedState(this.state.tenThreeMerged)),
       "date",
       "value",
       this.state.dateRangeStart,
       this.state.dateRangeEnd
-    );
+    ); */
 
-    //WILSHIRE PAST PERFORMANCE
-    const wilshire12moPerformance = xAndYobjects(
-      pastPerformance(wilshireWorkableData, 12),
-      "x",
-      "y",
-      this.state.dateRangeStart,
-      this.state.dateRangeEnd
-    );
-
-    const wilshire18moPerformance = xAndYobjects(
-      pastPerformance(wilshireWorkableData, 18),
-      "x",
-      "y",
-      this.state.dateRangeStart,
-      this.state.dateRangeEnd
-    );
-
-    const wilshire24moPerformance = xAndYobjects(
-      pastPerformance(wilshireWorkableData, 24),
-      "x",
-      "y",
-      this.state.dateRangeStart,
-      this.state.dateRangeEnd
-    );
-
-    //WILSHIRE FUTURE PERFORMANCE
+      //WILSHIRE FUTURE PERFORMANCE
     const wilshire12moFuturePerformance = xAndYobjects(
       futurePerformance(wilshireWorkableData, 12),
       "x",
@@ -878,9 +864,9 @@ class RecessionIndicator extends Component {
                 this.state.dateRangeEnd,
                 this.scaledRecProbData(
                   [
-                    wilshire12moPerformance,
-                    wilshire18moPerformance,
-                    wilshire24moPerformance
+                    this.wilshirePastPerformance(12),
+                    this.wilshirePastPerformance(18),
+                    this.wilshirePastPerformance(24),
                   ],
                   this.dataRecDescr()
                 ),
@@ -891,20 +877,20 @@ class RecessionIndicator extends Component {
             <LineSeries
               data={displaySeries(
                 this.state.dateRangeEnd,
-                wilshire24moPerformance,
+                this.wilshirePastPerformance(24),
                 "x"
               )}
               color="#00ff00"
               onNearestX={(value, { index }) => {
                 this.setState({
-                   crosshairDataWilshire24moPerformance: value
+                  crosshairDataWilshire24moPerformance: value
                 });
               }}
             />
             <LineSeries
               data={displaySeries(
                 this.state.dateRangeEnd,
-                wilshire18moPerformance,
+                this.wilshirePastPerformance(18),
                 "x"
               )}
               color="#009900"
@@ -917,7 +903,7 @@ class RecessionIndicator extends Component {
             <LineSeries
               data={displaySeries(
                 this.state.dateRangeEnd,
-                wilshire12moPerformance,
+                this.wilshirePastPerformance(12),
                 "x"
               )}
               color="#003300"
