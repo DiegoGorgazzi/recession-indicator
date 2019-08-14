@@ -478,6 +478,17 @@ class RecessionIndicator extends Component {
     );
   };
 
+  wilshireFuturePerformance = (months) => {
+    const wilshireWorkableData = addDataSeries(this.state.wilshireState);
+    return xAndYobjects(
+      futurePerformance(wilshireWorkableData, months),
+      "x",
+      "y",
+      this.state.dateRangeStart,
+      this.state.dateRangeEnd
+    );
+  };
+
   render() {
     console.log("rendering...");
     //************************** VISUALIZATION STUF ******************************
@@ -1036,9 +1047,9 @@ class RecessionIndicator extends Component {
                 this.state.dateRangeEnd,
                 this.scaledRecProbData(
                   [
-                    wilshire12moFuturePerformance,
-                    wilshire18moFuturePerformance,
-                    wilshire24moFuturePerformance
+                    this.wilshireFuturePerformance(12),
+                    this.wilshireFuturePerformance(18),
+                    this.wilshireFuturePerformance(24)
                   ],
                   this.dataRecDescr()
                 ),
@@ -1049,7 +1060,7 @@ class RecessionIndicator extends Component {
             <LineSeries
               data={displaySeries(
                 this.state.dateRangeEnd,
-                wilshire24moFuturePerformance,
+                this.wilshireFuturePerformance(24),
                 "x"
               )}
               color="#6666ff"
@@ -1062,7 +1073,7 @@ class RecessionIndicator extends Component {
             <LineSeries
               data={displaySeries(
                 this.state.dateRangeEnd,
-                wilshire18moFuturePerformance,
+                this.wilshireFuturePerformance(18),
                 "x"
               )}
               color="#0000e6"
@@ -1075,7 +1086,7 @@ class RecessionIndicator extends Component {
             <LineSeries
               data={displaySeries(
                 this.state.dateRangeEnd,
-                wilshire12moFuturePerformance,
+                this.wilshireFuturePerformance(12),
                 "x"
               )}
               color="#000066"
