@@ -85,9 +85,10 @@ class RecessionIndicator extends Component {
     crosshairDataWilshire12moFuturePerformance: "",
     crosshairDataWilshire18moFuturePerformance: "",
     crosshairDataWilshire24moFuturePerformance: "",
-    crosshairAllDataValues: [],
     crosshairRecOnlyDataValues : [],
     crosshairWilshireIndexValues : [],
+    crosshairWilshirePastValues: [],
+    crosshairWilshireFutValues: [],
   }
 
   componentDidMount () {
@@ -246,14 +247,21 @@ class RecessionIndicator extends Component {
       })
   }
 
-  
-  crosshairAllDataHandler = () => {
+  crosshairWilshirePastDataHandler = () => {
     this.setState({
-      crosshairAllDataValues: 
+      crosshairWilshirePastValues: 
         [ 
           this.state.crosshairDataWilshire12moPerformance,
           this.state.crosshairDataWilshire18moPerformance,
-          this.state.crosshairDataWilshire24moPerformance,
+          this.state.crosshairDataWilshire24moPerformance
+        ]
+      })
+  }
+
+  crosshairWilshireFutDataHandler = () => {
+    this.setState({
+      crosshairWilshireFutValues: 
+        [ 
           this.state.crosshairDataWilshire12moFuturePerformance,
           this.state.crosshairDataWilshire18moFuturePerformance,
           this.state.crosshairDataWilshire24moFuturePerformance
@@ -806,13 +814,13 @@ class RecessionIndicator extends Component {
             className = {recessionIndicatorStyles.plot}
             xType="time"
             colorType="linear"
-            onMouseMove = {this.crosshairAllDataHandler}
+            onMouseMove = {this.crosshairWilshirePastDataHandler}
             onMouseLeave= {() => {
               this.setState({
                 crosshairDataWilshire12moPerformance: "",
                 crosshairDataWilshire18moPerformance: "",
                 crosshairDataWilshire24moPerformance: "",
-                crosshairAllDataValues: []
+                crosshairWilshirePastValues: []
                 })
             }} 
             >
@@ -904,7 +912,7 @@ class RecessionIndicator extends Component {
                 orientation="horizontal"
                 />
             <Crosshair 
-              values={this.state.crosshairAllDataValues}
+              values={this.state.crosshairWilshirePastValues}
               titleFormat={(d) => ({title: 'Date', value: yrMonthDayFormat(d[0].x)})}
               itemsFormat={(d) => 
                 [{title: '12-mo Performance', value: math.format(d[0].y, 3)+"%"},
@@ -964,13 +972,13 @@ class RecessionIndicator extends Component {
           className = {recessionIndicatorStyles.plot}
           xType="time"
           colorType="linear"
-          onMouseMove = {this.crosshairAllDataHandler}
+          onMouseMove = {this.crosshairWilshireFutDataHandler}
           onMouseLeave= {() => {
             this.setState({
               crosshairDataWilshire12moFuturePerformance: "",
               crosshairDataWilshire18moFuturePerformance: "",
               crosshairDataWilshire24moFuturePerformance: "",
-              crosshairAllDataValues: []
+              crosshairWilshireFutValues: []
               })
           }} 
           >
@@ -1055,12 +1063,12 @@ class RecessionIndicator extends Component {
               orientation="horizontal"
               />
           <Crosshair 
-            values={this.state.crosshairAllDataValues}
+            values={this.state.crosshairWilshireFutValues}
             titleFormat={(d) => ({title: 'Date', value: yrMonthDayFormat(d[0].x)})}
             itemsFormat={(d) => 
-              [{title: '12-mo FUTURE Performance', value: math.format(d[3].y, 3)+"%"},
-              {title: '18-mo FUTURE Performance', value: math.format(d[4].y, 3)+"%"},
-              {title: '24-mo FUTURE Performance', value: math.format(d[5].y, 3)+"%"}
+              [{title: '12-mo FUTURE Performance', value: math.format(d[0].y, 3)+"%"},
+              {title: '18-mo FUTURE Performance', value: math.format(d[1].y, 3)+"%"},
+              {title: '24-mo FUTURE Performance', value: math.format(d[2].y, 3)+"%"}
               ]
               }
             />
