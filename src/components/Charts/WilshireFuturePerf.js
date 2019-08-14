@@ -1,11 +1,10 @@
-import React, { Component, PureComponent, Fragment } from "react";
+import React, { Component, Fragment } from "react";
 
 //************************* react-vis *******************************
 import {LineSeries, VerticalGridLines, HorizontalGridLines,
   XAxis, YAxis, AreaSeries, DiscreteColorLegend, 
  ChartLabel, Crosshair, FlexibleXYPlot } from 'react-vis';
 import 'react-vis/dist/style.css';
-import { getScalePropTypesByAttribute } from "react-vis/dist/utils/scales-utils";
 
 class WilshireFuturePerf extends Component {
  
