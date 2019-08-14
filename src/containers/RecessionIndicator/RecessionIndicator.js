@@ -401,6 +401,15 @@ class RecessionIndicator extends Component {
         this.state.dateRangeEnd);
     }
 
+    dataNberValue = () => {
+      console.log('dataNberValue')
+      return xAndYobjects(
+      numberfyMergedState(this.state.tenThreeMerged), 
+      "date", 
+      "nberValue", 
+      this.state.dateRangeStart, 
+      this.state.dateRangeEnd); 
+    }
    
 
   render() {
@@ -409,13 +418,6 @@ class RecessionIndicator extends Component {
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
     //--is going to have to be part of state.
-
-    const dataNberValue = xAndYobjects(
-                    numberfyMergedState(this.state.tenThreeMerged), 
-                    "date", 
-                    "nberValue", 
-                    this.state.dateRangeStart, 
-                    this.state.dateRangeEnd);
 
     // ADD WILSHIRE DATA
     //Since I'm reusing addDataSeries(this.state.wilshireState), store it in a variable
@@ -614,7 +616,7 @@ class RecessionIndicator extends Component {
               onNearestX = {this.onNearestXRecDescr}
           />
           <LineSeries
-              data = { displaySeries(this.state.dateRangeEnd, dataNberValue, "x")}
+              data = { displaySeries(this.state.dateRangeEnd, this.dataNberValue(), "x")}
               color={0.75}
               onNearestX = {(value, {index}) => {
                 this.setState({
