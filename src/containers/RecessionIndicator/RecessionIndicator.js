@@ -437,7 +437,7 @@ class RecessionIndicator extends Component {
   };
 
   dataRecDescr = () => {
-    console.log("dataRecDesc");
+    //console.log("dataRecDesc");
     return xAndYobjects(
       numberfyMergedState(this.state.tenThreeMerged),
       "date",
@@ -448,7 +448,7 @@ class RecessionIndicator extends Component {
   };
 
   dataNberValue = () => {
-    console.log("dataNberValue");
+    //console.log("dataNberValue");
     return xAndYobjects(
       numberfyMergedState(this.state.tenThreeMerged),
       "date",
@@ -460,7 +460,7 @@ class RecessionIndicator extends Component {
 
   wilshireIndex = () => {
     const wilshireWorkableData = addDataSeries(this.state.wilshireState);
-    console.log("wilshireIndex");
+    //console.log("wilshireIndex");
     return xAndYobjects(
       wilshireWorkableData,
       "date",
@@ -493,7 +493,7 @@ class RecessionIndicator extends Component {
   };
 
   render() {
-    console.log("[RecessionIndicator.js] rendering...");
+    //console.log("[RecessionIndicator.js] rendering...");
     //************************** VISUALIZATION STUF ******************************
 
 
