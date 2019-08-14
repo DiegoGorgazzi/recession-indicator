@@ -8,6 +8,7 @@ import Table from '../../components/Table/Table';
 import TimeRangeController from "../../components/TimeRangeController/TimeRangeController";
 import ToggleVisibility from '../../components/ToggleVisibility/ToggleVisibility';
 import TermsConditionsPrivacy from '../../components/TemsConditionsPrivacy/TermsConditionsPrivacy';
+import WilshireFuturePerf from '../../components/Charts/WilshireFuturePerf';
 
 //********************** Logic ****************************************
 import {calcs, numberfyMergedState} from "../../logic/logic";
@@ -525,7 +526,9 @@ class RecessionIndicator extends Component {
             timeRangeContainerClassName={
               recessionIndicatorStyles["TimeRangeController-container"]
             }
-            timeRangeClassName={recessionIndicatorStyles.TimeRangeController}
+            timeRangeClassName={
+              recessionIndicatorStyles.TimeRangeController
+            }
             timeUserRangeContainerClassName={
               recessionIndicatorStyles["TimeUserRange-container"]
             }
@@ -557,11 +560,12 @@ class RecessionIndicator extends Component {
           {!this.state.hideRecessionChart && (
             <div>
               <p>
-                Actual Recessions are given by The National Bureau of Economic
-                Research (NBER). Predictions of a recession are calculated
-                12-months into the future based on current 10-year and 3-month
-                US Bonds averages, using our own modified equation from research
-                publicly provided by the New York Federal Reserve.{" "}
+                Actual Recessions are given by The National Bureau of
+                Economic Research (NBER). Predictions of a recession are
+                calculated 12-months into the future based on current
+                10-year and 3-month US Bonds averages, using our own
+                modified equation from research publicly provided by the New
+                York Federal Reserve.{" "}
               </p>
             </div>
           )}
@@ -586,7 +590,9 @@ class RecessionIndicator extends Component {
             <HorizontalGridLines />
             <XAxis tickLabelAngle={-45} tickPadding={5} />
             <YAxis
-              tickFormat={v => ["0", "Very Low", "Low", "Medium", "High", "Very High"][v]}
+              tickFormat={v =>
+                ["0", "Very Low", "Low", "Medium", "High", "Very High"][v]
+              }
               tickLabelAngle={-45}
               tickPadding={5}
             />
@@ -678,9 +684,9 @@ class RecessionIndicator extends Component {
             <div>
               <p>
                 {" "}
-                Here the Stock Market is represented by the Wilshire 5000 price
-                index. Recession Predictions are shown only for those cases
-                where the probability is "High" and "Very High".
+                Here the Stock Market is represented by the Wilshire 5000
+                price index. Recession Predictions are shown only for those
+                cases where the probability is "High" and "Very High".
               </p>
             </div>
           )}
@@ -786,13 +792,14 @@ class RecessionIndicator extends Component {
               <p>
                 {" "}
                 Here the Stock Market past performance is represented by the
-                Wilshire 5000 price index; as such, dividends and re-investment
-                of dividends were not considered. Performance is taken as
-                end-of-month closing prices to end-of-month closing prices.
+                Wilshire 5000 price index; as such, dividends and
+                re-investment of dividends were not considered. Performance
+                is taken as end-of-month closing prices to end-of-month
+                closing prices.
               </p>
               <p>
-                Recession Predictions are shown only for those cases where the
-                probability is "High" and "Very High".
+                Recession Predictions are shown only for those cases where
+                the probability is "High" and "Very High".
               </p>
             </div>
           )}
@@ -836,7 +843,7 @@ class RecessionIndicator extends Component {
                   [
                     this.wilshirePastPerformance(12),
                     this.wilshirePastPerformance(18),
-                    this.wilshirePastPerformance(24),
+                    this.wilshirePastPerformance(24)
                   ],
                   this.dataRecDescr()
                 ),
@@ -932,7 +939,8 @@ class RecessionIndicator extends Component {
         {/* -------------WILSHIRE FUTURE PERFORMANCE CHART --------------*/}
         <div>
           <h2 className={recessionIndicatorStyles["chart-titles"]}>
-            U.S. Stock Market Future Performance and Future Recession Prediction
+            U.S. Stock Market Future Performance and Future Recession
+            Prediction
           </h2>
         </div>
 
@@ -949,157 +957,110 @@ class RecessionIndicator extends Component {
             <div>
               <p>
                 {" "}
-                Here the Stock Market "future" performance is represented by the
-                Wilshire 5000 price index; as such, dividends and re-investment
-                of dividends were not considered. Performance is taken as
-                end-of-month closing prices to end-of-month closing prices. This
-                past performance is then moved backwards in time thus portraying
-                what the future performance would have been in reference to the
-                selected date.
+                Here the Stock Market "future" performance is represented by
+                the Wilshire 5000 price index; as such, dividends and
+                re-investment of dividends were not considered. Performance
+                is taken as end-of-month closing prices to end-of-month
+                closing prices. This past performance is then moved
+                backwards in time thus portraying what the future
+                performance would have been in reference to the selected
+                date.
               </p>
               <p>
                 For example, in October 2004 the future 12-month performance
-                reads 12.8%. That value is the performance of the index between
-                closing last day of October 2004 and October 2005.
+                reads 12.8%. That value is the performance of the index
+                between closing last day of October 2004 and October 2005.
               </p>
               <p>
-                Recession Predictions are shown only for those cases where the
-                probability is "High" and "Very High".
+                Recession Predictions are shown only for those cases where
+                the probability is "High" and "Very High".
               </p>
             </div>
           )}
         </div>
 
-        <div className={recessionIndicatorStyles.chartArea}>
-          <FlexibleXYPlot
-            margin={{ bottom: 50, left: 70 }}
-            className={recessionIndicatorStyles.plot}
-            xType="time"
-            colorType="linear"
-            onMouseMove={this.crosshairWilshireFutDataHandler}
-            onMouseLeave={() => {
-              this.setState({
-                crosshairDataWilshire12moFuturePerformance: "",
-                crosshairDataWilshire18moFuturePerformance: "",
-                crosshairDataWilshire24moFuturePerformance: "",
-                crosshairWilshireFutValues: []
-              });
-            }}
-          >
-            <VerticalGridLines />
-            <HorizontalGridLines />
-            <XAxis tickLabelAngle={-45} tickPadding={5} />
-            <YAxis tickLabelAngle={-45} tickPadding={5} />
-            <ChartLabel
-              text="Percentage"
-              className="altYlabelFutPerf"
-              includeMargin={false}
-              xPercent={this.variableChartLabel("altYlabelFutPerf", -65)}
-              yPercent={0.65}
-              style={{
-                transform: "rotate(-90)",
-                fontWeight: "bold"
-              }}
-            />
-            <AreaSeries
-              data={displaySeries(
-                this.state.dateRangeEnd,
-                this.scaledRecProbData(
-                  [
-                    this.wilshireFuturePerformance(12),
-                    this.wilshireFuturePerformance(18),
-                    this.wilshireFuturePerformance(24)
-                  ],
-                  this.dataRecDescr()
-                ),
-                "x"
-              )}
-              color="#ff9999"
-            />
-            <LineSeries
-              data={displaySeries(
-                this.state.dateRangeEnd,
-                this.wilshireFuturePerformance(24),
-                "x"
-              )}
-              color="#6666ff"
-              onNearestX={(value, { index }) => {
-                this.setState({
-                  crosshairDataWilshire24moFuturePerformance: value
-                });
-              }}
-            />
-            <LineSeries
-              data={displaySeries(
-                this.state.dateRangeEnd,
-                this.wilshireFuturePerformance(18),
-                "x"
-              )}
-              color="#0000e6"
-              onNearestX={(value, { index }) => {
-                this.setState({
-                  crosshairDataWilshire18moFuturePerformance: value
-                });
-              }}
-            />
-            <LineSeries
-              data={displaySeries(
-                this.state.dateRangeEnd,
-                this.wilshireFuturePerformance(12),
-                "x"
-              )}
-              color="#000066"
-              onNearestX={(value, { index }) => {
-                this.setState({
-                  crosshairDataWilshire12moFuturePerformance: value
-                });
-              }}
-            />
-            <DiscreteColorLegend
-              style={legendStyle}
-              items={[
-                {
-                  title: 'Recession >= "High" Likelihood (12 months Ahead)',
-                  color: "#ff9999"
-                },
-                {
-                  title: "Wilshire 12-month FUTURE Performance",
-                  color: "#000066"
-                },
-                {
-                  title: "Wilshire 18-month FUTURE Performance",
-                  color: "#0000e6"
-                },
-                {
-                  title: "Wilshire 24-month FUTURE Performance",
-                  color: "#6666ff"
-                }
-              ]}
-              orientation="horizontal"
-            />
-            <Crosshair
-              values={this.state.crosshairWilshireFutValues}
-              titleFormat={d => ({
-                title: "Date",
-                value: yrMonthDayFormat(d[0].x)
-              })}
-              itemsFormat={d => [
-                {
-                  title: "12-mo FUTURE Performance",
-                  value: math.format(d[0].y, 3) + "%"
-                },
-                {
-                  title: "18-mo FUTURE Performance",
-                  value: math.format(d[1].y, 3) + "%"
-                },
-                {
-                  title: "24-mo FUTURE Performance",
-                  value: math.format(d[2].y, 3) + "%"
-                }
-              ]}
-            />
-          </FlexibleXYPlot>
-        </div>
+        <div className={recessionIndicatorStyles.chartArea} >
+          <WilshireFuturePerf 
+                FlexiClassName = {recessionIndicatorStyles.plot}
+                onMouseMove = {this.crosshairWilshireFutDataHandler}
+                onMouseLeave = {() => {
+                  this.setState({
+                    crosshairDataWilshire12moFuturePerformance: "",
+                    crosshairDataWilshire18moFuturePerformance: "",
+                    crosshairDataWilshire24moFuturePerformance: "",
+                    crosshairWilshireFutValues: []
+                  });
+                }}
+                className = "altYlabelFutPerf"
+                xPercent = {this.variableChartLabel("altYlabelFutPerf", -65)}
+                areaSeriesData = {displaySeries(
+                  this.state.dateRangeEnd,
+                  this.scaledRecProbData(
+                    [
+                      this.wilshireFuturePerformance(12),
+                      this.wilshireFuturePerformance(18),
+                      this.wilshireFuturePerformance(24)
+                    ],
+                    this.dataRecDescr()
+                  ),
+                  "x"
+                )}
+                lineSeriesData24 = {displaySeries(
+                  this.state.dateRangeEnd,
+                  this.wilshireFuturePerformance(24),
+                  "x"
+                )}
+                onNearestX24 = {(value, { index }) => {
+                  this.setState({
+                    crosshairDataWilshire24moFuturePerformance: value
+                  });
+                }}
+
+                lineSeriesData18 = {displaySeries(
+                  this.state.dateRangeEnd,
+                  this.wilshireFuturePerformance(18),
+                  "x"
+                )}
+                onNearestX18 = {(value, { index }) => {
+                  this.setState({
+                    crosshairDataWilshire18moFuturePerformance: value
+                  });
+                }}
+
+                lineSeriesData12 = {displaySeries(
+                  this.state.dateRangeEnd,
+                  this.wilshireFuturePerformance(12),
+                  "x"
+                )}
+                onNearestX12 = {(value, { index }) => {
+                  this.setState({
+                    crosshairDataWilshire12moFuturePerformance: value
+                  });
+                }}
+
+                crosshairVal = {this.state.crosshairWilshireFutValues}
+                crosshairTitleFormat = {d => ({
+                  title: "Date",
+                  value: yrMonthDayFormat(d[0].x)
+                })}
+                crosshairItemsFormat = {d => [
+                  {
+                    title: "12-mo FUTURE Performance",
+                    value: math.format(d[0].y, 3) + "%"
+                  },
+                  {
+                    title: "18-mo FUTURE Performance",
+                    value: math.format(d[1].y, 3) + "%"
+                  },
+                  {
+                    title: "24-mo FUTURE Performance",
+                    value: math.format(d[2].y, 3) + "%"
+                  }
+                ]}
+
+              
+              />
+          </div>
 
         {/* ------------------------------TABLE -------------------------------*/}
         <div className={recessionIndicatorStyles.tableSection}>
@@ -1113,7 +1074,9 @@ class RecessionIndicator extends Component {
 
           {!this.state.hideTable && (
             <Table
-              tableContainerClass={recessionIndicatorStyles["Table-container"]}
+              tableContainerClass={
+                recessionIndicatorStyles["Table-container"]
+              }
               data={this.state.tenThreeMerged}
             />
           )}
@@ -1123,13 +1086,13 @@ class RecessionIndicator extends Component {
 
         <footer>
           <p className={recessionIndicatorStyles["footer-left-text"]}>
-            Bond, Wilshire, and NBER data retrieved from FRED, Federal Reserve
-            Bank of St. Louis
+            Bond, Wilshire, and NBER data retrieved from FRED, Federal
+            Reserve Bank of St. Louis
           </p>
 
           <p className={recessionIndicatorStyles["footer-left-text"]}>
-            THIS WEBSITE CONTAINS ONLY GENERAL INFORMATION, WHICH MUST NOT BE
-            CONSTRUED AS SPECIFIC ADVICE OR RECOMMENDATIONS
+            THIS WEBSITE CONTAINS ONLY GENERAL INFORMATION, WHICH MUST NOT
+            BE CONSTRUED AS SPECIFIC ADVICE OR RECOMMENDATIONS
           </p>
 
           <div className={recessionIndicatorStyles.termsSection}>
