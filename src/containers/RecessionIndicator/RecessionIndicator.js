@@ -391,7 +391,7 @@ class RecessionIndicator extends Component {
       this.setState({crosshairDataRecDescr: value })
     }
 
-    /* dataRecDescr = () => {
+    dataRecDescr = () => {
       console.log('dataRecDesc')
       return xAndYobjects(
         numberfyMergedState(this.state.tenThreeMerged), 
@@ -399,7 +399,7 @@ class RecessionIndicator extends Component {
         "recDescription", 
         this.state.dateRangeStart, 
         this.state.dateRangeEnd);
-    } */
+    }
 
    
 
@@ -409,12 +409,6 @@ class RecessionIndicator extends Component {
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
     //--is going to have to be part of state.
-    const dataRecDescr = xAndYobjects(
-                    numberfyMergedState(this.state.tenThreeMerged), 
-                    "date", 
-                    "recDescription", 
-                    this.state.dateRangeStart, 
-                    this.state.dateRangeEnd);
 
     const dataNberValue = xAndYobjects(
                     numberfyMergedState(this.state.tenThreeMerged), 
@@ -615,11 +609,9 @@ class RecessionIndicator extends Component {
             />
           
           <AreaSeries
-              data = { displaySeries(this.state.dateRangeEnd, dataRecDescr, "x")}
+              data = { displaySeries(this.state.dateRangeEnd, this.dataRecDescr(), "x")}
               color="#ff9999" stroke="#f70"
               onNearestX = {this.onNearestXRecDescr}
-            /*   {(value) => {
-                this.setState({crosshairDataRecDescr: value })}} */
           />
           <LineSeries
               data = { displaySeries(this.state.dateRangeEnd, dataNberValue, "x")}
@@ -729,7 +721,7 @@ class RecessionIndicator extends Component {
             }}
             />
           <AreaSeries
-            data = { displaySeries(this.state.dateRangeEnd, this.scaledRecProbData([wilshireIndex], dataRecDescr), "x")}
+            data = { displaySeries(this.state.dateRangeEnd, this.scaledRecProbData([wilshireIndex], this.dataRecDescr()), "x")}
             color= "#ff9999"
             /> 
           <LineSeries
@@ -847,7 +839,7 @@ class RecessionIndicator extends Component {
               data = { displaySeries(this.state.dateRangeEnd, 
                   this.scaledRecProbData([wilshire12moPerformance, 
                     wilshire18moPerformance, wilshire24moPerformance], 
-                    dataRecDescr), "x")}
+                    this.dataRecDescr()), "x")}
               color= "#ff9999"
               />  
             <LineSeries
@@ -1005,7 +997,7 @@ class RecessionIndicator extends Component {
             data = { displaySeries(this.state.dateRangeEnd, 
                 this.scaledRecProbData([wilshire12moFuturePerformance, 
                   wilshire18moFuturePerformance, wilshire24moFuturePerformance], 
-                  dataRecDescr), "x")}
+                  this.dataRecDescr()), "x")}
             color= "#ff9999"
             />  
           <LineSeries
