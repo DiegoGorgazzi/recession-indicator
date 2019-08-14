@@ -1,6 +1,4 @@
 import React, { Component, PureComponent, Fragment } from "react";
-//************************ d3js *************************************
-import * as d3 from "d3-time-format";
 
 //************************* react-vis *******************************
 import {LineSeries, VerticalGridLines, HorizontalGridLines,
