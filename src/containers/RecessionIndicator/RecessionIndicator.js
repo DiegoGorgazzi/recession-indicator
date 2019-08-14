@@ -387,7 +387,24 @@ class RecessionIndicator extends Component {
       
     }
 
+    onNearestXRecDescr = (value) => {
+      this.setState({crosshairDataRecDescr: value })
+    }
+
+    /* dataRecDescr = () => {
+      console.log('dataRecDesc')
+      return xAndYobjects(
+        numberfyMergedState(this.state.tenThreeMerged), 
+        "date", 
+        "recDescription", 
+        this.state.dateRangeStart, 
+        this.state.dateRangeEnd);
+    } */
+
+   
+
   render() {
+
     console.log('rendering...')
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
@@ -470,11 +487,11 @@ class RecessionIndicator extends Component {
     /* console.log(wilshire12moPerformance, "wilshire12moPerformance");
     
     console.log(dataNberValue, "dataNberValue");
-    console.log(dataRecDescr, "dataRecDescr")
-    console.log(wilshireIndex, "wilshireIndex");
+    console.log(dataRecDescr, "dataRecDescr")*/
+    //console.log(wilshireIndex, "wilshireIndex");
 
-    console.log(this.state.userEndDate, "this.state.userEndDate");
-         */
+    //console.log(this.state.userEndDate, "this.state.userEndDate");
+         
     
     
     //**** Left y-axis label *********
@@ -600,8 +617,9 @@ class RecessionIndicator extends Component {
           <AreaSeries
               data = { displaySeries(this.state.dateRangeEnd, dataRecDescr, "x")}
               color="#ff9999" stroke="#f70"
-              onNearestX = {(value) => {
-                this.setState({crosshairDataRecDescr: value })}}
+              onNearestX = {this.onNearestXRecDescr}
+            /*   {(value) => {
+                this.setState({crosshairDataRecDescr: value })}} */
           />
           <LineSeries
               data = { displaySeries(this.state.dateRangeEnd, dataNberValue, "x")}
@@ -618,8 +636,8 @@ class RecessionIndicator extends Component {
                   crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire18moFuturePerformance, index+12),
                   crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(dataNberValue, wilshire24moFuturePerformance, index+12)
                   */
-                })
-              }}
+               })
+             }}
             />
 
           <DiscreteColorLegend
