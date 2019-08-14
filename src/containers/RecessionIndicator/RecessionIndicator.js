@@ -45,7 +45,6 @@ import {wilshire5000} from "../../data/fedReserveAPI";
 //import {vix} from "../../data/fedReserveAPI";
 
 class RecessionIndicator extends Component {
-
   state = {
     //******** DATA RELATED STATES *****
     tenYearInt: [],
@@ -55,14 +54,15 @@ class RecessionIndicator extends Component {
     //vixState: [],
     tenThreeMerged: [],
     axiosError: false,
-    axiosErrorMessage: "We're having problems... please check your internet connection and try again",
+    axiosErrorMessage:
+      "We're having problems... please check your internet connection and try again",
     // ****** DATE RELATED STATES *******
     //VERY IMPORTANT: YOU MUST USE YYYY-MM-DD as your input (just like the JSON API)
     dateRangeStart: "2000-01-01",
     dateRangeEnd: "",
     //NOTE: user dates are eventually converted to dateRangeStart, End.
     userStartDate: "",
-    userEndDate: "", 
+    userEndDate: "",
     userStartDateError: "",
     userEndDateError: "",
     userDateOutOfRangeError: "",
@@ -85,201 +85,225 @@ class RecessionIndicator extends Component {
     crosshairDataWilshire12moFuturePerformance: "",
     crosshairDataWilshire18moFuturePerformance: "",
     crosshairDataWilshire24moFuturePerformance: "",
-    crosshairRecOnlyDataValues : [],
-    crosshairWilshireIndexValues : [],
+    crosshairRecOnlyDataValues: [],
+    crosshairWilshireIndexValues: [],
     crosshairWilshirePastValues: [],
-    crosshairWilshireFutValues: [],
-  }
+    crosshairWilshireFutValues: []
+  };
 
-  componentDidMount () {
+  componentDidMount() {
     window.addEventListener("resize", this.getWindowWidth);
     //window.addEventListener("scroll", this.getToggleTableYposition);
 
     this.getToggleTableYposition();
 
-    axios.all([
-      axios.get(tenYearYield),
-      axios.get(threeMonthYield),
-      axios.get(nberUSrecess),
-      axios.get(wilshire5000),
-      //axios.get(vix)
+    axios
+      .all([
+        axios.get(tenYearYield),
+        axios.get(threeMonthYield),
+        axios.get(nberUSrecess),
+        axios.get(wilshire5000)
+        //axios.get(vix)
       ])
-        .then(axios.spread(
-          (tenYrYldResponse,
+      .then(
+        axios.spread(
+          (
+            tenYrYldResponse,
             threeMthYldResponse,
-            nberResponse, wilshireResponse, vixResponse ) => {
-
+            nberResponse,
+            wilshireResponse,
+            vixResponse
+          ) => {
             this.setState({
-            tenYearInt:
-              filteredResponse(tenYrYldResponse.data.observations, "10-yr-yields"),
-            threeMonthInt:
-              filteredResponse(threeMthYldResponse.data.observations, "3-month-yields"),
-            nberRecession:
-              filteredResponse(nberResponse.data.observations, "US-recession"),
-            wilshireState:
-              filteredResponse(wilshireResponse.data.observations, "Wilshire-5000")
-            //vixState:
-            //  filteredResponse(vixResponse.data.observations, "Vix")
+              tenYearInt: filteredResponse(
+                tenYrYldResponse.data.observations,
+                "10-yr-yields"
+              ),
+              threeMonthInt: filteredResponse(
+                threeMthYldResponse.data.observations,
+                "3-month-yields"
+              ),
+              nberRecession: filteredResponse(
+                nberResponse.data.observations,
+                "US-recession"
+              ),
+              wilshireState: filteredResponse(
+                wilshireResponse.data.observations,
+                "Wilshire-5000"
+              )
+              //vixState:
+              //  filteredResponse(vixResponse.data.observations, "Vix")
             });
 
-          //console.log(this.state.tenYearInt, "ten");
-          //console.log(this.state.threeMonthInt, "three");
-          //console.log(this.state.nberRecession, "nber");
-          //console.log(this.state.wilshireState, "wilshire");
-          //console.log(this.state.vixState, "vix");
+            //console.log(this.state.tenYearInt, "ten");
+            //console.log(this.state.threeMonthInt, "three");
+            //console.log(this.state.nberRecession, "nber");
+            //console.log(this.state.wilshireState, "wilshire");
+            //console.log(this.state.vixState, "vix");
           }
-        )) 
-        .catch(error=> {
-          this.setState({axiosError:true});
-        });
-
-    }
+        )
+      )
+      .catch(error => {
+        this.setState({ axiosError: true });
+      });
+  }
 
   componentWillUnmount() {
-      window.removeEventListener("resize", this.getWindowWidth);
-      //window.removeEventListener("scroll", this.getToggleTableYPosition);
+    window.removeEventListener("resize", this.getWindowWidth);
+    //window.removeEventListener("scroll", this.getToggleTableYPosition);
   }
 
   componentDidUpdate(previousProps, previousState, snapshot) {
-    if(this.state.axiosError === false) {
-      if(previousState.tenThreeMerged.length === 0 || previousState.tenThreeMerged.length === 1 ) {
+    if (this.state.axiosError === false) {
+      if (
+        previousState.tenThreeMerged.length === 0 ||
+        previousState.tenThreeMerged.length === 1
+      ) {
         this.setState({
-          tenThreeMerged: calcs(this.state.tenYearInt, this.state.threeMonthInt, this.state.nberRecession, "mergedTenThree" )
+          tenThreeMerged: calcs(
+            this.state.tenYearInt,
+            this.state.threeMonthInt,
+            this.state.nberRecession,
+            "mergedTenThree"
+          )
         });
       }
     }
 
     //CHECK IF DATE INPUT IS OUT OF RANGE AND UPDATE ERROR MESSAGE
-    if(this.state.axiosError === false) {
+    if (this.state.axiosError === false) {
       const sameAsfutureDateAddition = xAndYobjects(
-        future12MonthsSeries(numberfyMergedState(this.state.tenThreeMerged)), 
-        "date", 
-        "value", 
-        this.state.dateRangeStart, 
-        this.state.dateRangeEnd);
+        future12MonthsSeries(numberfyMergedState(this.state.tenThreeMerged)),
+        "date",
+        "value",
+        this.state.dateRangeStart,
+        this.state.dateRangeEnd
+      );
 
-      if(sameAsfutureDateAddition.length > 0 ) {
-        if(new Date(this.state.dateRangeEnd).getTime() > sameAsfutureDateAddition[0]["x"].getTime() ) {
-          if(this.state.userDateOutOfRangeError !== "") {
+      if (sameAsfutureDateAddition.length > 0) {
+        if (
+          new Date(this.state.dateRangeEnd).getTime() >
+          sameAsfutureDateAddition[0]["x"].getTime()
+        ) {
+          if (this.state.userDateOutOfRangeError !== "") {
             this.setState({
               userDateOutOfRangeError: ""
             });
           }
-        } else if (new Date(this.state.dateRangeEnd).getTime() < sameAsfutureDateAddition[0]["x"].getTime() ){
-            if(this.state.userDateOutOfRangeError === ""){
-              this.setState({
-                userDateOutOfRangeError: "DATE OUT OF RANGE, PLEASE CHANGE THE DATE RANGE"
-              });
-            }
-        } 
+        } else if (
+          new Date(this.state.dateRangeEnd).getTime() <
+          sameAsfutureDateAddition[0]["x"].getTime()
+        ) {
+          if (this.state.userDateOutOfRangeError === "") {
+            this.setState({
+              userDateOutOfRangeError:
+                "DATE OUT OF RANGE, PLEASE CHANGE THE DATE RANGE"
+            });
+          }
+        }
+      }
+    }
+  }
 
-        } 
+  handleTimeRangeClick = event => {
+    this.setState({
+      dateRangeStart: setStartEndDate(event.target.id, 0),
+      dateRangeEnd: setStartEndDate(event.target.id, 1),
+      userStartDate: "",
+      userEndDate: "",
+      userStartDateError: "",
+      userEndDateError: "",
+      userDateOutOfRangeError: ""
+    });
+  };
+
+  handleUserDateInput = event => {
+    if (event.target.name === "userStartDate") {
+      this.setState({
+        userStartDate: event.target.value
+      });
+
+      let userStartDateEvent = event.target.value;
+      this.setState(checkDateInput(userStartDateEvent, "userStartDateError"));
     }
 
-
-  }
-
-  handleTimeRangeClick = (event) => {
+    if (event.target.name === "userEndDate") {
       this.setState({
-        dateRangeStart: setStartEndDate(event.target.id, 0),
-        dateRangeEnd: setStartEndDate(event.target.id, 1),
-        userStartDate: "",
-        userEndDate: "",
-        userStartDateError: "",
-        userEndDateError: "", 
-        userDateOutOfRangeError: ""
-        });
-
-  }
-
-  handleUserDateInput = (event) => {
-    if(event.target.name === "userStartDate") {
-      this.setState ({
-           userStartDate: event.target.value		
-      });
-          
-      let userStartDateEvent = event.target.value;
-      this.setState(checkDateInput(userStartDateEvent, "userStartDateError"));   
-    };
-
-    if(event.target.name === "userEndDate") {
-      this.setState ({
-          userEndDate: event.target.value		
+        userEndDate: event.target.value
       });
 
       let userEndDateEvent = event.target.value;
       this.setState(checkDateInput(userEndDateEvent, "userEndDateError"));
-
-    };
-
-  }
+    }
+  };
 
   applyUserInputDate = () => {
-    if(this.state.userStartDateError === "" && this.state.userStartDate.length >= 8) {      
+    if (
+      this.state.userStartDateError === "" &&
+      this.state.userStartDate.length >= 8
+    ) {
       this.setState({
-          dateRangeStart: dateFormatConverter(this.state.userStartDate)
+        dateRangeStart: dateFormatConverter(this.state.userStartDate)
       });
-
     }
 
-    if(this.state.userEndDateError === "" && this.state.userEndDate.length >= 8) {
+    if (
+      this.state.userEndDateError === "" &&
+      this.state.userEndDate.length >= 8
+    ) {
       this.setState({
         dateRangeEnd: dateFormatConverter(this.state.userEndDate)
       });
     }
+  };
 
-  }
-
-  crosshairRecOnlyDataHandler= () => {
+  crosshairRecOnlyDataHandler = () => {
     this.setState({
-      crosshairRecOnlyDataValues: 
-        [this.state.crosshairDataRecDescr, 
-          this.state.crosshairDataNberValue
-        ]
-      })
-  }
+      crosshairRecOnlyDataValues: [
+        this.state.crosshairDataRecDescr,
+        this.state.crosshairDataNberValue
+      ]
+    });
+  };
 
   crosshairWilshireIndexDataHandler = () => {
     this.setState({
-      crosshairWilshireIndexValues: 
-        [ this.state.crosshairDataWilshireIndex]
-        
-      })
-  }
+      crosshairWilshireIndexValues: [this.state.crosshairDataWilshireIndex]
+    });
+  };
 
   crosshairWilshirePastDataHandler = () => {
     this.setState({
-      crosshairWilshirePastValues: 
-        [ 
-          this.state.crosshairDataWilshire12moPerformance,
-          this.state.crosshairDataWilshire18moPerformance,
-          this.state.crosshairDataWilshire24moPerformance
-        ]
-      })
-  }
+      crosshairWilshirePastValues: [
+        this.state.crosshairDataWilshire12moPerformance,
+        this.state.crosshairDataWilshire18moPerformance,
+        this.state.crosshairDataWilshire24moPerformance
+      ]
+    });
+  };
 
   crosshairWilshireFutDataHandler = () => {
     this.setState({
-      crosshairWilshireFutValues: 
-        [ 
-          this.state.crosshairDataWilshire12moFuturePerformance,
-          this.state.crosshairDataWilshire18moFuturePerformance,
-          this.state.crosshairDataWilshire24moFuturePerformance
-        ]
-      })
-  }
+      crosshairWilshireFutValues: [
+        this.state.crosshairDataWilshire12moFuturePerformance,
+        this.state.crosshairDataWilshire18moFuturePerformance,
+        this.state.crosshairDataWilshire24moFuturePerformance
+      ]
+    });
+  };
 
   crosshairDisplayHandler = () => {
-   //Change display values in crosshair
-   return crosshairDisplayWords(deepJSONArrayClone(this.state.crosshairRecOnlyDataValues));
+    //Change display values in crosshair
+    return crosshairDisplayWords(
+      deepJSONArrayClone(this.state.crosshairRecOnlyDataValues)
+    );
+  };
 
-  }
-
-  //When the table is not hidden, for smaller screens (less than 660px), the 
-  //width of the table will exceed the width of the window and so horizontal 
-  //scroll bar will be available. However, if the user scrolls back up to the 
+  //When the table is not hidden, for smaller screens (less than 660px), the
+  //width of the table will exceed the width of the window and so horizontal
+  //scroll bar will be available. However, if the user scrolls back up to the
   //charts, he will not see the charts if he was scrolled all the way to the right.
-  //This function, therefore, closes the table when the table is no longer visible 
+  //This function, therefore, closes the table when the table is no longer visible
   //and the user is scrolling back up
   getToggleTableYposition = () => {
     let numSteps = 20.0;
@@ -288,221 +312,229 @@ class RecessionIndicator extends Component {
 
     const buildThresholdList = () => {
       let thresholds = [0];
-          
-      for (let i=1.0; i<=numSteps; i++) {
-        let ratio = i/numSteps;
+
+      for (let i = 1.0; i <= numSteps; i++) {
+        let ratio = i / numSteps;
         thresholds.push(ratio);
       }
 
       return thresholds;
-    }
+    };
 
     let options = {
       root: null,
       rootMargin: "0px",
-      threshold: buildThresholdList(),
+      threshold: buildThresholdList()
     };
-    
-   const handleIntersect = (entries) => {
-    entries.forEach((entry) => {
-      //If Element not Visible
-      if (entry.intersectionRatio <= 0) {
-        //If window innerwidth is less than the min width of the table
-        //WARNING... HARDCODED WIDTH
-        if(window.innerWidth < 661 && this.state.hideTable === false 
-          && entry.boundingClientRect.top >= 0.8*window.innerHeight) {
-          this.setState({
-            hideTable: true
-          })
+
+    const handleIntersect = entries => {
+      entries.forEach(entry => {
+        //If Element not Visible
+        if (entry.intersectionRatio <= 0) {
+          //If window innerwidth is less than the min width of the table
+          //WARNING... HARDCODED WIDTH
+          if (
+            window.innerWidth < 661 &&
+            this.state.hideTable === false &&
+            entry.boundingClientRect.top >= 0.8 * window.innerHeight
+          ) {
+            this.setState({
+              hideTable: true
+            });
+          }
+        } else {
+          //If Element is visible and width is less than min width of table...
+          if (
+            window.innerWidth < 661 &&
+            this.state.hideTable === false &&
+            entry.boundingClientRect.top >= 0.6 * window.innerHeight &&
+            entry.boundingClientRect.left < window.innerWidth * -1
+          ) {
+            this.setState({
+              hideTable: true
+            });
+          }
         }
-          
-      } else {
-        //If Element is visible and width is less than min width of table...
-        if(window.innerWidth < 661 && this.state.hideTable === false 
-          && entry.boundingClientRect.top >= 0.6*window.innerHeight 
-          && entry.boundingClientRect.left<(window.innerWidth*(-1))) {
-          this.setState({
-            hideTable: true
-          })
-        }
-      }
-    }
-    )
-  }
+      });
+    };
 
     observer = new IntersectionObserver(handleIntersect, options);
     observer.observe(document.getElementById("Table").parentElement);
-  
-  }
+  };
 
-  toggleCompVisibility = (event) => {
-    let hideComponent = "hide"+event.target.id;
+  toggleCompVisibility = event => {
+    let hideComponent = "hide" + event.target.id;
     let hideStatus = this.state[hideComponent];
     this.setState({
       [hideComponent]: !hideStatus
     });
-  }
+  };
 
-  scaledRecProbData = (dataArrayToScaleFrom = [] , dataArrayToScale) => {
-        //dataArrayToScaleFrom is an array with Nested data arrays
-        //If you only have one data array, you must still wrap it in [] 
-        let maxValueDataArrayToScaleFrom = 0;
-        let minValueDataArrayToScaleFrom = 0;
-          if (dataArrayToScaleFrom !== undefined) {
-            for (let j = 0; j < dataArrayToScaleFrom.length; ++j){ 
-                for (let i = 0; i < dataArrayToScaleFrom[j].length; ++i ) {
-                    if(dataArrayToScaleFrom[j][i].y > maxValueDataArrayToScaleFrom) {
-                      maxValueDataArrayToScaleFrom = dataArrayToScaleFrom[j][i].y;
-                    };
-                    if(dataArrayToScaleFrom[j][i].y < minValueDataArrayToScaleFrom) {
-                      minValueDataArrayToScaleFrom = dataArrayToScaleFrom[j][i].y;
-                    };
-                  }
-            }
+  scaledRecProbData = (dataArrayToScaleFrom = [], dataArrayToScale) => {
+    //dataArrayToScaleFrom is an array with Nested data arrays
+    //If you only have one data array, you must still wrap it in []
+    let maxValueDataArrayToScaleFrom = 0;
+    let minValueDataArrayToScaleFrom = 0;
+    if (dataArrayToScaleFrom !== undefined) {
+      for (let j = 0; j < dataArrayToScaleFrom.length; ++j) {
+        for (let i = 0; i < dataArrayToScaleFrom[j].length; ++i) {
+          if (dataArrayToScaleFrom[j][i].y > maxValueDataArrayToScaleFrom) {
+            maxValueDataArrayToScaleFrom = dataArrayToScaleFrom[j][i].y;
           }
-    
+          if (dataArrayToScaleFrom[j][i].y < minValueDataArrayToScaleFrom) {
+            minValueDataArrayToScaleFrom = dataArrayToScaleFrom[j][i].y;
+          }
+        }
+      }
+    }
+
     let dataToScale;
     if (dataArrayToScale !== undefined) {
       dataToScale = deepJSONArrayClone(dataArrayToScale);
-    
+
       if (dataToScale !== undefined) {
-        dataToScale.map( (eachObject, index) => {
-          if(eachObject.y >= 4) {
-            return eachObject.y = maxValueDataArrayToScaleFrom;
+        dataToScale.map((eachObject, index) => {
+          if (eachObject.y >= 4) {
+            return (eachObject.y = maxValueDataArrayToScaleFrom);
+          } else {
+            return (eachObject.y = minValueDataArrayToScaleFrom);
           }
-          else {
-            return eachObject.y = minValueDataArrayToScaleFrom
-          }
-        })
-          
+        });
       }
     }
-    
+
     return dataToScale;
-  }
+  };
 
   //This is needed for variableChartLabel
   getWindowWidth = () => {
     this.setState({
       currentWindowWidth: window.innerWidth
     });
-  }
+  };
 
   //Function to physically fix the location of the y-axis
-    //label in the component ChartLabel
-    //whenever the width of the chart is variable
-    //Since no id is available as a prop in the ChartLabel
-    //use the className as the replacement for Id so, 
-    //make sure you use UNIQUE names
-    variableChartLabel = (UniqueClassName, margin) => {
-      if(document.getElementsByClassName(UniqueClassName)[0] !== undefined) {
-        const width = document.getElementsByClassName(UniqueClassName)[0]
-                        .parentElement.width.animVal.value
-        let  xPos = margin / width;
-       
-        return xPos;
-      }
-      
-    }
+  //label in the component ChartLabel
+  //whenever the width of the chart is variable
+  //Since no id is available as a prop in the ChartLabel
+  //use the className as the replacement for Id so,
+  //make sure you use UNIQUE names
+  variableChartLabel = (UniqueClassName, margin) => {
+    if (document.getElementsByClassName(UniqueClassName)[0] !== undefined) {
+      const width = document.getElementsByClassName(UniqueClassName)[0]
+        .parentElement.width.animVal.value;
+      let xPos = margin / width;
 
-    onNearestXRecDescr = (value) => {
-      this.setState({crosshairDataRecDescr: value })
+      return xPos;
     }
+  };
 
-    dataRecDescr = () => {
-      console.log('dataRecDesc')
-      return xAndYobjects(
-        numberfyMergedState(this.state.tenThreeMerged), 
-        "date", 
-        "recDescription", 
-        this.state.dateRangeStart, 
-        this.state.dateRangeEnd);
-    }
+  onNearestXRecDescr = value => {
+    this.setState({ crosshairDataRecDescr: value });
+  };
 
-    dataNberValue = () => {
-      console.log('dataNberValue')
-      return xAndYobjects(
-      numberfyMergedState(this.state.tenThreeMerged), 
-      "date", 
-      "nberValue", 
-      this.state.dateRangeStart, 
-      this.state.dateRangeEnd); 
-    }
+  dataRecDescr = () => {
+    console.log("dataRecDesc");
+    return xAndYobjects(
+      numberfyMergedState(this.state.tenThreeMerged),
+      "date",
+      "recDescription",
+      this.state.dateRangeStart,
+      this.state.dateRangeEnd
+    );
+  };
 
-    wilshireIndex = () => {
-      const wilshireWorkableData = addDataSeries(this.state.wilshireState); 
-      console.log('wilshireIndex')
-      return xAndYobjects(
-        wilshireWorkableData, 
-        "date", 
-        "value", 
-        this.state.dateRangeStart, 
-        this.state.dateRangeEnd);
-    } 
-   
+  dataNberValue = () => {
+    console.log("dataNberValue");
+    return xAndYobjects(
+      numberfyMergedState(this.state.tenThreeMerged),
+      "date",
+      "nberValue",
+      this.state.dateRangeStart,
+      this.state.dateRangeEnd
+    );
+  };
+
+  wilshireIndex = () => {
+    const wilshireWorkableData = addDataSeries(this.state.wilshireState);
+    console.log("wilshireIndex");
+    return xAndYobjects(
+      wilshireWorkableData,
+      "date",
+      "value",
+      this.state.dateRangeStart,
+      this.state.dateRangeEnd
+    );
+  };
 
   render() {
-
-    console.log('rendering...')
+    console.log("rendering...");
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
     //--is going to have to be part of state.
 
     // ADD WILSHIRE DATA
     //Since I'm reusing addDataSeries(this.state.wilshireState), store it in a variable
-    const wilshireWorkableData = addDataSeries(this.state.wilshireState);       
+    const wilshireWorkableData = addDataSeries(this.state.wilshireState);
 
     const futureDateAddition = xAndYobjects(
-                    future12MonthsSeries(numberfyMergedState(this.state.tenThreeMerged)), 
-                    "date", 
-                    "value", 
-                    this.state.dateRangeStart, 
-                    this.state.dateRangeEnd);
-    
+      future12MonthsSeries(numberfyMergedState(this.state.tenThreeMerged)),
+      "date",
+      "value",
+      this.state.dateRangeStart,
+      this.state.dateRangeEnd
+    );
+
     //WILSHIRE PAST PERFORMANCE
     const wilshire12moPerformance = xAndYobjects(
-      pastPerformance(wilshireWorkableData, 12), 
-      "x", 
-      "y", 
-      this.state.dateRangeStart, 
-      this.state.dateRangeEnd);
-    
+      pastPerformance(wilshireWorkableData, 12),
+      "x",
+      "y",
+      this.state.dateRangeStart,
+      this.state.dateRangeEnd
+    );
+
     const wilshire18moPerformance = xAndYobjects(
-      pastPerformance(wilshireWorkableData, 18), 
-      "x", 
-      "y", 
-      this.state.dateRangeStart, 
-      this.state.dateRangeEnd);
+      pastPerformance(wilshireWorkableData, 18),
+      "x",
+      "y",
+      this.state.dateRangeStart,
+      this.state.dateRangeEnd
+    );
 
     const wilshire24moPerformance = xAndYobjects(
-      pastPerformance(wilshireWorkableData, 24), 
-      "x", 
-      "y", 
-      this.state.dateRangeStart, 
-      this.state.dateRangeEnd);
-    
+      pastPerformance(wilshireWorkableData, 24),
+      "x",
+      "y",
+      this.state.dateRangeStart,
+      this.state.dateRangeEnd
+    );
+
     //WILSHIRE FUTURE PERFORMANCE
     const wilshire12moFuturePerformance = xAndYobjects(
-      futurePerformance(wilshireWorkableData, 12), 
-      "x", 
-      "y", 
-      this.state.dateRangeStart, 
-      this.state.dateRangeEnd);
-    
+      futurePerformance(wilshireWorkableData, 12),
+      "x",
+      "y",
+      this.state.dateRangeStart,
+      this.state.dateRangeEnd
+    );
+
     const wilshire18moFuturePerformance = xAndYobjects(
-      futurePerformance(wilshireWorkableData, 18), 
-      "x", 
-      "y", 
-      this.state.dateRangeStart, 
-      this.state.dateRangeEnd);
+      futurePerformance(wilshireWorkableData, 18),
+      "x",
+      "y",
+      this.state.dateRangeStart,
+      this.state.dateRangeEnd
+    );
 
     const wilshire24moFuturePerformance = xAndYobjects(
-      futurePerformance(wilshireWorkableData, 24), 
-      "x", 
-      "y", 
-      this.state.dateRangeStart, 
-      this.state.dateRangeEnd);
-    
+      futurePerformance(wilshireWorkableData, 24),
+      "x",
+      "y",
+      this.state.dateRangeStart,
+      this.state.dateRangeEnd
+    );
+
     /* console.log(wilshire12moPerformance, "wilshire12moPerformance");
     
     console.log(dataNberValue, "dataNberValue");
@@ -510,18 +542,9 @@ class RecessionIndicator extends Component {
     //console.log(wilshireIndex, "wilshireIndex");
 
     //console.log(this.state.userEndDate, "this.state.userEndDate");
-         
-    
-    
+
     //**** Left y-axis label *********
-    const WORDS = [
-          '0',
-          'Very Low',
-          'Low',
-          'Medium',
-          'High',
-          'Very High'
-    ];
+    const WORDS = ["0", "Very Low", "Low", "Medium", "High", "Very High"];
 
     // ******** Crosshair stuff *********************
     //Change display time format in crosshair
@@ -529,254 +552,275 @@ class RecessionIndicator extends Component {
     const yrMonthDayFormat = d3.timeFormat("%Y-%B-%d");
     //console.log(this.state.crosshairAllDataValues, "crosshairAllDataValues");
 
-
-    //console.log(this.scaledRecProbData(wilshire12moPerformance, dataRecDescr), "scaledRecProbData");  
+    //console.log(this.scaledRecProbData(wilshire12moPerformance, dataRecDescr), "scaledRecProbData");
 
     // ************ Legend  *********************
     const legendStyle = {
       display: "flex",
       flexWrap: "wrap",
       maxHeight: 100
-    }
+    };
 
     //************************ RETURN ************************************
     return (
-    <div className = {recessionIndicatorStyles.container}>
-      <header>
-        <h1 className={recessionIndicatorStyles.title}>
-          The Stock Market & Predicting Recessions 
-        </h1>
-      </header>
-      
-      <div>
-        <TimeRangeController
-          clickTimeRange={this.handleTimeRangeClick}
-          userStartTimeState = {this.state.userStartDate}
-          userEndTimeState = {this.state.userEndDate} 
-          userDateHandler = {this.handleUserDateInput}
-          userDateSetter = {this.applyUserInputDate} 	
-          timeRangeContainerClassName= {recessionIndicatorStyles["TimeRangeController-container"]}				
-          timeRangeClassName= {recessionIndicatorStyles.TimeRangeController}				
-          timeUserRangeContainerClassName = {recessionIndicatorStyles["TimeUserRange-container"]}
-          timeUserRangeClassName = {recessionIndicatorStyles.TimeUserRange}
-        />
-        <span className={recessionIndicatorStyles.dateErrorMessage}>
-          {this.state.userStartDateError} {this.state.userEndDateError}
-          {this.state.userDateOutOfRangeError} 
-          {this.state.axiosError ? this.state.axiosErrorMessage : null}
-        </span>
-      </div>
+      <div className={recessionIndicatorStyles.container}>
+        <header>
+          <h1 className={recessionIndicatorStyles.title}>
+            The Stock Market & Predicting Recessions
+          </h1>
+        </header>
 
-      {/* ------------- RECESSION AND PREDICTIONS CHART --------------*/}
-      <div>
+        <div>
+          <TimeRangeController
+            clickTimeRange={this.handleTimeRangeClick}
+            userStartTimeState={this.state.userStartDate}
+            userEndTimeState={this.state.userEndDate}
+            userDateHandler={this.handleUserDateInput}
+            userDateSetter={this.applyUserInputDate}
+            timeRangeContainerClassName={
+              recessionIndicatorStyles["TimeRangeController-container"]
+            }
+            timeRangeClassName={recessionIndicatorStyles.TimeRangeController}
+            timeUserRangeContainerClassName={
+              recessionIndicatorStyles["TimeUserRange-container"]
+            }
+            timeUserRangeClassName={recessionIndicatorStyles.TimeUserRange}
+          />
+          <span className={recessionIndicatorStyles.dateErrorMessage}>
+            {this.state.userStartDateError} {this.state.userEndDateError}
+            {this.state.userDateOutOfRangeError}
+            {this.state.axiosError ? this.state.axiosErrorMessage : null}
+          </span>
+        </div>
+
+        {/* ------------- RECESSION AND PREDICTIONS CHART --------------*/}
+        <div>
           <h2 className={recessionIndicatorStyles["chart-titles"]}>
             Future Recession Prediction and Actual Recessions
           </h2>
-      </div>
+        </div>
 
-      <div className={recessionIndicatorStyles["chart-description"]} >
-        <ToggleVisibility
-                    whatState = {this.state.hideRecessionChart}
-                    hideID = "RecessionChart"
-                    hideOnClick = {this.toggleCompVisibility}
-                    showText = "Show Description"
-                    hideText = "Hide Description"
-                  />
-
-            {!this.state.hideRecessionChart &&
-                  <div> 
-                    <p>Actual Recessions are given by 
-                      The National Bureau of Economic Research (NBER). Predictions 
-                      of a recession are calculated 12-months into the future based
-                      on current 10-year and 3-month US Bonds averages, using our own 
-                      modified equation from research publicly provided by the 
-                      New York Federal Reserve. </p>
-                    </div>}
-      </div>
-
-      <div className= {recessionIndicatorStyles.chartArea}>
-      
-        <FlexibleXYPlot 
-          margin={{bottom:50, left: 70}}
-          className = {recessionIndicatorStyles.plot}
-          xType="time"
-          colorType="linear"
-          onMouseMove = {this.crosshairRecOnlyDataHandler}
-          onMouseLeave= {() => {
-            this.setState({
-              crosshairDataRecDescr: "",
-              crosshairDataNberValue: "",
-              crosshairRecOnlyDataValues: []
-              })
-          }}
-        >
-          <VerticalGridLines />
-          <HorizontalGridLines />
-          {/*<XAxis tickFormat={d3.timeFormat("%Y-%b")} tickLabelAngle={-45} />*/}
-          <XAxis tickLabelAngle={-45} tickPadding={5}/>
-          <YAxis  
-            tickFormat={v => WORDS[v]} 
-            tickLabelAngle={-45} tickPadding={5}
-            />
-        
-          <ChartLabel 
-            text="Recession likelihood, Actual"
-            //IMPORTANT, DO NOT DELETE OR RENAME CLASSNAME
-            //AS IT IS USED BY THE variableChartLabel FUNCTION
-            className="altYlabelRecession"
-            includeMargin={false}
-            xPercent={this.variableChartLabel("altYlabelRecession", -65)}
-            yPercent={0.80}
-            style={{
-              transform: 'rotate(-90)',
-              fontWeight: "bold"
-            }}
-            />
-          
-          <AreaSeries
-              data = { displaySeries(this.state.dateRangeEnd, this.dataRecDescr(), "x")}
-              color="#ff9999" stroke="#f70"
-              onNearestX = {this.onNearestXRecDescr}
+        <div className={recessionIndicatorStyles["chart-description"]}>
+          <ToggleVisibility
+            whatState={this.state.hideRecessionChart}
+            hideID="RecessionChart"
+            hideOnClick={this.toggleCompVisibility}
+            showText="Show Description"
+            hideText="Hide Description"
           />
-          <LineSeries
-              data = { displaySeries(this.state.dateRangeEnd, this.dataNberValue(), "x")}
+
+          {!this.state.hideRecessionChart && (
+            <div>
+              <p>
+                Actual Recessions are given by The National Bureau of Economic
+                Research (NBER). Predictions of a recession are calculated
+                12-months into the future based on current 10-year and 3-month
+                US Bonds averages, using our own modified equation from research
+                publicly provided by the New York Federal Reserve.{" "}
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className={recessionIndicatorStyles.chartArea}>
+          <FlexibleXYPlot
+            margin={{ bottom: 50, left: 70 }}
+            className={recessionIndicatorStyles.plot}
+            xType="time"
+            colorType="linear"
+            onMouseMove={this.crosshairRecOnlyDataHandler}
+            onMouseLeave={() => {
+              this.setState({
+                crosshairDataRecDescr: "",
+                crosshairDataNberValue: "",
+                crosshairRecOnlyDataValues: []
+              });
+            }}
+          >
+            <VerticalGridLines />
+            <HorizontalGridLines />
+            {/*<XAxis tickFormat={d3.timeFormat("%Y-%b")} tickLabelAngle={-45} />*/}
+            <XAxis tickLabelAngle={-45} tickPadding={5} />
+            <YAxis
+              tickFormat={v => WORDS[v]}
+              tickLabelAngle={-45}
+              tickPadding={5}
+            />
+
+            <ChartLabel
+              text="Recession likelihood, Actual"
+              //IMPORTANT, DO NOT DELETE OR RENAME CLASSNAME
+              //AS IT IS USED BY THE variableChartLabel FUNCTION
+              className="altYlabelRecession"
+              includeMargin={false}
+              xPercent={this.variableChartLabel("altYlabelRecession", -65)}
+              yPercent={0.8}
+              style={{
+                transform: "rotate(-90)",
+                fontWeight: "bold"
+              }}
+            />
+
+            <AreaSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                this.dataRecDescr(),
+                "x"
+              )}
+              color="#ff9999"
+              stroke="#f70"
+              onNearestX={this.onNearestXRecDescr}
+            />
+            <LineSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                this.dataNberValue(),
+                "x"
+              )}
               color={0.75}
-              onNearestX = {(value, {index}) => {
+              onNearestX={(value, { index }) => {
                 this.setState({
                   crosshairDataNberValue: value
-               })
-             }}
+                });
+              }}
             />
 
-          <DiscreteColorLegend
-            style={legendStyle}
-            items={[
-              {
-                title: 'Recession Likelihood (12 months Ahead)', 
-                color: "#ff9999"
-              }, 
-              {
-                title: 'Actual Recession', 
-                color: "black"
-              }
-            ]}
-            orientation="horizontal"
+            <DiscreteColorLegend
+              style={legendStyle}
+              items={[
+                {
+                  title: "Recession Likelihood (12 months Ahead)",
+                  color: "#ff9999"
+                },
+                {
+                  title: "Actual Recession",
+                  color: "black"
+                }
+              ]}
+              orientation="horizontal"
             />
-          
-          <Crosshair 
-            values={this.crosshairDisplayHandler()}
-            titleFormat={(d) => ({title: 'Date', value: yrMonthFormat(d[0].x)})}
-            itemsFormat={(d) => 
-              [{title: 'Recession Likelihood', value: d[0].y}, 
-              {title: 'Actual Recession', value: d[1].y}]
-              }
+
+            <Crosshair
+              values={this.crosshairDisplayHandler()}
+              titleFormat={d => ({
+                title: "Date",
+                value: yrMonthFormat(d[0].x)
+              })}
+              itemsFormat={d => [
+                { title: "Recession Likelihood", value: d[0].y },
+                { title: "Actual Recession", value: d[1].y }
+              ]}
             />
-          
-        </FlexibleXYPlot>
-      </div>
-      
-      {/* -------------WILSHIRE CUMULATIVE PERFORMANCE CHART --------------*/}
-      <div>
+          </FlexibleXYPlot>
+        </div>
+
+        {/* -------------WILSHIRE CUMULATIVE PERFORMANCE CHART --------------*/}
+        <div>
           <h2 className={recessionIndicatorStyles["chart-titles"]}>
             U.S. Stock Market and Future Recession Prediction
           </h2>
-      </div>
+        </div>
 
-      <div className={recessionIndicatorStyles["chart-description"]} >
-        <ToggleVisibility
-                    whatState = {this.state.hideWilshireCumulativeChart}
-                    hideID = "WilshireCumulativeChart"
-                    hideOnClick = {this.toggleCompVisibility}
-                    showText = "Show Description"
-                    hideText = "Hide Description"
-                  />
+        <div className={recessionIndicatorStyles["chart-description"]}>
+          <ToggleVisibility
+            whatState={this.state.hideWilshireCumulativeChart}
+            hideID="WilshireCumulativeChart"
+            hideOnClick={this.toggleCompVisibility}
+            showText="Show Description"
+            hideText="Hide Description"
+          />
 
-            {!this.state.hideWilshireCumulativeChart &&
-                  <div> 
-                    <p> Here the Stock Market is represented by the
-                      Wilshire 5000 price index. Recession Predictions are shown 
-                      only for those cases where the probability is "High" and "Very High". 
-                      </p>
-                    </div>}
-      </div>
-      
-      <div className={recessionIndicatorStyles.chartArea}>
+          {!this.state.hideWilshireCumulativeChart && (
+            <div>
+              <p>
+                {" "}
+                Here the Stock Market is represented by the Wilshire 5000 price
+                index. Recession Predictions are shown only for those cases
+                where the probability is "High" and "Very High".
+              </p>
+            </div>
+          )}
+        </div>
 
-        <FlexibleXYPlot 
-          margin={{bottom:50, left: 70}}
-          className = {recessionIndicatorStyles.plot}
-          xType="time"
-          colorType="linear"
-          onMouseMove = {this.crosshairWilshireIndexDataHandler}
-          onMouseLeave= {() => {
-            this.setState({
-              crosshairDataWilshireIndex: "",
-              crosshairWilshireIndexValues: []
-              })
-          }}
-          >
-          <VerticalGridLines />
-          <HorizontalGridLines />
-          <XAxis  
-            tickLabelAngle={-45} tickPadding={5}
-            />
-          <YAxis  
-             tickLabelAngle={-45} tickPadding={5}
-            />
-          <ChartLabel 
-            text="Price Index"
-            className="altYlabelWilshire"
-            includeMargin={false}
-            xPercent={this.variableChartLabel("altYlabelWilshire", -65)}
-            yPercent={0.65}
-            style={{
-              transform: 'rotate(-90)',
-              "fontWeight": "bold" 
+        <div className={recessionIndicatorStyles.chartArea}>
+          <FlexibleXYPlot
+            margin={{ bottom: 50, left: 70 }}
+            className={recessionIndicatorStyles.plot}
+            xType="time"
+            colorType="linear"
+            onMouseMove={this.crosshairWilshireIndexDataHandler}
+            onMouseLeave={() => {
+              this.setState({
+                crosshairDataWilshireIndex: "",
+                crosshairWilshireIndexValues: []
+              });
             }}
-            />
-          <AreaSeries
-            data = { displaySeries(this.state.dateRangeEnd, this.scaledRecProbData([this.wilshireIndex()], this.dataRecDescr()), "x")}
-            color= "#ff9999"
-            /> 
-          <LineSeries
-               data = { displaySeries(this.state.dateRangeEnd, this.wilshireIndex(), "x")}
-               color="#800080"
-               onNearestX = {(value, {index}) => {
-                this.setState({
-                  crosshairDataWilshireIndex: value,
-                })
+          >
+            <VerticalGridLines />
+            <HorizontalGridLines />
+            <XAxis tickLabelAngle={-45} tickPadding={5} />
+            <YAxis tickLabelAngle={-45} tickPadding={5} />
+            <ChartLabel
+              text="Price Index"
+              className="altYlabelWilshire"
+              includeMargin={false}
+              xPercent={this.variableChartLabel("altYlabelWilshire", -65)}
+              yPercent={0.65}
+              style={{
+                transform: "rotate(-90)",
+                fontWeight: "bold"
               }}
             />
-          <DiscreteColorLegend
-            style={legendStyle}
-            items={[
-              {
-                title: 'Recession >= "High" Likelihood (12 months Ahead)', 
-                color: "#ff9999"
-              }, 
-              {
-                title: 'Wilshire 5000, Price Index', 
-                color: "#800080"
-              }
-            ]}
-            orientation="horizontal"
+            <AreaSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                this.scaledRecProbData(
+                  [this.wilshireIndex()],
+                  this.dataRecDescr()
+                ),
+                "x"
+              )}
+              color="#ff9999"
             />
-          
-          <Crosshair 
-            values={this.state.crosshairWilshireIndexValues}
-            titleFormat={(d) => ({title: 'Date', value: yrMonthDayFormat(d[0].x)})}
-            itemsFormat={(d) => 
-              [{title: 'Index Value', value: d[0].y}
-              ]
-              }
+            <LineSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                this.wilshireIndex(),
+                "x"
+              )}
+              color="#800080"
+              onNearestX={(value, { index }) => {
+                this.setState({
+                  crosshairDataWilshireIndex: value
+                });
+              }}
             />
-          
+            <DiscreteColorLegend
+              style={legendStyle}
+              items={[
+                {
+                  title: 'Recession >= "High" Likelihood (12 months Ahead)',
+                  color: "#ff9999"
+                },
+                {
+                  title: "Wilshire 5000, Price Index",
+                  color: "#800080"
+                }
+              ]}
+              orientation="horizontal"
+            />
 
-        </FlexibleXYPlot >
-
-  
+            <Crosshair
+              values={this.state.crosshairWilshireIndexValues}
+              titleFormat={d => ({
+                title: "Date",
+                value: yrMonthDayFormat(d[0].x)
+              })}
+              itemsFormat={d => [{ title: "Index Value", value: d[0].y }]}
+            />
+          </FlexibleXYPlot>
         </div>
-        
+
         {/* -------------WILSHIRE PAST PERFORMANCE CHART --------------*/}
         <div>
           <h2 className={recessionIndicatorStyles["chart-titles"]}>
@@ -784,147 +828,173 @@ class RecessionIndicator extends Component {
           </h2>
         </div>
 
-        <div className={recessionIndicatorStyles["chart-description"]} >
+        <div className={recessionIndicatorStyles["chart-description"]}>
           <ToggleVisibility
-                      whatState = {this.state.hideWilshirePastPerformanceChart}
-                      hideID = "WilshirePastPerformanceChart"
-                      hideOnClick = {this.toggleCompVisibility}
-                      showText = "Show Description"
-                      hideText = "Hide Description"
-                    />
+            whatState={this.state.hideWilshirePastPerformanceChart}
+            hideID="WilshirePastPerformanceChart"
+            hideOnClick={this.toggleCompVisibility}
+            showText="Show Description"
+            hideText="Hide Description"
+          />
 
-              {!this.state.hideWilshirePastPerformanceChart &&
-                    <div> 
-                      <p> Here the Stock Market past performance is represented by the
-                        Wilshire 5000 price index; as such, dividends and re-investment  
-                        of dividends were not considered. Performance is taken as 
-                        end-of-month closing prices to end-of-month closing prices.
-                      </p>
-                      <p> 
-                        Recession Predictions are shown only for those cases where the 
-                        probability is "High" and "Very High". 
-                      </p>
-                      </div>}
-      </div>
-        
+          {!this.state.hideWilshirePastPerformanceChart && (
+            <div>
+              <p>
+                {" "}
+                Here the Stock Market past performance is represented by the
+                Wilshire 5000 price index; as such, dividends and re-investment
+                of dividends were not considered. Performance is taken as
+                end-of-month closing prices to end-of-month closing prices.
+              </p>
+              <p>
+                Recession Predictions are shown only for those cases where the
+                probability is "High" and "Very High".
+              </p>
+            </div>
+          )}
+        </div>
+
         <div className={recessionIndicatorStyles.chartArea}>
-
-          <FlexibleXYPlot 
-            margin={{bottom:50, left: 70}}
-            className = {recessionIndicatorStyles.plot}
+          <FlexibleXYPlot
+            margin={{ bottom: 50, left: 70 }}
+            className={recessionIndicatorStyles.plot}
             xType="time"
             colorType="linear"
-            onMouseMove = {this.crosshairWilshirePastDataHandler}
-            onMouseLeave= {() => {
+            onMouseMove={this.crosshairWilshirePastDataHandler}
+            onMouseLeave={() => {
               this.setState({
                 crosshairDataWilshire12moPerformance: "",
                 crosshairDataWilshire18moPerformance: "",
                 crosshairDataWilshire24moPerformance: "",
                 crosshairWilshirePastValues: []
-                })
-            }} 
-            >
+              });
+            }}
+          >
             <VerticalGridLines />
             <HorizontalGridLines />
-            <XAxis  
-              tickLabelAngle={-45} tickPadding={5}
-              />
-            <YAxis  
-              tickLabelAngle={-45} tickPadding={5}
-              />
-            <ChartLabel 
+            <XAxis tickLabelAngle={-45} tickPadding={5} />
+            <YAxis tickLabelAngle={-45} tickPadding={5} />
+            <ChartLabel
               text="Percentage"
               className="altYlabelPastPerf"
               includeMargin={false}
               xPercent={this.variableChartLabel("altYlabelPastPerf", -65)}
               yPercent={0.65}
               style={{
-                transform: 'rotate(-90)',
-                "fontWeight": "bold" 
+                transform: "rotate(-90)",
+                fontWeight: "bold"
               }}
-              />
+            />
             <AreaSeries
-              data = { displaySeries(this.state.dateRangeEnd, 
-                  this.scaledRecProbData([wilshire12moPerformance, 
-                    wilshire18moPerformance, wilshire24moPerformance], 
-                    this.dataRecDescr()), "x")}
-              color= "#ff9999"
-              />  
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                this.scaledRecProbData(
+                  [
+                    wilshire12moPerformance,
+                    wilshire18moPerformance,
+                    wilshire24moPerformance
+                  ],
+                  this.dataRecDescr()
+                ),
+                "x"
+              )}
+              color="#ff9999"
+            />
             <LineSeries
-                  data = { displaySeries(this.state.dateRangeEnd, wilshire24moPerformance, "x")} 
-                  color="#00ff00"
-                  onNearestX = {(value, {index}) => {
-                    this.setState({
-                      /* crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire24moPerformance, this.wilshireIndex(), index),
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                wilshire24moPerformance,
+                "x"
+              )}
+              color="#00ff00"
+              onNearestX={(value, { index }) => {
+                this.setState({
+                  /* crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire24moPerformance, this.wilshireIndex(), index),
                       crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(wilshire24moPerformance, wilshire12moFuturePerformance, index),
                       crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(wilshire24moPerformance, wilshire18moFuturePerformance, index),
                       crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(wilshire24moPerformance, wilshire24moFuturePerformance, index),
-                       */crosshairDataWilshire24moPerformance: value
-                    })
-                  }}
-              />  
+                       */ crosshairDataWilshire24moPerformance: value
+                });
+              }}
+            />
             <LineSeries
-                  data = { displaySeries(this.state.dateRangeEnd, wilshire18moPerformance, "x")} 
-                  color="#009900"
-                  onNearestX = {(value, {index}) => {
-                    this.setState({
-                     /*  crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire18moPerformance, this.wilshireIndex(), index),
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                wilshire18moPerformance,
+                "x"
+              )}
+              color="#009900"
+              onNearestX={(value, { index }) => {
+                this.setState({
+                  /*  crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire18moPerformance, this.wilshireIndex(), index),
                       crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(wilshire18moPerformance, wilshire12moFuturePerformance, index),
                       crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(wilshire18moPerformance, wilshire18moFuturePerformance, index),
                       crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(wilshire18moPerformance, wilshire24moFuturePerformance, index),
-                       */crosshairDataWilshire18moPerformance: value
-                    })
-                  }}
-              />  
+                       */ crosshairDataWilshire18moPerformance: value
+                });
+              }}
+            />
             <LineSeries
-                  data = { displaySeries(this.state.dateRangeEnd, wilshire12moPerformance, "x")} 
-                  color="#003300"
-                  onNearestX = {(value, {index}) => {
-                    this.setState({
-                     /*  crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire12moPerformance, this.wilshireIndex(), index),
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                wilshire12moPerformance,
+                "x"
+              )}
+              color="#003300"
+              onNearestX={(value, { index }) => {
+                this.setState({
+                  /*  crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire12moPerformance, this.wilshireIndex(), index),
                       crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(wilshire12moPerformance, wilshire24moFuturePerformance, index),
                       crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(wilshire12moPerformance, wilshire18moFuturePerformance, index),
                       crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(wilshire12moPerformance, wilshire12moFuturePerformance, index),
-                       */crosshairDataWilshire12moPerformance: value
-                    })
-                  }}
-                />
+                       */ crosshairDataWilshire12moPerformance: value
+                });
+              }}
+            />
             <DiscreteColorLegend
-                style={legendStyle}
-                items={[
-                  {
-                    title: 'Recession >= "High" Likelihood (12 months Ahead)', 
-                    color: "#ff9999"
-                  }, 
-                  {
-                    title: 'Wilshire 12-month Performance', 
-                    color: "#003300"
-                  },
-                  {
-                    title: 'Wilshire 18-month Performance', 
-                    color: "#009900"
-                  },
-                  {
-                    title: 'Wilshire 24-month Performance', 
-                    color: "#00ff00"
-                  }
-                ]}
-                orientation="horizontal"
-                />
-            <Crosshair 
-              values={this.state.crosshairWilshirePastValues}
-              titleFormat={(d) => ({title: 'Date', value: yrMonthDayFormat(d[0].x)})}
-              itemsFormat={(d) => 
-                [{title: '12-mo Performance', value: math.format(d[0].y, 3)+"%"},
-                 {title: '18-mo Performance', value: math.format(d[1].y, 3)+"%"},
-                 {title: '24-mo Performance', value: math.format(d[2].y, 3)+"%"}
-                ]
+              style={legendStyle}
+              items={[
+                {
+                  title: 'Recession >= "High" Likelihood (12 months Ahead)',
+                  color: "#ff9999"
+                },
+                {
+                  title: "Wilshire 12-month Performance",
+                  color: "#003300"
+                },
+                {
+                  title: "Wilshire 18-month Performance",
+                  color: "#009900"
+                },
+                {
+                  title: "Wilshire 24-month Performance",
+                  color: "#00ff00"
                 }
-              />
-
-          </FlexibleXYPlot >
-
-
+              ]}
+              orientation="horizontal"
+            />
+            <Crosshair
+              values={this.state.crosshairWilshirePastValues}
+              titleFormat={d => ({
+                title: "Date",
+                value: yrMonthDayFormat(d[0].x)
+              })}
+              itemsFormat={d => [
+                {
+                  title: "12-mo Performance",
+                  value: math.format(d[0].y, 3) + "%"
+                },
+                {
+                  title: "18-mo Performance",
+                  value: math.format(d[1].y, 3) + "%"
+                },
+                {
+                  title: "24-mo Performance",
+                  value: math.format(d[2].y, 3) + "%"
+                }
+              ]}
+            />
+          </FlexibleXYPlot>
         </div>
 
         {/* -------------WILSHIRE FUTURE PERFORMANCE CHART --------------*/}
@@ -933,211 +1003,233 @@ class RecessionIndicator extends Component {
             U.S. Stock Market Future Performance and Future Recession Prediction
           </h2>
         </div>
-        
-        <div className={recessionIndicatorStyles["chart-description"]} >
+
+        <div className={recessionIndicatorStyles["chart-description"]}>
           <ToggleVisibility
-                      whatState = {this.state.hideWilshireFuturePerformanceChart}
-                      hideID = "WilshireFuturePerformanceChart"
-                      hideOnClick = {this.toggleCompVisibility}
-                      showText = "Show Description"
-                      hideText = "Hide Description"
-                    />
+            whatState={this.state.hideWilshireFuturePerformanceChart}
+            hideID="WilshireFuturePerformanceChart"
+            hideOnClick={this.toggleCompVisibility}
+            showText="Show Description"
+            hideText="Hide Description"
+          />
 
-              {!this.state.hideWilshireFuturePerformanceChart &&
-                    <div> 
-                      <p> Here the Stock Market "future" performance is represented by the
-                        Wilshire 5000 price index; as such, dividends and re-investment  
-                        of dividends were not considered. Performance is taken as 
-                        end-of-month closing prices to end-of-month closing prices. 
-                        This past performance is then moved backwards in time thus 
-                        portraying what the future performance would have been in
-                        reference to the selected date.  
-                      </p>
-                      <p>
-                        For example, in October 2004 the future 12-month performance 
-                        reads 12.8%. That value is the performance of the index between 
-                        closing last day of October 2004 and October 2005.  
-                      </p>
-                      <p> 
-                        Recession Predictions are shown only for those cases where the 
-                        probability is "High" and "Very High". 
-                      </p>
-                      </div>}
-      </div>
-        
+          {!this.state.hideWilshireFuturePerformanceChart && (
+            <div>
+              <p>
+                {" "}
+                Here the Stock Market "future" performance is represented by the
+                Wilshire 5000 price index; as such, dividends and re-investment
+                of dividends were not considered. Performance is taken as
+                end-of-month closing prices to end-of-month closing prices. This
+                past performance is then moved backwards in time thus portraying
+                what the future performance would have been in reference to the
+                selected date.
+              </p>
+              <p>
+                For example, in October 2004 the future 12-month performance
+                reads 12.8%. That value is the performance of the index between
+                closing last day of October 2004 and October 2005.
+              </p>
+              <p>
+                Recession Predictions are shown only for those cases where the
+                probability is "High" and "Very High".
+              </p>
+            </div>
+          )}
+        </div>
+
         <div className={recessionIndicatorStyles.chartArea}>
-
-        <FlexibleXYPlot 
-          margin={{bottom:50, left: 70}}
-          className = {recessionIndicatorStyles.plot}
-          xType="time"
-          colorType="linear"
-          onMouseMove = {this.crosshairWilshireFutDataHandler}
-          onMouseLeave= {() => {
-            this.setState({
-              crosshairDataWilshire12moFuturePerformance: "",
-              crosshairDataWilshire18moFuturePerformance: "",
-              crosshairDataWilshire24moFuturePerformance: "",
-              crosshairWilshireFutValues: []
-              })
-          }} 
-          >
-          <VerticalGridLines />
-          <HorizontalGridLines />
-          <XAxis  
-            tickLabelAngle={-45} tickPadding={5}
-            />
-          <YAxis  
-            tickLabelAngle={-45} tickPadding={5}
-            />
-          <ChartLabel 
-            text="Percentage"
-            className="altYlabelFutPerf"
-            includeMargin={false}
-            xPercent={this.variableChartLabel("altYlabelFutPerf", -65)}
-            yPercent={0.65}
-            style={{
-              transform: 'rotate(-90)',
-              "fontWeight": "bold" 
+          <FlexibleXYPlot
+            margin={{ bottom: 50, left: 70 }}
+            className={recessionIndicatorStyles.plot}
+            xType="time"
+            colorType="linear"
+            onMouseMove={this.crosshairWilshireFutDataHandler}
+            onMouseLeave={() => {
+              this.setState({
+                crosshairDataWilshire12moFuturePerformance: "",
+                crosshairDataWilshire18moFuturePerformance: "",
+                crosshairDataWilshire24moFuturePerformance: "",
+                crosshairWilshireFutValues: []
+              });
             }}
+          >
+            <VerticalGridLines />
+            <HorizontalGridLines />
+            <XAxis tickLabelAngle={-45} tickPadding={5} />
+            <YAxis tickLabelAngle={-45} tickPadding={5} />
+            <ChartLabel
+              text="Percentage"
+              className="altYlabelFutPerf"
+              includeMargin={false}
+              xPercent={this.variableChartLabel("altYlabelFutPerf", -65)}
+              yPercent={0.65}
+              style={{
+                transform: "rotate(-90)",
+                fontWeight: "bold"
+              }}
             />
-          <AreaSeries
-            data = { displaySeries(this.state.dateRangeEnd, 
-                this.scaledRecProbData([wilshire12moFuturePerformance, 
-                  wilshire18moFuturePerformance, wilshire24moFuturePerformance], 
-                  this.dataRecDescr()), "x")}
-            color= "#ff9999"
-            />  
-          <LineSeries
-                data = { displaySeries(this.state.dateRangeEnd, wilshire24moFuturePerformance, "x")} 
-                color="#6666ff"
-                onNearestX = {(value, {index}) => {
-                  this.setState({
-                    //crosshairDataWilshire24moPerformance: otherChartCrosshairVal(wilshire24moFuturePerformance, wilshire24moPerformance, index),
-                    crosshairDataWilshire24moFuturePerformance: value
-                  })
-                }}
-            />  
-          <LineSeries
-                data = { displaySeries(this.state.dateRangeEnd, wilshire18moFuturePerformance, "x")} 
-                color="#0000e6"
-                onNearestX = {(value, {index}) => {
-                  this.setState({
-                   // crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire18moFuturePerformance, this.wilshireIndex(), index),
-                   // crosshairDataWilshire18moPerformance: otherChartCrosshairVal(wilshire18moFuturePerformance, wilshire18moPerformance, index),
-                    crosshairDataWilshire18moFuturePerformance: value
-                  })
-                }}
-            />  
-          <LineSeries
-                data = { displaySeries(this.state.dateRangeEnd, wilshire12moFuturePerformance, "x")} 
-                color="#000066"
-                onNearestX = {(value, {index}) => {
-                  this.setState({
-                    //crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire12moFuturePerformance, this.wilshireIndex(), index),
-                    //crosshairDataWilshire12moPerformance: otherChartCrosshairVal(wilshire12moFuturePerformance, wilshire12moPerformance, index),
-                    crosshairDataWilshire12moFuturePerformance: value
-                  })
-                }}
-              />
-          <DiscreteColorLegend
+            <AreaSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                this.scaledRecProbData(
+                  [
+                    wilshire12moFuturePerformance,
+                    wilshire18moFuturePerformance,
+                    wilshire24moFuturePerformance
+                  ],
+                  this.dataRecDescr()
+                ),
+                "x"
+              )}
+              color="#ff9999"
+            />
+            <LineSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                wilshire24moFuturePerformance,
+                "x"
+              )}
+              color="#6666ff"
+              onNearestX={(value, { index }) => {
+                this.setState({
+                  //crosshairDataWilshire24moPerformance: otherChartCrosshairVal(wilshire24moFuturePerformance, wilshire24moPerformance, index),
+                  crosshairDataWilshire24moFuturePerformance: value
+                });
+              }}
+            />
+            <LineSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                wilshire18moFuturePerformance,
+                "x"
+              )}
+              color="#0000e6"
+              onNearestX={(value, { index }) => {
+                this.setState({
+                  // crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire18moFuturePerformance, this.wilshireIndex(), index),
+                  // crosshairDataWilshire18moPerformance: otherChartCrosshairVal(wilshire18moFuturePerformance, wilshire18moPerformance, index),
+                  crosshairDataWilshire18moFuturePerformance: value
+                });
+              }}
+            />
+            <LineSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                wilshire12moFuturePerformance,
+                "x"
+              )}
+              color="#000066"
+              onNearestX={(value, { index }) => {
+                this.setState({
+                  //crosshairDataWilshireIndex: otherChartCrosshairVal(wilshire12moFuturePerformance, this.wilshireIndex(), index),
+                  //crosshairDataWilshire12moPerformance: otherChartCrosshairVal(wilshire12moFuturePerformance, wilshire12moPerformance, index),
+                  crosshairDataWilshire12moFuturePerformance: value
+                });
+              }}
+            />
+            <DiscreteColorLegend
               style={legendStyle}
               items={[
                 {
-                  title: 'Recession >= "High" Likelihood (12 months Ahead)', 
+                  title: 'Recession >= "High" Likelihood (12 months Ahead)',
                   color: "#ff9999"
-                }, 
+                },
                 {
-                  title: 'Wilshire 12-month FUTURE Performance', 
+                  title: "Wilshire 12-month FUTURE Performance",
                   color: "#000066"
                 },
                 {
-                  title: 'Wilshire 18-month FUTURE Performance', 
+                  title: "Wilshire 18-month FUTURE Performance",
                   color: "#0000e6"
                 },
                 {
-                  title: 'Wilshire 24-month FUTURE Performance', 
+                  title: "Wilshire 24-month FUTURE Performance",
                   color: "#6666ff"
                 }
               ]}
               orientation="horizontal"
-              />
-          <Crosshair 
-            values={this.state.crosshairWilshireFutValues}
-            titleFormat={(d) => ({title: 'Date', value: yrMonthDayFormat(d[0].x)})}
-            itemsFormat={(d) => 
-              [{title: '12-mo FUTURE Performance', value: math.format(d[0].y, 3)+"%"},
-              {title: '18-mo FUTURE Performance', value: math.format(d[1].y, 3)+"%"},
-              {title: '24-mo FUTURE Performance', value: math.format(d[2].y, 3)+"%"}
-              ]
-              }
+            />
+            <Crosshair
+              values={this.state.crosshairWilshireFutValues}
+              titleFormat={d => ({
+                title: "Date",
+                value: yrMonthDayFormat(d[0].x)
+              })}
+              itemsFormat={d => [
+                {
+                  title: "12-mo FUTURE Performance",
+                  value: math.format(d[0].y, 3) + "%"
+                },
+                {
+                  title: "18-mo FUTURE Performance",
+                  value: math.format(d[1].y, 3) + "%"
+                },
+                {
+                  title: "24-mo FUTURE Performance",
+                  value: math.format(d[2].y, 3) + "%"
+                }
+              ]}
+            />
+          </FlexibleXYPlot>
+        </div>
+
+        {/* ------------------------------TABLE -------------------------------*/}
+        <div className={recessionIndicatorStyles.tableSection}>
+          <ToggleVisibility
+            whatState={this.state.hideTable}
+            hideID="Table"
+            hideOnClick={this.toggleCompVisibility}
+            showText="Show Data Table"
+            hideText="Hide Data Table"
+          />
+
+          {!this.state.hideTable && (
+            <Table
+              tableContainerClass={recessionIndicatorStyles["Table-container"]}
+              data={this.state.tenThreeMerged}
+            />
+          )}
+        </div>
+
+        {/* ------------------------------FOOTER -------------------------------*/}
+
+        <footer>
+          <p className={recessionIndicatorStyles["footer-left-text"]}>
+            Bond, Wilshire, and NBER data retrieved from FRED, Federal Reserve
+            Bank of St. Louis
+          </p>
+
+          <p className={recessionIndicatorStyles["footer-left-text"]}>
+            THIS WEBSITE CONTAINS ONLY GENERAL INFORMATION, WHICH MUST NOT BE
+            CONSTRUED AS SPECIFIC ADVICE OR RECOMMENDATIONS
+          </p>
+
+          <div className={recessionIndicatorStyles.termsSection}>
+            <ToggleVisibility
+              whatState={this.state.hideTerms}
+              hideID="Terms"
+              hideOnClick={this.toggleCompVisibility}
+              showText="Show Terms, Conditions, & Privacy Policy"
+              hideText="Hide Terms, Conditions, & Privacy Policy"
             />
 
-        </FlexibleXYPlot >
+            {!this.state.hideTerms && (
+              <TermsConditionsPrivacy
+                termsContainerClass={
+                  recessionIndicatorStyles["Terms-container"]
+                }
+              />
+            )}
+          </div>
 
-
+          <p className={recessionIndicatorStyles["footer-centered-text"]}>
+            &copy; {new Date().getFullYear()}
+          </p>
+        </footer>
       </div>
-
-
-     {/* ------------------------------TABLE -------------------------------*/}               
-     <div className={recessionIndicatorStyles.tableSection} >
-      <ToggleVisibility
-                  whatState = {this.state.hideTable}
-                  hideID = "Table"
-                  hideOnClick = {this.toggleCompVisibility}
-                  showText = "Show Data Table"
-                  hideText = "Hide Data Table"
-                />
-
-          {!this.state.hideTable &&
-                <Table 
-                  tableContainerClass = {recessionIndicatorStyles["Table-container"]}
-                  data={this.state.tenThreeMerged}
-                  />}
-     </div>
-
-
-      {/* ------------------------------FOOTER -------------------------------*/}  
-
-      <footer>
-        <p className={recessionIndicatorStyles["footer-left-text"]} >
-          Bond, Wilshire, and NBER data retrieved from FRED, Federal Reserve 
-          Bank of St. Louis 
-        </p>
-        
-        <p className={recessionIndicatorStyles["footer-left-text"]}>
-          THIS WEBSITE CONTAINS ONLY GENERAL INFORMATION, WHICH MUST NOT BE 
-          CONSTRUED AS SPECIFIC ADVICE OR RECOMMENDATIONS
-        </p>
-
-      <div className={recessionIndicatorStyles.termsSection} >
-          <ToggleVisibility
-                      whatState = {this.state.hideTerms}
-                      hideID = "Terms"
-                      hideOnClick = {this.toggleCompVisibility}
-                      showText = "Show Terms, Conditions, & Privacy Policy"
-                      hideText = "Hide Terms, Conditions, & Privacy Policy"
-                    />
-
-              {!this.state.hideTerms &&
-                    <TermsConditionsPrivacy
-                      termsContainerClass = {recessionIndicatorStyles["Terms-container"]}
-                      />}
-      </div>
-        
-
-
-
-        <p className={recessionIndicatorStyles["footer-centered-text"]}>
-          &copy; {(new Date().getFullYear())}</p>
-      </footer>
-            
-
-    </div>
-    )
-
+    );
   }
-
 }
 
 export default RecessionIndicator;
