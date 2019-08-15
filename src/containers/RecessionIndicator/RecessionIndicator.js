@@ -406,6 +406,12 @@ class RecessionIndicator extends Component {
   };
 
   //This is needed for variableChartLabel
+  //While the state currentWindowWidth is Not used 
+  //by any function, it is used indirectly by  the variableChartLabel
+  //As the user resizes the window, the state is changed. 
+  //This triggers a re-render which allows for the 
+  //variableChartLabel function to be executed every time 
+  //the window size changes.
   getWindowWidth = () => {
     this.setState({
       currentWindowWidth: window.innerWidth
@@ -423,13 +429,14 @@ class RecessionIndicator extends Component {
       const width = document.getElementsByClassName(UniqueClassName)[0]
         .parentElement.width.animVal.value;
       let xPos = margin / width;
-
+      
       return xPos;
     }
   };
 
   render() {
     console.log("rendering...");
+   
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
     //--is going to have to be part of state.
