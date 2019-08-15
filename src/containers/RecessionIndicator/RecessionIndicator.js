@@ -105,8 +105,9 @@ class RecessionIndicator extends Component {
   componentDidMount() {
     window.addEventListener("resize", this.getWindowWidth);
     //window.addEventListener("scroll", this.getToggleTableYposition);
-
+    //console.log(window.innerWidth)
     this.getToggleTableYposition();
+    //this.disableCrosshairMobile();
 
     axios
       .all([
@@ -434,9 +435,21 @@ class RecessionIndicator extends Component {
     }
   };
 
+  disableCrosshairMobile = () => {
+    let isMobile;
+    if (window.innerWidth > "900") {
+      isMobile = false
+    } else {
+      isMobile = true
+    }
+    return isMobile
+  }
+
+  isMobile = this.disableCrosshairMobile();
+
   render() {
     console.log("rendering...");
-   
+    console.log("Is Mobile?",this.isMobile);
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
     //--is going to have to be part of state.
@@ -467,13 +480,13 @@ class RecessionIndicator extends Component {
       this.state.dateRangeEnd
     );
 
-    const futureDateAddition = xAndYobjects(
+ /*    const futureDateAddition = xAndYobjects(
       future12MonthsSeries(numberfyMergedState(this.state.tenThreeMerged)),
       "date",
       "value",
       this.state.dateRangeStart,
       this.state.dateRangeEnd
-    );
+    ); */
 
     //WILSHIRE PAST PERFORMANCE
     const wilshire12moPerformance = xAndYobjects(
@@ -614,12 +627,73 @@ class RecessionIndicator extends Component {
         </div>
 
         <div className={recessionIndicatorStyles.chartArea}>
+        
+        { this.isMobile ? 
+              <FlexibleXYPlot
+              margin={{ bottom: 50, left: 70 }}
+              className={recessionIndicatorStyles.plot}
+              xType="time"
+              colorType="linear"
+            >
+              <VerticalGridLines />
+              <HorizontalGridLines />
+              {/*<XAxis tickFormat={d3.timeFormat("%Y-%b")} tickLabelAngle={-45} />*/}
+              <XAxis tickLabelAngle={-45} tickPadding={5} />
+              <YAxis
+                tickFormat={v => WORDS[v]}
+                tickLabelAngle={-45}
+                tickPadding={5}
+              />
+
+              <ChartLabel
+                text="Recession likelihood, Actual"
+                //IMPORTANT, DO NOT DELETE OR RENAME CLASSNAME
+                //AS IT IS USED BY THE variableChartLabel FUNCTION
+                className="altYlabelRecession"
+                includeMargin={false}
+                xPercent={this.variableChartLabel("altYlabelRecession", -65)}
+                yPercent={0.8}
+                style={{
+                  transform: "rotate(-90)",
+                  fontWeight: "bold"
+                }}
+              />
+
+              <AreaSeries
+                data={displaySeries(this.state.dateRangeEnd, dataRecDescr, "x")}
+                color="#ff9999"
+                stroke="#f70"
+              />
+              <LineSeries
+                data={displaySeries(this.state.dateRangeEnd, dataNberValue, "x")}
+                color={0.75}
+              />
+
+              <DiscreteColorLegend
+                style={legendStyle}
+                items={[
+                  {
+                    title: "Recession Likelihood (12 months Ahead)",
+                    color: "#ff9999"
+                  },
+                  {
+                    title: "Actual Recession",
+                    color: "black"
+                  }
+                ]}
+                orientation="horizontal"
+              />
+
+            
+            </FlexibleXYPlot>
+      //*******/ELSE - IF IT'S NOT MOBILE:*********************
+          :
           <FlexibleXYPlot
             margin={{ bottom: 50, left: 70 }}
             className={recessionIndicatorStyles.plot}
             xType="time"
             colorType="linear"
-            onMouseMove={this.crosshairRecOnlyDataHandler}
+            onMouseMove={this.isMobile? null : this.crosshairRecOnlyDataHandler}
             onMouseLeave={() => {
               this.setState({
                 crosshairDataRecDescr: "",
@@ -705,7 +779,8 @@ class RecessionIndicator extends Component {
                 { title: "Actual Recession", value: d[1].y }
               ]}
             />
-          </FlexibleXYPlot>
+        </FlexibleXYPlot> 
+      }
         </div>
 
         {/* -------------WILSHIRE CUMULATIVE PERFORMANCE CHART --------------*/}
@@ -737,20 +812,14 @@ class RecessionIndicator extends Component {
         </div>
 
         <div className={recessionIndicatorStyles.chartArea}>
+
+        { this.isMobile ?   
           <FlexibleXYPlot
             margin={{ bottom: 50, left: 70 }}
             className={recessionIndicatorStyles.plot}
             xType="time"
             colorType="linear"
-            onMouseMove={this.crosshairAllDataHandler}
-            onMouseLeave={() => {
-              this.setState({
-                crosshairDataWilshireIndex: "",
-                crosshairDataRecDescr: "",
-                crosshairDataNberValue: "",
-                crosshairAllDataValues: []
-              });
-            }}
+            
           >
             <VerticalGridLines />
             <HorizontalGridLines />
@@ -778,41 +847,6 @@ class RecessionIndicator extends Component {
             <LineSeries
               data={displaySeries(this.state.dateRangeEnd, wilshireIndex, "x")}
               color="#800080"
-              onNearestX={(value, { index }) => {
-                this.setState({
-                  crosshairDataWilshireIndex: value,
-                  crosshairDataWilshire12moPerformance: otherChartCrosshairVal(
-                    wilshireIndex,
-                    wilshire12moPerformance,
-                    index
-                  ),
-                  crosshairDataWilshire18moPerformance: otherChartCrosshairVal(
-                    wilshireIndex,
-                    wilshire18moPerformance,
-                    index
-                  ),
-                  crosshairDataWilshire24moPerformance: otherChartCrosshairVal(
-                    wilshireIndex,
-                    wilshire24moPerformance,
-                    index
-                  ),
-                  crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(
-                    wilshireIndex,
-                    wilshire12moFuturePerformance,
-                    index
-                  ),
-                  crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(
-                    wilshireIndex,
-                    wilshire18moFuturePerformance,
-                    index
-                  ),
-                  crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(
-                    wilshireIndex,
-                    wilshire24moFuturePerformance,
-                    index
-                  )
-                });
-              }}
             />
             <DiscreteColorLegend
               style={legendStyle}
@@ -829,15 +863,110 @@ class RecessionIndicator extends Component {
               orientation="horizontal"
             />
 
-            <Crosshair
-              values={this.state.crosshairAllDataValues}
-              titleFormat={d => ({
-                title: "Date",
-                value: yrMonthDayFormat(d[0].x)
-              })}
-              itemsFormat={d => [{ title: "Index Value", value: d[0].y }]}
-            />
           </FlexibleXYPlot>
+          // ************************** ELSE, IF IT'S NOT MOBILE**********
+          :  <FlexibleXYPlot
+          margin={{ bottom: 50, left: 70 }}
+          className={recessionIndicatorStyles.plot}
+          xType="time"
+          colorType="linear"
+          onMouseMove={this.crosshairAllDataHandler}
+          onMouseLeave={() => {
+            this.setState({
+              crosshairDataWilshireIndex: "",
+              crosshairDataRecDescr: "",
+              crosshairDataNberValue: "",
+              crosshairAllDataValues: []
+            });
+          }}
+        >
+          <VerticalGridLines />
+          <HorizontalGridLines />
+          <XAxis tickLabelAngle={-45} tickPadding={5} />
+          <YAxis tickLabelAngle={-45} tickPadding={5} />
+          <ChartLabel
+            text="Price Index"
+            className="altYlabelWilshire"
+            includeMargin={false}
+            xPercent={this.variableChartLabel("altYlabelWilshire", -65)}
+            yPercent={0.65}
+            style={{
+              transform: "rotate(-90)",
+              fontWeight: "bold"
+            }}
+          />
+          <AreaSeries
+            data={displaySeries(
+              this.state.dateRangeEnd,
+              this.scaledRecProbData([wilshireIndex], dataRecDescr),
+              "x"
+            )}
+            color="#ff9999"
+          />
+          <LineSeries
+            data={displaySeries(this.state.dateRangeEnd, wilshireIndex, "x")}
+            color="#800080"
+            onNearestX={(value, { index }) => {
+              this.setState({
+                crosshairDataWilshireIndex: value,
+                crosshairDataWilshire12moPerformance: otherChartCrosshairVal(
+                  wilshireIndex,
+                  wilshire12moPerformance,
+                  index
+                ),
+                crosshairDataWilshire18moPerformance: otherChartCrosshairVal(
+                  wilshireIndex,
+                  wilshire18moPerformance,
+                  index
+                ),
+                crosshairDataWilshire24moPerformance: otherChartCrosshairVal(
+                  wilshireIndex,
+                  wilshire24moPerformance,
+                  index
+                ),
+                crosshairDataWilshire12moFuturePerformance: otherChartCrosshairVal(
+                  wilshireIndex,
+                  wilshire12moFuturePerformance,
+                  index
+                ),
+                crosshairDataWilshire18moFuturePerformance: otherChartCrosshairVal(
+                  wilshireIndex,
+                  wilshire18moFuturePerformance,
+                  index
+                ),
+                crosshairDataWilshire24moFuturePerformance: otherChartCrosshairVal(
+                  wilshireIndex,
+                  wilshire24moFuturePerformance,
+                  index
+                )
+              });
+            }}
+          />
+          <DiscreteColorLegend
+            style={legendStyle}
+            items={[
+              {
+                title: 'Recession >= "High" Likelihood (12 months Ahead)',
+                color: "#ff9999"
+              },
+              {
+                title: "Wilshire 5000, Price Index",
+                color: "#800080"
+              }
+            ]}
+            orientation="horizontal"
+          />
+
+          <Crosshair
+            values={this.state.crosshairAllDataValues}
+            titleFormat={d => ({
+              title: "Date",
+              value: yrMonthDayFormat(d[0].x)
+            })}
+            itemsFormat={d => [{ title: "Index Value", value: d[0].y }]}
+          />
+        </FlexibleXYPlot>
+        }
         </div>
 
         {/* -------------WILSHIRE PAST PERFORMANCE CHART --------------*/}
@@ -874,6 +1003,98 @@ class RecessionIndicator extends Component {
         </div>
 
         <div className={recessionIndicatorStyles.chartArea}>
+        { this.isMobile ?  
+          <FlexibleXYPlot
+            margin={{ bottom: 50, left: 70 }}
+            className={recessionIndicatorStyles.plot}
+            xType="time"
+            colorType="linear"
+            
+          >
+            <VerticalGridLines />
+            <HorizontalGridLines />
+            <XAxis tickLabelAngle={-45} tickPadding={5} />
+            <YAxis tickLabelAngle={-45} tickPadding={5} />
+            <ChartLabel
+              text="Percentage"
+              className="altYlabelPastPerf"
+              includeMargin={false}
+              xPercent={this.variableChartLabel("altYlabelPastPerf", -65)}
+              yPercent={0.65}
+              style={{
+                transform: "rotate(-90)",
+                fontWeight: "bold"
+              }}
+            />
+            <AreaSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                this.scaledRecProbData(
+                  [
+                    wilshire12moPerformance,
+                    wilshire18moPerformance,
+                    wilshire24moPerformance
+                  ],
+                  dataRecDescr
+                ),
+                "x"
+              )}
+              color="#ff9999"
+            />
+            <LineSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                wilshire24moPerformance,
+                "x"
+              )}
+              color="#00ff00"
+              
+            />
+            <LineSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                wilshire18moPerformance,
+                "x"
+              )}
+              color="#009900"
+            
+            />
+            <LineSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                wilshire12moPerformance,
+                "x"
+              )}
+              color="#003300"
+              
+               
+            />
+            <DiscreteColorLegend
+              style={legendStyle}
+              items={[
+                {
+                  title: 'Recession >= "High" Likelihood (12 months Ahead)',
+                  color: "#ff9999"
+                },
+                {
+                  title: "Wilshire 12-month Performance",
+                  color: "#003300"
+                },
+                {
+                  title: "Wilshire 18-month Performance",
+                  color: "#009900"
+                },
+                {
+                  title: "Wilshire 24-month Performance",
+                  color: "#00ff00"
+                }
+              ]}
+              orientation="horizontal"
+            />
+     
+          </FlexibleXYPlot> 
+          // ************************* ELSE IT IS NOT MOBILE *************
+          :
           <FlexibleXYPlot
             margin={{ bottom: 50, left: 70 }}
             className={recessionIndicatorStyles.plot}
@@ -1062,6 +1283,7 @@ class RecessionIndicator extends Component {
               ]}
             />
           </FlexibleXYPlot>
+            }
         </div>
 
         {/* -------------WILSHIRE FUTURE PERFORMANCE CHART --------------*/}
@@ -1106,6 +1328,97 @@ class RecessionIndicator extends Component {
         </div>
 
         <div className={recessionIndicatorStyles.chartArea}>
+          { this.isMobile ? 
+          <FlexibleXYPlot
+            margin={{ bottom: 50, left: 70 }}
+            className={recessionIndicatorStyles.plot}
+            xType="time"
+            colorType="linear"
+           
+          >
+            <VerticalGridLines />
+            <HorizontalGridLines />
+            <XAxis tickLabelAngle={-45} tickPadding={5} />
+            <YAxis tickLabelAngle={-45} tickPadding={5} />
+            <ChartLabel
+              text="Percentage"
+              className="altYlabelFutPerf"
+              includeMargin={false}
+              xPercent={this.variableChartLabel("altYlabelFutPerf", -65)}
+              yPercent={0.65}
+              style={{
+                transform: "rotate(-90)",
+                fontWeight: "bold"
+              }}
+            />
+            <AreaSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                this.scaledRecProbData(
+                  [
+                    wilshire12moFuturePerformance,
+                    wilshire18moFuturePerformance,
+                    wilshire24moFuturePerformance
+                  ],
+                  dataRecDescr
+                ),
+                "x"
+              )}
+              color="#ff9999"
+            />
+            <LineSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                wilshire24moFuturePerformance,
+                "x"
+              )}
+              color="#6666ff"
+            
+            />
+            <LineSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                wilshire18moFuturePerformance,
+                "x"
+              )}
+              color="#0000e6"
+             
+            />
+            <LineSeries
+              data={displaySeries(
+                this.state.dateRangeEnd,
+                wilshire12moFuturePerformance,
+                "x"
+              )}
+              color="#000066"
+           
+            />
+            <DiscreteColorLegend
+              style={legendStyle}
+              items={[
+                {
+                  title: 'Recession >= "High" Likelihood (12 months Ahead)',
+                  color: "#ff9999"
+                },
+                {
+                  title: "Wilshire 12-month FUTURE Performance",
+                  color: "#000066"
+                },
+                {
+                  title: "Wilshire 18-month FUTURE Performance",
+                  color: "#0000e6"
+                },
+                {
+                  title: "Wilshire 24-month FUTURE Performance",
+                  color: "#6666ff"
+                }
+              ]}
+              orientation="horizontal"
+            />
+           
+          </FlexibleXYPlot>
+          //*******************ELSE IT'S NOT MOBILE************
+          :
           <FlexibleXYPlot
             margin={{ bottom: 50, left: 70 }}
             className={recessionIndicatorStyles.plot}
@@ -1259,6 +1572,7 @@ class RecessionIndicator extends Component {
               ]}
             />
           </FlexibleXYPlot>
+            }
         </div>
 
         {/* ------------------------------TABLE -------------------------------*/}
