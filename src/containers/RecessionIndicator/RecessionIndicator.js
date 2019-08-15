@@ -168,8 +168,7 @@ class RecessionIndicator extends Component {
   componentDidUpdate(previousProps, previousState, snapshot) {
     if (this.state.axiosError === false) {
       if (
-        previousState.tenThreeMerged.length === 0 ||
-        previousState.tenThreeMerged.length === 1
+        previousState.tenThreeMerged.length === 0 
       ) {
         this.setState({
           tenThreeMerged: calcs(
@@ -448,8 +447,7 @@ class RecessionIndicator extends Component {
   isMobile = this.disableCrosshairMobile();
 
   render() {
-    console.log("rendering...");
-    console.log("Is Mobile?",this.isMobile);
+
     //************************** VISUALIZATION STUF ******************************
     // -----EVENTUALLY this data needs to be user selected so for example, "recDescription"
     //--is going to have to be part of state.
