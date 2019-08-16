@@ -691,7 +691,7 @@ class RecessionIndicator extends Component {
             className={recessionIndicatorStyles.plot}
             xType="time"
             colorType="linear"
-            onMouseMove={this.isMobile? null : this.crosshairRecOnlyDataHandler}
+            onMouseMove={this.crosshairRecOnlyDataHandler}
             onMouseLeave={() => {
               this.setState({
                 crosshairDataRecDescr: "",
