@@ -44,8 +44,8 @@ In my view, the problem is not marketing (as many news outlets religiously repor
   one of the first things everyone learns about React. However, I wrote two identical branches of code,
   except one had inline functions (or functions within the render method) while the other branch had
   handler methods. Inline functions performed substantially better than the handlers.
-
-Dazed (and confused), I googled this more carefully and it appears that nobody has actually done measuring of performance comparing one vs the other; it's all been mostly hearsay. I also discovered I'm not the only one who saw the light.
+    
+    Dazed (and confused), I googled this more carefully and it appears that nobody has actually done measuring of performance comparing one vs the other; it's all been mostly hearsay. I also discovered I'm not the only one who saw the light.
 
 - JavaScript doesn't like "complex" math. I'm not a statistician and even as an Engineer, I have a nominal understanding of statistics in general. In Microsoft Excel, simple functions are available to calculate any statistical function you can imagine. My appreciation for Microsoft Excel has been magnified after trying to apply seemingly easy equations in JS. Luckily, I found a very small, and little known, library here on GitHub that approximates the normal standard distribution curve with respectable accuracy. It was a life saver.
 
