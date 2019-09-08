@@ -5,6 +5,9 @@
 The app will calculate and display the likelihood of a US Economic recession 12 months into the future.  
 Here's what it looks like so far [Recession Predictor](https://hlia-recession.web.app/).
 
+UNFORTUNATELY, DUE TO SOME OF THE PROBLEMS MENTIONED BELOW, I'M CONTINUING THIS WORK IN A SEPARATE REPOSITORY
+TO ALLOW ME TO MAKE THIS A FULL-STACK APP WHICH WILL REMOVE THE "BUSINESS LOGIC" FROM THE FRONT-END BUT ALSO WILL REQUIRE AUTHENTICATION/VALIDATION AND A DATABASE ALL OF WHICH I PREFER TO KEEP SEPARATE. 
+
 ## Background
 
 ### Research
