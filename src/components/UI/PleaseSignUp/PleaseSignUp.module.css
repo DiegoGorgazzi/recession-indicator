@@ -1,0 +1,9 @@
+.PleaseSignUp {
+    display: block;
+    text-align: center;
+    cursor: pointer;
+    font: inherit;
+    padding: 10px;
+    margin: 10px;
+    font-weight: bold;
+}

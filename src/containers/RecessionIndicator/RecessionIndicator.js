@@ -160,10 +160,10 @@ class RecessionIndicator extends Component {
       });
   }
 
-  componentWillUnmount() {
+ componentWillUnmount() {
     window.removeEventListener("resize", this.getWindowWidth);
     //window.removeEventListener("scroll", this.getToggleTableYPosition);
-  }
+  } 
 
   componentDidUpdate(previousProps, previousState, snapshot) {
     if (this.state.axiosError === false) {
@@ -802,7 +802,6 @@ class RecessionIndicator extends Component {
           {!this.state.hideWilshireCumulativeChart && (
             <div>
               <p>
-                {" "}
                 Here the Stock Market is represented by the Wilshire 5000 price
                 index. Recession Predictions are shown only for those cases
                 where the probability is "High" and "Very High".
@@ -994,7 +993,6 @@ class RecessionIndicator extends Component {
           {!this.state.hideWilshirePastPerformanceChart && (
             <div>
               <p>
-                {" "}
                 Here the Stock Market past performance is represented by the
                 Wilshire 5000 price index; as such, dividends and re-investment
                 of dividends were not considered. Performance is taken as
@@ -1305,7 +1303,6 @@ class RecessionIndicator extends Component {
           {!this.state.hideWilshireFuturePerformanceChart && (
             <div>
               <p>
-                {" "}
                 Here the Stock Market "future" performance is represented by the
                 Wilshire 5000 price index; as such, dividends and re-investment
                 of dividends were not considered. Performance is taken as
