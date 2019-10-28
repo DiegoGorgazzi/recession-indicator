@@ -1,0 +1,37 @@
+.Auth {
+    margin: 20px auto;
+    width: 80%;
+    text-align: center;
+    box-shadow: 0 2px 3px #ccc;
+    border: 1px solid #eee;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.error {
+    margin: 5px auto;
+    width: 80%;
+    text-align: center;
+    color: red;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.Auth h5 {
+    font-weight: 700;
+   /*  margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+    justify-content: center; */
+    color: #0081f2;
+ /*    font-family: Helvetica, Arial; */
+  }
+  
+
+@media (min-width: 600px) {
+    .Auth {
+        width: 500px;
+    }
+}

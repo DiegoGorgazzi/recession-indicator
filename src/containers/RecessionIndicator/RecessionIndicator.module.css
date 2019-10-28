@@ -72,7 +72,7 @@
 }
 
 @media (hover: hover) {
-  button:hover  {
+  .TimeRangeController button:hover  {
     background-color: #1a74c4;
   }
 }

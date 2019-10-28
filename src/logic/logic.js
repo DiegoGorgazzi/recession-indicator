@@ -1,5 +1,5 @@
 /**************************MATH related Stuff****************************/
-import * as math from 'mathjs';
+import {create, all} from 'mathjs';
 import NormalDistribution from "normal-distribution";
 
 //*********************** helperFunctions ******************************
@@ -18,6 +18,13 @@ import * as d3 from "d3-time-format";
       // c) Probability of recession
 export const calcs = (mergeState1, mergeState2, nberState, name ) => {
 
+  const config = {
+    number: 'BigNumber',
+    precision: 20
+  };
+
+  const math = create(all, config);
+
   math.config({
     number: 'BigNumber',
     precision: 20
@@ -33,7 +40,7 @@ export const calcs = (mergeState1, mergeState2, nberState, name ) => {
   mergedStates.forEach( (eachObject) => {
     //Convert 90 day bill to Bond equivalent Basis, add new property to object:
     eachObject.bondEqBasis =
-      math.format(math.eval(365*(eachObject.valueAdd)/(360-91*(eachObject.valueAdd)/100)));
+      math.format(math.evaluate(365*(eachObject.valueAdd)/(360-91*(eachObject.valueAdd)/100)));
     //Calculate the spread between 10-yr bond and 90-day bondEqBasis
     eachObject.spread = math.format(
       math.subtract(

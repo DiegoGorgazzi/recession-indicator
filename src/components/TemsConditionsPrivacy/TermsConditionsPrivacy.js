@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 
 const termsConditionsPrivacy = (props) => (
     <div className = {props.termsContainerClass}>
