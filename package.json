@@ -11,7 +11,7 @@
     "decimal.js": "^10.2.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
-    "mathjs": "^6.2.5",
+    "mathjs": "^7.5.1",
     "normal-distribution": "0.0.7",
     "numbers": "^0.7.0",
     "react": "^16.12.0",
